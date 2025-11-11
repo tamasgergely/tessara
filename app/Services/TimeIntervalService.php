@@ -12,17 +12,15 @@ class TimeIntervalService
     public function updateIntervalTime(TimeInterval $interval, ?string $start, ?string $stop): TimeInterval
     {
         if ($start !== null) {
-            $this->updateStart($interval, $start);
+            $interval->start = $start;
         }
 
         if ($stop !== null) {
-            $this->updateStop($interval, $stop);
+            $interval->stop = $stop;
         }
 
-        // Validáljuk az interval-t
         $this->validateInterval($interval);
 
-        // Ellenőrizzük az átfedéseket
         $this->checkForOverlaps($interval);
 
         $interval->save();
@@ -30,27 +28,12 @@ class TimeIntervalService
         return $interval->fresh();
     }
 
-    private function updateStart(TimeInterval $interval, string $time): void
-    {
-        $date = Carbon::parse($interval->start)->format('Y-m-d');
-        $interval->start = $date . ' ' . $time . ':00';
-    }
-
-    private function updateStop(TimeInterval $interval, string $time): void
-    {
-        $date = Carbon::parse($interval->stop ?? $interval->start)->format('Y-m-d');
-        $interval->stop = $date . ' ' . $time . ':00';
-    }
-
     private function validateInterval(TimeInterval $interval): void
     {
         if ($interval->start && $interval->stop) {
-            $start = Carbon::parse($interval->start);
-            $stop = Carbon::parse($interval->stop);
-
-            if ($start->gte($stop)) {
+            if ($interval->start->gte($interval->stop)) {
                 throw ValidationException::withMessages([
-                    'time' => 'A befejező időpont nem lehet korábbi vagy egyenlő a kezdő időponttal.'
+                    'time' => 'The end time cannot be earlier than or equal to the start time.'
                 ]);
             }
         }
@@ -62,8 +45,8 @@ class TimeIntervalService
             return;
         }
 
-        $start = Carbon::parse($interval->start);
-        $stop = $interval->stop ? Carbon::parse($interval->stop) : null;
+        $start = $interval->start;
+        $stop = $interval->stop ? $interval->stop : null;
 
         $overlapping = TimeInterval::where('timer_id', $interval->timer_id)
             ->where('id', '!=', $interval->id)
@@ -81,20 +64,10 @@ class TimeIntervalService
             })->first();
 
         if ($overlapping) {
-            $this->throwOverlapException($overlapping);
+            throw ValidationException::withMessages([
+                'time' => "The time interval overlaps with another interval."
+            ]);
         }
-    }
-
-    private function throwOverlapException(TimeInterval $overlapping): void
-    {
-        $start = Carbon::parse($overlapping->start)->format('H:i');
-        $stop = $overlapping->stop
-            ? Carbon::parse($overlapping->stop)->format('H:i')
-            : 'folyamatban';
-
-        throw ValidationException::withMessages([
-            'time' => "Az időintervallum átfedésben van egy másik intervallummal: {$start} - {$stop}"
-        ]);
     }
 
     /**

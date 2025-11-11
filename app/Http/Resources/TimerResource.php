@@ -31,8 +31,8 @@ class TimerResource extends JsonResource
             'client_name' => $this->task->client?->name,
             "description" => $this->description,
             'elapsedTimeAsHMS' => $elapsedTimeInHMS,
-            'start' => Carbon::parse($lastInterval->start)->timestamp,
-            'stop' => $lastInterval->stop ? Carbon::parse($lastInterval->stop)->timestamp : null,
+            'start' => Carbon::parse($lastInterval->start)->format('Y-m-d\TH:i:s.v\Z'),
+            'stop' => $lastInterval->stop ? Carbon::parse($lastInterval->stop)->format('Y-m-d\TH:i:s.v\Z') : null,
             'intervals' => $this->timeIntervals
         ];
     }

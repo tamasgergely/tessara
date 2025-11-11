@@ -13,6 +13,7 @@
 
 namespace App\Models{
 /**
+ * @mixin IdeHelperClient
  * @property int $id
  * @property int $user_id
  * @property string $name
@@ -38,14 +39,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client withoutTrashed()
- * @mixin \Eloquent
  */
-	#[\AllowDynamicProperties]
-	class IdeHelperClient {}
+	class Client extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
+ * @mixin IdeHelperProject
  * @property int $id
  * @property int $user_id
  * @property int|null $client_id
@@ -77,14 +77,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project withoutTrashed()
- * @mixin \Eloquent
  */
-	#[\AllowDynamicProperties]
-	class IdeHelperProject {}
+	class Project extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
+ * @mixin IdeHelperTask
  * @property int $id
  * @property int $user_id
  * @property int|null $project_id
@@ -117,20 +116,20 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task withoutTrashed()
- * @mixin \Eloquent
  */
-	#[\AllowDynamicProperties]
-	class IdeHelperTask {}
+	class Task extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
+ * @mixin IdeHelperTimeInterval
  * @property int $id
  * @property int $timer_id
  * @property string $start
  * @property string|null $stop
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Timer $timer
  * @method static \Database\Factories\TimeIntervalFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval newQuery()
@@ -141,14 +140,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval whereStop($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval whereTimerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval whereUpdatedAt($value)
- * @mixin \Eloquent
  */
-	#[\AllowDynamicProperties]
-	class IdeHelperTimeInterval {}
+	class TimeInterval extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
+ * @mixin IdeHelperTimer
  * @property int $id
  * @property int $user_id
  * @property int $task_id
@@ -171,14 +169,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereTaskId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereUserId($value)
- * @mixin \Eloquent
  */
-	#[\AllowDynamicProperties]
-	class IdeHelperTimer {}
+	class Timer extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
+ * @mixin IdeHelperUser
  * @property int $id
  * @property string $name
  * @property string $email
@@ -209,9 +206,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
- * @mixin \Eloquent
  */
-	#[\AllowDynamicProperties]
-	class IdeHelperUser {}
+	class User extends \Eloquent {}
 }
 

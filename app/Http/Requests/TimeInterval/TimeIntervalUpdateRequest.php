@@ -22,8 +22,8 @@ class TimeIntervalUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'start' => ['nullable', 'date_format:H:i'],
-            'stop' => ['nullable', 'date_format:H:i'],
+            'start' => ['nullable', 'date_format:Y-m-d\TH:i:s.v\Z'],
+            'stop' => ['nullable', 'date_format:Y-m-d\TH:i:s.v\Z'],
         ];
     }
 }
