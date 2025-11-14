@@ -3,6 +3,7 @@ import type { TimerInterval } from '@/types';
 import { Input } from '@/components/ui/input';
 import { Trash2 } from 'lucide-react';
 import { formatToLocalTime } from '@/utils/date-formatter';
+import { getCookie } from "@/utils/cookie";
 
 export default function TimerIntervals({ initalIntervals, onDelete }: { initalIntervals: TimerInterval[], onDelete: (interval: TimerInterval) => void }) {
 
@@ -26,7 +27,6 @@ export default function TimerIntervals({ initalIntervals, onDelete }: { initalIn
         const key = `${interval.id}-${field}`;
         const newValue = editingValues[key];
 
-
         if (newValue === undefined || newValue === formatToLocalTime(interval[field])) {
             return;
         }
@@ -35,7 +35,7 @@ export default function TimerIntervals({ initalIntervals, onDelete }: { initalIn
         setErrors(prev => ({ ...prev, [key]: undefined }));
 
         try {
-            const csrfToken = (document.querySelector('meta[name=csrf-token]') as HTMLMetaElement)?.content ?? '';
+            const csrfToken = getCookie('XSRF-TOKEN');
 
             const [hours, minutes] = newValue.split(':');
             const localDate = new Date();
@@ -45,7 +45,7 @@ export default function TimerIntervals({ initalIntervals, onDelete }: { initalIn
             const response = await fetch(`/time-intervals/update-time/${interval.id}`, {
                 method: 'PATCH',
                 headers: {
-                    'X-CSRF-TOKEN': csrfToken,
+                    'X-XSRF-TOKEN': csrfToken,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ [field]: utcString })
