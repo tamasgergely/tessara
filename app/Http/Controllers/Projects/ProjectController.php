@@ -17,7 +17,7 @@ class ProjectController extends Controller
     {
         return inertia('projects', [
             'projects' => ProjectResource::collection(
-                auth()->user()->projects()->forListing()->get()
+                auth()->user()->projects()->forListing(includeArchived: true)->get()
             ),
             'clients' => ClientResource::collection(
                 auth()->user()->clients()->forListing()->get()
