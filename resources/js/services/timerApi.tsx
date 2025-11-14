@@ -1,14 +1,15 @@
 import type { TimerInterval } from "@/types";
+import { getCookie } from "@/utils/cookie";
 
 export const timerApi = {
     async toggleTimer(timerId: number): Promise<TimerInterval | null> {
         try {
-            const csrfToken = (document.querySelector('meta[name=csrf-token]') as HTMLMetaElement)?.content ?? '';
+            const csrfToken = getCookie('XSRF-TOKEN');
 
             const response = await fetch(`timers/${timerId}/toggle`, {
                 method: 'PATCH',
                 headers: {
-                    'X-CSRF-TOKEN': csrfToken,
+                    'X-XSRF-TOKEN': csrfToken,
                     'Content-Type': 'application/json',
                 },
             });
@@ -21,7 +22,7 @@ export const timerApi = {
             const data = await response.json();
 
             return data;
-            
+
         } catch (error) {
             console.error('Network or fetch error:', error);
             return null;
