@@ -19,38 +19,47 @@ export default function TimerRow({ initialTimer, onEdit, onDelete }: TimerRowPro
     const { handleStart, handleStop } = useTimerActions({ timer, setTimer, workerRef });
 
     return (
-        <div className="2xl:grid-cols-[minmax(300px,350px)_minmax(300px,1fr)_200px_100px_80px_50px] 
-                        md:grid-cols-[minmax(220px,1fr)_200px_100px_80px_50px]
-                        sm:grid-cols-[minmax(220px,1fr)_200px_100px_40px_50px]
+        <div className="2xl:gap-x-10
+                        xl:grid-cols-[minmax(200px,350px)_minmax(250px,1fr)_200px_80px_80px_30px]
+                        md:grid-cols-[minmax(200px,1fr)_200px_80px_30px_30px] md:gap-x-5
                         grid grid-cols-[1fr_1fr_40px_30px]
-                        py-3 border-b border-border last:border-none gap-2 md:gap-5">
-            <div className="pr-5 col-span-4 sm:col-span-1">
+                        py-3 border-b border-border last:border-none gap-2">
+            
+            <div className="order-1 col-span-4 md:col-span-1">
                 <TimerProjectInfo
                     projectName={timer.project_name}
                     clientName={timer.client_name}
                     taskName={timer.task_name} />
             </div>
 
-            <div className="pr-5 hidden 2xl:block">
+            <div className={`order-6 col-span-4 md:col-span-5 xl:order-2 xl:col-span-1 ${!timer.description ? 'hidden sm:block' : 'block'}`}>
                 {timer.description}
             </div>
 
-            <TimerIntervals
-                initalIntervals={timer.intervals}
-                onDelete={onDelete}
-            />
+            <div className="order-2 col-span-1 md:col-span-1 lg:order-3">
+                <TimerIntervals
+                    initalIntervals={timer.intervals}
+                    onDelete={onDelete}
+                />
+            </div>
 
-            <TimerDuration
-                hours={timer.elapsedTimeAsHMS.hours}
-                minutes={timer.elapsedTimeAsHMS.minutes}
-                seconds={timer.elapsedTimeAsHMS.seconds} />
+            <div className="order-3 col-span-1 text-base self-center text-primary text-right md:col-span-1 md:text-left md:text-xl lg:order-4">
+                <TimerDuration
+                    hours={timer.elapsedTimeAsHMS.hours}
+                    minutes={timer.elapsedTimeAsHMS.minutes}
+                    seconds={timer.elapsedTimeAsHMS.seconds} />
+            </div>
 
-            <TimerControls
-                isRunning={!timer.stop}
-                onStart={handleStart}
-                onStop={handleStop} />
+            <div className="order-4 col-span-1 flex items-center">
+                <TimerControls
+                    isRunning={!timer.stop}
+                    onStart={handleStart}
+                    onStop={handleStop} />
+            </div>
 
-            <TimerActions timer={timer} onEdit={onEdit} onDelete={onDelete} />
+            <div className="order-5 col-span-1 flex items-center">
+                <TimerActions timer={timer} onEdit={onEdit} onDelete={onDelete} />
+            </div>
         </div >
     );
 }

@@ -13,10 +13,9 @@ type TaskListProps = {
 }
 
 function TaskList({ tasks, onEdit, onDelete }: TaskListProps) {
-
     return (
         <List>
-            <ListHeader className="md:grid hidden md:grid-cols-[minmax(100px,400px)_minmax(100px,400px)_minmax(100px,400px)_minmax(200px,600px)_1fr_60px]">
+            <ListHeader className="sm:hidden xl:grid xl:grid-cols-[minmax(100px,400px)_minmax(100px,400px)_minmax(100px,400px)_minmax(200px,600px)_60px]">
                 <div>
                     Task
                 </div>
@@ -29,20 +28,18 @@ function TaskList({ tasks, onEdit, onDelete }: TaskListProps) {
                 <div>
                     Description
                 </div>
-                <div></div>
                 <div className="text-center">
                     Archived
                 </div>
-                <div></div>
             </ListHeader>
             {tasks?.length > 0 ?
                 tasks.map(task => (
-                    <ListRow className="grid md:grid-cols-[minmax(100px,400px)_minmax(100px,400px)_minmax(100px,400px)_minmax(200px,600px)_1fr_60px]" key={task.id}>
-                        <div className="flex gap-1 items-center">
+                    <ListRow className="xl:grid-cols-[minmax(100px,400px)_minmax(100px,400px)_minmax(100px,400px)_minmax(200px,600px)_60px]" key={task.id}>
+                        <div className="flex gap-1 items-center text-primary">
                             <StickyNote height={16} />
                             {task.name}
                         </div>
-                        <div className="flex gap-1 items-center">
+                        <div className={`gap-1 items-center ${!task.project ? 'hidden sm:flex' : 'flex'}`}>
                             {task.project && (
                                 <>
                                     <NotepadText height={16} />
@@ -50,7 +47,7 @@ function TaskList({ tasks, onEdit, onDelete }: TaskListProps) {
                                 </>
                             )}
                         </div>
-                        <div className="flex gap-1 items-center">
+                        <div className={`gap-1 items-center ${!task.client ? 'hidden sm:flex' : 'flex'}`}>
                             {task.client && (
                                 <>
                                     <User height={16} />
@@ -58,19 +55,18 @@ function TaskList({ tasks, onEdit, onDelete }: TaskListProps) {
                                 </>
                             )}
                         </div>
-                        <div>
+                        <div className={`${!task.description ? 'hidden sm:block' : 'block'}`}>
                             {task.description}
                         </div>
-                        <div></div>
-                        <div className="md:flex gap-1 items-center justify-center hidden">
+                        <div className="hidden items-center xl:flex xl:gap-1 xl:justify-center">
                             <span aria-label={task.archived ? "Archived" : "Active"}>
                                 {task.archived ? <Check /> : <X />}
                             </span>
                         </div>
                         <ListActions
                             actions={[
-                                { key: 'edit', icon: <Pencil />, onClick: () => onEdit(task) },
-                                { key: 'delete', icon: <Trash2 />, onClick: () => onDelete(task) },
+                                { key: 'edit', icon: <Pencil className="w-4 h-4 sm:w-auto sm:h-auto" />, onClick: () => onEdit(task) },
+                                { key: 'delete', icon: <Trash2 className="w-4 h-4 sm:w-auto sm:h-auto" />, onClick: () => onDelete(task) },
                             ]}
                         />
                     </ListRow>

@@ -1,0 +1,32 @@
+:root {
+    --rs-input-bg: #ffffff;
+    --rs-text-primary: var(--color-foreground);
+    --rs-bg-overlay: #ffffff;
+    --rs-btn-link-text: var(--primary);
+    --rs-listbox-option-hover-bg: var(--primary);
+    --rs-bg-active: var(--primary);
+    --rs-calendar-cell-selected-hover-bg: var(--primary);
+    --rs-calendar-range-bg: #ffd56f;
+    --rs-listbox-option-hover-text: #ffffff;
+    --rs-border-primary: var(--input-border);
+    --rs-input-focus-border: var(--primary);
+    --rs-btn-primary-bg: var(--primary);
+    --rs-btn-primary-hover-bg: var(--primary);
+    --rs-btn-primary-active-bg: var(--primary);
+    --rs-text-active: var(--primary);
+    --rs-btn-link-hover-text: var(--primary);
+}
+
+.dark {
+    --rs-input-bg: transparent;
+    --rs-text-primary: var(--color-foreground);
+    --rs-bg-overlay: var(--sidebar);
+    --rs-calendar-range-bg: #cb5200;
+    --rs-input-focus-border: #ffffff;
+    --rs-btn-link-text: var(--primary);
+    --rs-border-primary: var(--input-border);
+}
+
+.rs-input{
+    padding: 11px;
+}

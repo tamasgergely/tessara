@@ -94,7 +94,7 @@ export default function TimerIntervals({ initalIntervals, onDelete }: { initalIn
                                 <Input
                                     type="time"
                                     name={`intervals[${interval.id}][start]`}
-                                    className="text-xs w-17 sm:text-sm sm:w-18 h-8"
+                                    className="text-xs px-1 w-13 h-8 sm:px-3 sm:text-sm sm:w-18"
                                     value={editingValues[`${interval.id}-start`] ?? formatToLocalTime(interval.start)}
                                     onChange={e => handleChange(interval.id, 'start', e.target.value)}
                                     onBlur={() => handleBlur(interval, 'start')}
@@ -105,7 +105,7 @@ export default function TimerIntervals({ initalIntervals, onDelete }: { initalIn
                             <div className="relative">
                                 <Input
                                     type="time"
-                                    className="text-xs w-17 sm:text-sm sm:w-18 h-8"
+                                    className="text-xs px-1 w-13 h-8 sm:px-3 sm:text-sm sm:w-18"
                                     name={`intervals[${interval.id}][stop]`}
                                     value={editingValues[`${interval.id}-stop`] ?? formatToLocalTime(interval.stop)}
                                     onChange={e => handleChange(interval.id, 'stop', e.target.value)}

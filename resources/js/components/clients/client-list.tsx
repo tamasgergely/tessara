@@ -16,7 +16,7 @@ function ClientList({ clients, onEdit, onDelete }: ClientListProps) {
 
     return (
         <List>
-            <ListHeader className="grid-cols-[150px_auto] sm:grid-cols-[minmax(300px,600px)_100px]">
+            <ListHeader className="grid-cols-[minmax(150px,1fr)_60px] sm:grid-cols-[minmax(300px,600px)_100px] grid">
                 <div>
                     Client
                 </div>
@@ -28,8 +28,8 @@ function ClientList({ clients, onEdit, onDelete }: ClientListProps) {
 
             {clients?.length > 0 ?
                 clients.map(client => (
-                    <ListRow className="grid-cols-[150px_auto] sm:grid-cols-[minmax(300px,600px)_100px]" key={client.id}>
-                        <div className="flex gap-1 items-center">
+                    <ListRow className="grid-cols-[minmax(150px,1fr)_60px] sm:grid-cols-[minmax(300px,600px)_100px]" key={client.id}>
+                        <div className="flex gap-1 items-center text-primary">
                             <User height={16} />
                             {client.name}
                         </div>
@@ -40,8 +40,8 @@ function ClientList({ clients, onEdit, onDelete }: ClientListProps) {
                         </div>
                         <ListActions
                             actions={[
-                                { key: 'edit', icon: <Pencil />, onClick: () => onEdit(client) },
-                                { key: 'delete', icon: <Trash2 />, onClick: () => onDelete(client) },
+                                { key: 'edit', icon: <Pencil className="w-4 h-4 sm:w-auto sm:h-auto" />, onClick: () => onEdit(client) },
+                                { key: 'delete', icon: <Trash2 className="w-4 h-4 sm:w-auto sm:h-auto" />, onClick: () => onDelete(client) },
                             ]}
                         />
                     </ListRow>

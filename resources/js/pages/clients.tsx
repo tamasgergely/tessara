@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem, Client } from '@/types';
-import { useCallback} from 'react';
+import { useCallback } from 'react';
 import { Head } from '@inertiajs/react';
 import ClientList from '@/components/clients/client-list';
 import { Button } from "@/components/ui/button";

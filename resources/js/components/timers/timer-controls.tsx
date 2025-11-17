@@ -13,12 +13,12 @@ export default function TimerControls({ isRunning, onStart, onStop }: TimerContr
             {isRunning ? (
                 <Button onClick={onStop} variant="destructive">
                     <CircleStop /> 
-                    <span className="hidden md:inline">Stop</span>
+                    <span className="hidden xl:inline">Stop</span>
                 </Button>
             ) : (
                 <Button onClick={onStart}>
                     <CirclePlay /> 
-                    <span className="hidden md:inline">Start</span>
+                    <span className="hidden xl:inline">Start</span>
                 </Button>
             )}
         </div>

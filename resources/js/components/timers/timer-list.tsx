@@ -13,14 +13,13 @@ export default function TimerList({ timers, onEdit, onDelete }: TimerListProps) 
     return (
         <List>
             <ListHeader
-                className="2xl:grid-cols-[minmax(300px,350px)_minmax(300px,1fr)_200px_100px_80px_50px] 
-                           md:grid-cols-[minmax(220px,1fr)_200px_100px_80px_50px]
-                           sm:grid-cols-[minmax(220px,1fr)_200px_100px_40px_50px]
+                className="xl:grid xl:grid-cols-[minmax(200px,350px)_minmax(250px,1fr)_200px_80px_80px_30px]
+                           sm:hidden
                            lg:pr-0 pr-0">
                 <div>
-                    Task & Client & Project
+                    Task & Project & Client
                 </div>
-                <div className="hidden 2xl:block">
+                <div>
                     Task description
                 </div>
                 <div>

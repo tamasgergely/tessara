@@ -2,7 +2,7 @@ import type { Option } from '@/types';
 import type { SingleValue } from 'react-select';
 import { useMemo } from 'react';
 import CreatableSelect from 'react-select/creatable';
-import { Appearance, useAppearance } from '@/hooks/use-appearance';
+import { useAppearance, prefersDark } from '@/hooks/use-appearance';
 
 type CreatableSelectWrapperProps<T> = {
     options: T[];
@@ -14,7 +14,7 @@ type CreatableSelectWrapperProps<T> = {
 };
 
 export default function CreatableSelectWrapper<T>({ options: rawOptions, value, onChange, getOptionLabel, getOptionValue, ref }: CreatableSelectWrapperProps<T>) {
-
+ 
     const { appearance, updateAppearance } = useAppearance();
 
     const options = useMemo<Option[]>(
@@ -29,6 +29,8 @@ export default function CreatableSelectWrapper<T>({ options: rawOptions, value, 
     const handleChange = (option: SingleValue<Option>) => {
         onChange(option);
     };
+
+    const schemeIsDark = appearance === 'dark' || (appearance === 'system' && prefersDark());
 
     return (
         <CreatableSelect
@@ -54,32 +56,65 @@ export default function CreatableSelectWrapper<T>({ options: rawOptions, value, 
                     backgroundColor: state.isSelected
                         ? '#f87805'
                         : state.isFocused
-                            ? '#f87805'
-                            : appearance === 'dark' ? '#171717' : 'white',
-                    color: state.isSelected || state.isFocused ? 'white' :
-                        appearance === 'dark' ? 'white' : 'black',
+                            ? '#ff922c'
+                            : schemeIsDark ? '#171717' : 'white',
+                    color: state.isSelected || state.isFocused
+                        ? 'white'
+                        : schemeIsDark ? 'white' : 'black',
                 }),
-                control: (base) => ({
+                control: (base, state) => ({
                     ...base,
                     fontSize: '.875rem',
                     minHeight: '2.75rem',
                     height: '2.75rem',
-                    backgroundColor: appearance === 'dark' ? 'transparent' : 'white',
-                    borderColor: appearance === 'dark' ? '#717171' : '#e5e5e5',
+                    backgroundColor: schemeIsDark ? 'transparent' : 'white',
+                    borderColor: schemeIsDark ? '#717171' : '#e5e5e5',
+                    boxShadow: 'none !important',
+                    ...(state.isFocused && {
+                        boxShadow: schemeIsDark ? '0 0 0 3px rgba(82, 82, 82, 0.5)' : '0 0 0 3px rgba(221, 220, 226, 0.5)',
+                        borderColor: schemeIsDark ? '#717171' : '#e5e5e5',
+                    }),
+                    "&:hover": {
+                        borderColor: schemeIsDark ? '#717171' : '#e5e5e5',
+                    }
                 }),
                 singleValue: (base) => ({
                     ...base,
-                    color: appearance === 'dark' ? 'white' : 'black',
+                    color: schemeIsDark ? 'white' : 'black',
                 }),
                 menu: (base) => ({
                     ...base,
-                    backgroundColor: appearance === 'dark' ? 'transparent' : 'white',
+                    backgroundColor: schemeIsDark ? 'transparent' : 'white',
                     borderRadius: 8,
                 }),
                 menuList: (base) => ({
                     ...base,
-                    backgroundColor: appearance === 'dark' ? 'transparent' : 'white',
+                    backgroundColor: schemeIsDark ? 'transparent' : 'white',
                     padding: 0,
+                }),
+                input: (base) => ({
+                    ...base,
+                    color: schemeIsDark ? 'white' : 'black',
+
+                }),
+                clearIndicator: (base, state) => ({
+                    ...base,
+                    color: '#717171',
+                    cursor: "pointer",
+                    "&:hover": {
+                        color: schemeIsDark ? '#919191' : '#3b3b3b',
+                    },
+                }),
+                dropdownIndicator: (base, state) => ({
+                    ...base,
+                    color: '#717171',
+                    "&:hover": {
+                        color: schemeIsDark ? '#919191' : '#3b3b3b',
+                    },
+                }),
+                indicatorSeparator: (base, state) => ({
+                    ...base,
+                    backgroundColor: "#717171",
                 }),
             }}
         />

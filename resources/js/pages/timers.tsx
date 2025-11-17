@@ -54,8 +54,8 @@ export default function Timers({ timers, tasks, projects, clients }: TimersProps
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Timers" />
 
-            <div className="px-2 md:px-5">
-                <div className="flex justify-between items-center mb-5">
+            <div className="pt-2 px-2 md:px-5">
+                <div className="flex justify-between items-center px-2 mb-5 lg:px-0">
                     <h1 className="text-2xl">Time entries</h1>
                     <Button onClick={() => openForm()}>
                         <Clock /> Add time entry
@@ -63,33 +63,6 @@ export default function Timers({ timers, tasks, projects, clients }: TimersProps
                 </div>
 
                 <TimerList timers={timers} onEdit={handleEdit} onDelete={handleDelete} />
-
-                {/* <div className="mt-5 text-sm bg-white py-2 px-5 rounded-lg">
-                    <div className="grid grid-cols-[400px_1fr_250px_150px_80px_50px] py-3 font-bold border-b border-gray-300">
-                        <div>
-                            Project & Client
-                        </div>
-                        <div>
-                            Task description
-                        </div>
-                        <div>
-                            Intervals
-                        </div>
-                        <div>
-                            Duration
-                        </div>
-                        <div></div>
-                    </div>
-                    {
-                        timers.length > 0 ?
-                            timers.map(timer => (
-                                <TimerRow key={timer.id} initialTimer={timer} onEdit={handleEdit} onDelete={handleDelete} />
-                            ))
-                            : <div className="py-3">
-                                No timers found.
-                            </div>
-                    }
-                </div> */}
             </div>
 
             <TimerFormModal

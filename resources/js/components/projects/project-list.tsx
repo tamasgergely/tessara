@@ -16,7 +16,7 @@ function ProjectList({ projects, onEdit, onDelete }: ProjectListProps) {
 
     return (
         <List>
-            <ListHeader className="hidden md:grid-cols-[minmax(100px,400px)_minmax(100px,400px)_minmax(200px,600px)_1fr_60px]">
+            <ListHeader className="sm:hidden xl:grid xl:grid-cols-[minmax(150px,400px)_minmax(150px,400px)_minmax(300px,1fr)_60px]">
                 <div>
                     Project
                 </div>
@@ -26,7 +26,6 @@ function ProjectList({ projects, onEdit, onDelete }: ProjectListProps) {
                 <div>
                     Description
                 </div>
-                <div></div>
                 <div className="text-center">
                     Archived
                 </div>
@@ -35,12 +34,12 @@ function ProjectList({ projects, onEdit, onDelete }: ProjectListProps) {
 
             {projects?.length > 0 ?
                 projects.map(project => (
-                    <ListRow className="md:grid-cols-[minmax(100px,400px)_minmax(100px,400px)_minmax(200px,600px)_1fr_60px]" key={project.id}>
-                        <div className="flex gap-1 items-center">
+                    <ListRow className="xl:grid-cols-[minmax(150px,400px)_minmax(150px,400px)_minmax(300px,1fr)_60px]" key={project.id}>
+                        <div className="flex gap-1 items-center text-primary">
                             <User height={16} />
                             {project.name}
                         </div>
-                        <div className="flex gap-1 items-center">
+                        <div className={`gap-1 items-center ${!project.client ? 'hidden sm:flex' : 'flex'}`}>
                             {project.client && (
                                 <>
                                     <User height={16} />
@@ -48,19 +47,18 @@ function ProjectList({ projects, onEdit, onDelete }: ProjectListProps) {
                                 </>
                             )}
                         </div>
-                        <div className="">
+                        <div className={`${!project.description ? 'hidden sm:block' : 'block'}`}>
                             {project.description}
                         </div>
-                        <div></div>
-                        <div className="md:flex gap-1 items-center justify-center hidden">
+                        <div className="hidden items-center xl:flex xl:gap-1 xl:justify-center">
                             <span aria-label={project.archived ? "Archived" : "Active"}>
                                 {project.archived ? <Check /> : <X />}
                             </span>
                         </div>
                         <ListActions
                             actions={[
-                                { key: 'edit', icon: <Pencil />, onClick: () => onEdit(project) },
-                                { key: 'delete', icon: <Trash2 />, onClick: () => onDelete(project) },
+                                { key: 'edit', icon: <Pencil className="w-4 h-4 sm:w-auto sm:h-auto" />, onClick: () => onEdit(project) },
+                                { key: 'delete', icon: <Trash2 className="w-4 h-4 sm:w-auto sm:h-auto" />, onClick: () => onDelete(project) },
                             ]}
                         />
                     </ListRow>
