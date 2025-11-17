@@ -41,7 +41,7 @@ class TimeIntervalService
 
     private function checkForOverlaps(TimeInterval $interval): void
     {
-        if (!$interval->timer_id || !$interval->start || !$interval->stop) {
+        if (!$interval->timer_id || !$interval->start) {
             return;
         }
 
