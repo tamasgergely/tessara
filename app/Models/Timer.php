@@ -54,10 +54,8 @@ class Timer extends Model
     }
 
     // #[Scope]
-    protected function scopeForListing($query, ?string $date = null)
+    protected function scopeForListing($query)
     {
-        $date = rescue(fn() => Carbon::parse($date), Carbon::today());
-
         return $query
             ->with([
                 'task.project',
@@ -65,6 +63,18 @@ class Timer extends Model
                 'timeIntervals' => function ($query) {
                     $query->orderBy('id', 'asc');
                 }
-            ])->whereDate('created_at', $date);
+            ]);
+    }
+
+    protected function scopeFilterListing($query, array $filters)
+    {
+        return $query
+            ->when($filters['date'], function ($q) use ($filters) {
+                try {
+                    return $q->whereDate('created_at', Carbon::parse($filters['date']));
+                } catch (\Exception $e) {
+                    return $q;
+                }
+            });
     }
 }

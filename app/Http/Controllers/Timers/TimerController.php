@@ -20,11 +20,11 @@ class TimerController extends Controller
     {
         $user = $request->user();
 
-        $date = $request->date ?? null;
+        $date = $request->date ?? today();
 
         return inertia('timers', [
             'timers' => TimerResource::collection(
-                $user->timers()->forListing($date)->get()
+                $user->timers()->forListing()->filterListing(['date' => $date])->get()
             ),
             'tasks' => TaskResource::collection(
                 $user->tasks()->forListing()->get()
