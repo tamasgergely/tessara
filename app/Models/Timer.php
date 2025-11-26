@@ -54,7 +54,7 @@ class Timer extends Model
     }
 
     // #[Scope]
-    protected function scopeForListing($query)
+    protected function scopeForListing($query, string $column = 'created_at', string $direction = 'asc')
     {
         return $query
             ->with([
@@ -63,18 +63,41 @@ class Timer extends Model
                 'timeIntervals' => function ($query) {
                     $query->orderBy('id', 'asc');
                 }
-            ]);
+            ])->orderBy($column, $direction);
     }
 
     protected function scopeFilterListing($query, array $filters)
     {
         return $query
-            ->when($filters['date'], function ($q) use ($filters) {
-                try {
-                    return $q->whereDate('created_at', Carbon::parse($filters['date']));
-                } catch (\Exception $e) {
-                    return $q;
-                }
+            ->when(!empty($filters['date']), function ($q) use ($filters) {
+                $date = rescue(fn() => Carbon::parse($filters['date']), Carbon::today());
+                return $q->whereDate('created_at', $date);
+            })
+
+            ->when(!empty($filters['date_range']), function ($q) use ($filters) {
+                return rescue(
+                    fn() => $q->whereBetween('created_at', [
+                        Carbon::parse($filters['date_range']['start'])->startOfDay(),
+                        Carbon::parse($filters['date_range']['end'])->endOfDay(),
+                    ]),
+                    $q
+                );
+            })
+
+            ->when(!empty($filters['project_id']), function ($q) use ($filters) {
+                return $q->whereHas('task', function ($q) use ($filters) {
+                    $q->where('project_id', $filters['project_id']);
+                });
+            })
+
+            ->when(!empty($filters['task_id']), function ($q) use ($filters) {
+                return $q->where('task_id', $filters['task_id']);
+            })
+
+            ->when(!empty($filters['client_id']), function ($q) use ($filters) {
+                return $q->whereHas('task', function ($q) use ($filters) {
+                    $q->where('client_id', $filters['client_id']);
+                });
             });
     }
 }

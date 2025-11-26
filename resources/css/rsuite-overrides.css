@@ -9,12 +9,13 @@
     --rs-calendar-range-bg: #ffd56f;
     --rs-listbox-option-hover-text: #ffffff;
     --rs-border-primary: var(--input-border);
-    --rs-input-focus-border: var(--primary);
+    --rs-input-focus-border: var(--input-border);
     --rs-btn-primary-bg: var(--primary);
     --rs-btn-primary-hover-bg: var(--primary);
     --rs-btn-primary-active-bg: var(--primary);
     --rs-text-active: var(--primary);
     --rs-btn-link-hover-text: var(--primary);
+    --rs-color-focus-ring: none;
 }
 
 .dark {
@@ -22,11 +23,18 @@
     --rs-text-primary: var(--color-foreground);
     --rs-bg-overlay: var(--sidebar);
     --rs-calendar-range-bg: #cb5200;
-    --rs-input-focus-border: #ffffff;
+    --rs-input-focus-border: var(--input-border);
     --rs-btn-link-text: var(--primary);
     --rs-border-primary: var(--input-border);
+    --rs-color-focus-ring: none;
 }
 
-.rs-input{
+.rs-input {
     padding: 11px;
+}
+
+.rs-input-group:not(.rs-input-group-disabled).rs-input-group-focus,
+.rs-input-group:focus-within {
+    border-color: var(--input-border);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent);
 }

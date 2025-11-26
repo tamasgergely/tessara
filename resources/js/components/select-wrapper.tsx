@@ -9,7 +9,8 @@ type SelectWrapperProps<T> = {
     onChange: (value: T | null) => void;
     getOptionLabel: (option: T) => string;
     getOptionValue: (option: T) => string;
-    isDisabled?: boolean
+    isDisabled?: boolean,
+    placeholder?: string
 };
 
 export default function SelectWrapper<T>({
@@ -18,7 +19,8 @@ export default function SelectWrapper<T>({
     onChange,
     getOptionLabel,
     getOptionValue,
-    isDisabled
+    isDisabled,
+    placeholder
 }: SelectWrapperProps<T>) {
 
     const { appearance, updateAppearance } = useAppearance();
@@ -50,6 +52,7 @@ export default function SelectWrapper<T>({
             options={options}
             onChange={handleChange}
             value={selectedOption}
+            placeholder={placeholder}
             theme={(theme) => ({
                 ...theme,
                 borderRadius: 8,

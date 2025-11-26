@@ -13,7 +13,7 @@ export const formatToLocalTimeWithDate = (utcDateTime: string): string => {
     }).format(date);
 };
 
-export const formatToLocalDate = (utcDateTime: string): string => {
+export const formatToLocalDate = (utcDateTime: Date | string): string => {
     if (!utcDateTime) return '';
 
     const date = new Date(utcDateTime);
@@ -26,7 +26,7 @@ export const formatToLocalDate = (utcDateTime: string): string => {
 };
 
 export const formatToLocalTime = (utcDateTime: string | null | undefined): string => {
-    if (!utcDateTime) return '';   
+    if (!utcDateTime) return '';
 
     const date = new Date(utcDateTime);
 
@@ -34,4 +34,13 @@ export const formatToLocalTime = (utcDateTime: string | null | undefined): strin
         hour: '2-digit',
         minute: '2-digit',
     }).format(date);
+};
+
+export const formatToLocalISO = (date: Date | string): string => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
 };

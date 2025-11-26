@@ -2,12 +2,13 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Tasks\TaskController;
 use App\Http\Controllers\Timers\TimerController;
 use App\Http\Controllers\Clients\ClientController;
+use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Projects\ProjectController;
-use App\Http\Controllers\Tasks\TaskController;
-use App\Http\Controllers\Timers\TimeIntervalController;
 use App\Http\Controllers\Timers\TimerToggleController;
+use App\Http\Controllers\Timers\TimeIntervalController;
 
 Route::get('/asdf', function (){
     return Inertia::render('welcome');
@@ -31,6 +32,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('clients', ClientController::class)->except(['create','show','edit']);
     Route::resource('projects', ProjectController::class)->except(['create','show','edit']);
     Route::resource('tasks', TaskController::class)->except(['create','show','edit',]);
+
+    Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
 });
 
 require __DIR__ . '/settings.php';
