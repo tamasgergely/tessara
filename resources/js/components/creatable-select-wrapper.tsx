@@ -39,6 +39,7 @@ export default function CreatableSelectWrapper<T>({ options: rawOptions, value, 
             onChange={handleChange}
             value={value}
             ref={ref}
+            maxMenuHeight={500}
             placeholder="Create or select a task..."
             theme={(theme) => ({
                 ...theme,
@@ -84,12 +85,16 @@ export default function CreatableSelectWrapper<T>({ options: rawOptions, value, 
                 }),
                 menu: (base) => ({
                     ...base,
-                    backgroundColor: schemeIsDark ? 'transparent' : 'white',
+                    backgroundColor: schemeIsDark ? '#171717' : 'white',
                     borderRadius: 8,
+                    margin: 0
                 }),
                 menuList: (base) => ({
                     ...base,
-                    backgroundColor: schemeIsDark ? 'transparent' : 'white',
+                    backgroundColor: schemeIsDark ? '#171717' : 'white',
+                    borderBottom: `1px solid ${schemeIsDark ? '#3a3a3a' : '#e5e5e5'}`,
+                    borderLeft: `1px solid ${schemeIsDark ? '#3a3a3a' : '#e5e5e5'}`,
+                    borderRight: `1px solid ${schemeIsDark ? '#3a3a3a' : '#e5e5e5'}`,
                     padding: 0,
                 }),
                 input: (base) => ({
