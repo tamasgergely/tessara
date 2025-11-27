@@ -40,9 +40,9 @@ export default function Reports({ groupedTimers, clients, projects, tasks }: Rep
                 </div>
 
                 <ReportFilterForm initialClients={clients} initialProjects={projects} initialTasks={tasks} />
-            </div>
 
-            <ReportList groupedTimers={groupedTimers} />
+                <ReportList groupedTimers={groupedTimers} />
+            </div>
         </AppLayout >
     );
 }
