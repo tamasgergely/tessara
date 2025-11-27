@@ -10,10 +10,6 @@ use App\Http\Controllers\Projects\ProjectController;
 use App\Http\Controllers\Timers\TimerToggleController;
 use App\Http\Controllers\Timers\TimeIntervalController;
 
-Route::get('/asdf', function (){
-    return Inertia::render('welcome');
-})->name('home');
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('time-entries', [TimerController::class, 'index'])->name('timers.index');
     Route::post('time-entries', [TimerController::class, 'store'])->name('timers.store');
