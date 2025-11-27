@@ -10,10 +10,6 @@ import { Clock } from "lucide-react";
 import TimerList from '@/components/timers/timer-list';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    // {
-    //     title: 'Dashboard',
-    //     href: '/dashboard',
-    // },
     {
         title: 'Time entries',
         href: ''

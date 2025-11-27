@@ -10,10 +10,6 @@ import TaskFormModal from '@/components/tasks/task-form-modal';
 import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    // {
-    //     title: 'Dashboard',
-    //     href: '/dashboard',
-    // },
     {
         title: 'Tasks',
         href: ''

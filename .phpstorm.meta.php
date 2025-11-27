@@ -2126,7 +2126,7 @@ namespace PHPSTORM_META {
 'tinker.commands','tinker.alias','tinker.dont_alias',);
         registerArgumentsSet('middleware', 
 'web','api',);
-        registerArgumentsSet('routes', 'home','dashboard','timers.index','timers.store',
+        registerArgumentsSet('routes', 'home','timers.index','timers.store',
 'timers.update','timers.destroy','time-intervals.update','time-intervals.updateTime','time-intervals.destroy',
 'clients.index','clients.store','clients.update','clients.destroy','projects.index',
 'projects.store','projects.update','projects.destroy','tasks.index','tasks.store',

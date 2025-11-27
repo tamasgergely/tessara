@@ -10,10 +10,6 @@ import ProjectFormModal from '@/components/projects/project-form-modal';
 import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    // {
-    //     title: 'Dashboard',
-    //     href: '/dashboard',
-    // },
     {
         title: 'Projects',
         href: ''

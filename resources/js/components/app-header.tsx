@@ -17,22 +17,17 @@ import AppLogoIcon from './app-logo-icon';
 
 const mainNavItems: NavItem[] = [
     // {
-    //     title: 'Dashboard',
-    //     href: '/dashboard',
-    //     icon: LayoutGrid,
+    //     title: '',
+    //     href: '/',
+    //     icon: ,
     // },
 ];
 
 const rightNavItems: NavItem[] = [
     // {
-    //     title: 'Repository',
-    //     href: 'https://github.com/laravel/react-starter-kit',
-    //     icon: Folder,
-    // },
-    // {
-    //     title: 'Documentation',
-    //     href: 'https://laravel.com/docs/starter-kits',
-    //     icon: BookOpen,
+    //     title: '',
+    //     href: '',
+    //     icon: ,
     // },
 ];
 

@@ -15,10 +15,6 @@ Route::get('/asdf', function (){
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
-
     Route::get('time-entries', [TimerController::class, 'index'])->name('timers.index');
     Route::post('time-entries', [TimerController::class, 'store'])->name('timers.store');
     Route::patch('time-entries/{timer}', [TimerController::class, 'update'])->name('timers.update');

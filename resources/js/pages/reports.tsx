@@ -7,10 +7,6 @@ import "rsuite/DateRangePicker/styles/index.css";
 import "../../css/rsuite-overrides.css";
 
 const breadcrumbs: BreadcrumbItem[] = [
-    // {
-    //     title: 'Dashboard',
-    //     href: '/dashboard',
-    // },
     {
         title: 'Reports',
         href: ''

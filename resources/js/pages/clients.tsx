@@ -10,10 +10,6 @@ import ClientFormModal from '@/components/clients/client-form-modal';
 import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    // {
-    //     title: 'Dashboard',
-    //     href: '/dashboard',
-    // },
     {
         title: 'Clients',
         href: ''

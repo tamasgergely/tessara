@@ -4,15 +4,10 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, ChartNoAxesColumn, Clock, Users, NotepadText, StickyNote } from 'lucide-react';
+import { ChartNoAxesColumn, Clock, Users, NotepadText, StickyNote } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
-    // {
-    //     title: 'Dashboard',
-    //     href: '/dashboard',
-    //     icon: LayoutGrid,
-    // },
     {
         title: 'Time entries',
         href: '/time-entries',
@@ -42,14 +37,9 @@ const mainNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
     // {
-    //     title: 'Repository',
-    //     href: 'https://github.com/laravel/react-starter-kit',
-    //     icon: Folder,
-    // },
-    // {
-    //     title: 'Documentation',
-    //     href: 'https://laravel.com/docs/starter-kits',
-    //     icon: BookOpen,
+    //     title: '',
+    //     href: '',
+    //     icon: ,
     // },
 ];
 
