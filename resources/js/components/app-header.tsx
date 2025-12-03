@@ -89,7 +89,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                         </Sheet>
                     </div>
 
-                    <Link href="/time-entries" prefetch className="flex items-center space-x-2">
+                    <Link href="/time-entries" className="flex items-center space-x-2">
                         <AppLogo />
                     </Link>
 

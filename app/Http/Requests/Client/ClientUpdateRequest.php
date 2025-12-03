@@ -29,8 +29,7 @@ class ClientUpdateRequest extends FormRequest
                 'string',
                 'max:191',
                 Rule::unique('clients')->where(fn(Builder $query) => $query->whereNull('deleted_at'))->ignore($this->route('client'))
-            ],
-            'archived' => ['boolean']
+            ]
         ];
     }
 }

@@ -8,6 +8,7 @@ import { UserPlus } from "lucide-react";
 import useEntityModals from '@/hooks/use-entity-modals';
 import ClientFormModal from '@/components/clients/client-form-modal';
 import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
+import ConfirmArchiveModal from '@/components/modals/confirm-archive-modal';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,8 +23,10 @@ export default function Clients({ clients }: { clients: Client[] }) {
         selected,
         isFormModalOpen,
         isDeleteModalOpen,
+        isArchiveModalOpen,
         openForm,
         openDeleteForm,
+        openArchiveForm,
         closeModal
     } = useEntityModals<Client>();
 
@@ -34,6 +37,10 @@ export default function Clients({ clients }: { clients: Client[] }) {
     const handleDelete = useCallback((client: Client) => {
         openDeleteForm(client);
     }, [openDeleteForm]);
+
+    const handleArchive = useCallback((client: Client) => {
+        openArchiveForm(client);
+    }, [openArchiveForm]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -47,7 +54,12 @@ export default function Clients({ clients }: { clients: Client[] }) {
                     </Button>
                 </div>
 
-                <ClientList clients={clients} onEdit={handleEdit} onDelete={handleDelete} />
+                <ClientList
+                    clients={clients}
+                    onArchive={handleArchive}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                />
             </div>
 
             <ClientFormModal visible={isFormModalOpen} client={selected} onClose={closeModal} />
@@ -58,6 +70,18 @@ export default function Clients({ clients }: { clients: Client[] }) {
                 id={selected?.id}
                 name={selected?.name}
                 description="All projects and tasks associated with this client will also be deleted."
+                model="client"
+            />
+
+            <ConfirmArchiveModal<Client>
+                visible={isArchiveModalOpen}
+                onClose={closeModal}
+                selected={selected}
+                description={
+                    selected?.archived
+                        ? 'All projects, tasks and timers associated with this client will also be restored.'
+                        : 'All projects, tasks and timers associated with this client will also be archived.'
+                }
                 model="client"
             />
         </AppLayout >

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-type ModalType = 'form' | 'delete' | null;
+type ModalType = 'form' | 'delete' | 'archive' | null;
 
 export default function useEntityModals<T>() {
 
@@ -17,6 +17,11 @@ export default function useEntityModals<T>() {
         setModalType('delete');
     };
 
+    const openArchiveForm = (entity: T) => {
+        setSelected(entity);
+        setModalType('archive');
+    };
+
     const closeModal = () => {
         setSelected(null);
         setModalType(null);
@@ -27,8 +32,10 @@ export default function useEntityModals<T>() {
         modalType,
         isFormModalOpen: modalType === 'form',
         isDeleteModalOpen: modalType === 'delete',
+        isArchiveModalOpen: modalType === 'archive',
         openForm,
         openDeleteForm,
+        openArchiveForm,
         closeModal,
     };
 }

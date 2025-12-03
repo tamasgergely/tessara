@@ -38,12 +38,7 @@ class Task extends Model
     protected function scopeForListing($query, $includeArchived = false)
     {
         return $query
-            ->with(['project' => function ($query) {
-                $query->whereNull('archived_at');
-            }])
-            ->with(['client' => function ($query) {
-                $query->whereNull('archived_at');
-            }])
+            ->with(['project', 'client'])
             ->when(!$includeArchived, fn($q) => $q->whereNull('archived_at'))
             ->orderBy('name');
     }

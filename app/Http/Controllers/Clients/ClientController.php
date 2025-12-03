@@ -31,10 +31,7 @@ class ClientController extends Controller
     {
         Gate::authorize('update', $client);
 
-        $client->update([
-            'name' => $request->name,
-            'archived_at' => $request->archived ? now() : null
-        ]);
+        $client->update(['name' => $request->name]);
 
         return redirect()->route('clients.index');
     }

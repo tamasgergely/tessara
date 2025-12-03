@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import type { Client } from '@/types';
 import { useForm } from '@inertiajs/react'
 import InputError from '@/components/input-error';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import toast from 'react-hot-toast';
@@ -12,12 +11,10 @@ export default function ClientForm({ client, onClose, visible }: { client: Clien
 
     type FormData = {
         name: string,
-        archived: boolean
     }
 
     const { data, setData, post, patch, reset, processing, errors } = useForm<FormData>({
-        name: '',
-        archived: false,
+        name: ''
     });
 
     const nameInputRef = useRef<HTMLInputElement>(null);
@@ -26,8 +23,7 @@ export default function ClientForm({ client, onClose, visible }: { client: Clien
         if (!visible) return;
 
         setData({
-            name: client?.name ?? '',
-            archived: client?.archived ?? false,
+            name: client?.name ?? ''
         });
 
         setTimeout(() => nameInputRef.current?.focus(), 100);
@@ -73,19 +69,6 @@ export default function ClientForm({ client, onClose, visible }: { client: Clien
                     />
                     <InputError className="mt-2" message={errors.name} />
                 </div>
-
-                {client && (
-                    <div className="flex items-center gap-2">
-                        <Checkbox
-                            id="archived"
-                            className="w-5 h-5"
-                            checked={data.archived}
-                            onCheckedChange={(checked) => setData('archived', Boolean(checked))}
-                        />
-                        <Label htmlFor="archived">Mark as archived</Label>
-                        <InputError className="mt-2" message={errors.archived} />
-                    </div>
-                )}
             </div>
 
             <FormActions
