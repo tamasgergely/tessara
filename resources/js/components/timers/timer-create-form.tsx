@@ -98,7 +98,6 @@ export default function TimerCreateForm({ projects, tasks, clients, onClose, vis
 
         setData('task_name', option.label);
 
-        // Új task létrehozása → user választhat project/client-et
         if (option.__isNew__) {
             setData('task_id', null);
             setData('project_id', null);
@@ -110,14 +109,11 @@ export default function TimerCreateForm({ projects, tasks, clients, onClose, vis
             return;
         }
 
-        // Létező task választása
         const taskId = parseInt(option.value);
         setData('task_id', isNaN(taskId) ? null : taskId);
 
         const selectedTask = tasks.find(task => task.id === taskId);
 
-        // Projektspecifikus task → auto-fill project/client és lock
-        // Generikus task → user szabadon választhat
         applyTaskContext(selectedTask)
     };
 
@@ -132,6 +128,7 @@ export default function TimerCreateForm({ projects, tasks, clients, onClose, vis
                         onChange={handleTaskChange}
                         getOptionLabel={(task) => task.name}
                         getOptionValue={(task) => String(task.id)}
+                        getOptionSubLabel={(task) => task.client ? task.client.name : '' }
                         ref={taskSelectRef}
                     />
                     <InputError message={errors.task_id} />

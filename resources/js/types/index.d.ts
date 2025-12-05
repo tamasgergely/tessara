@@ -46,6 +46,7 @@ export interface Option {
     value: string,
     label: string,
     __isNew__?: boolean;
+    subLabel? :string
 }
 
 export interface Client {
