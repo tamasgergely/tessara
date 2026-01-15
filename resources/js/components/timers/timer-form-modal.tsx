@@ -1,39 +1,41 @@
-import type { Timer, Project, Task, Client } from '@/types';
+import type { Project, Task, Client } from '@/types';
 import Modal from '@/components/modal';
 import TimerCreateForm from './timer-create-form';
 import TimerEditForm from './timer-edit-form';
 import ModalHead from '../modal-head';
+import { useTimerModalStore } from '@/stores/modal-stores';
 
 type TimerFormModalProps = {
-    visible: boolean,
-    timer: Timer | null,
     projects: Project[],
     tasks: Task[],
     clients: Client[]
-    onClose: () => void
 }
 
-export default function TimerFormModal({ visible, timer, projects, tasks, clients, onClose }: TimerFormModalProps) {
+export default function TimerFormModal({ projects, tasks, clients }: TimerFormModalProps) {
+
+    const isFormModalOpen = useTimerModalStore(state => state.isFormModalOpen);
+    const closeModal = useTimerModalStore(state => state.closeModal);
+    const selected = useTimerModalStore(state => state.selected);
 
     return (
-        <Modal visible={visible} onClose={onClose}>
+        <Modal visible={isFormModalOpen} onClose={closeModal}>
             <div className="flex flex-col absolute inset-0">
-                <ModalHead title={timer ? 'Edit Time Entry' : 'Add New Time Entry'} />
+                <ModalHead title={selected ? 'Edit Time Entry' : 'Add New Time Entry'} />
 
-                {timer ?
+                {selected ?
                     <TimerEditForm
-                        timer={timer}
+                        timer={selected}
                         projects={projects}
                         clients={clients}
-                        onClose={onClose}
-                        visible={visible}
+                        onClose={closeModal}
+                        visible={isFormModalOpen}
                     />
                     : <TimerCreateForm
                         projects={projects}
                         tasks={tasks}
                         clients={clients}
-                        onClose={onClose}
-                        visible={visible}
+                        onClose={closeModal}
+                        visible={isFormModalOpen}
                     />
                 }
             </div>

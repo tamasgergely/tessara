@@ -5,10 +5,10 @@ import { Head } from '@inertiajs/react';
 import ClientList from '@/components/clients/client-list';
 import { Button } from "@/components/ui/button";
 import { UserPlus } from "lucide-react";
-import useEntityModals from '@/hooks/use-entity-modals';
 import ClientFormModal from '@/components/clients/client-form-modal';
 import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
 import ConfirmArchiveModal from '@/components/modals/confirm-archive-modal';
+import { useClientModalStore } from '@/stores/modal-stores';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,16 +19,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Clients({ clients }: { clients: Client[] }) {
 
-    const {
-        selected,
-        isFormModalOpen,
-        isDeleteModalOpen,
-        isArchiveModalOpen,
-        openForm,
-        openDeleteForm,
-        openArchiveForm,
-        closeModal
-    } = useEntityModals<Client>();
+    const openForm = useClientModalStore((state) => state.openForm);
+    const openDeleteForm = useClientModalStore((state) => state.openDeleteForm);
+    const openArchiveForm = useClientModalStore((state) => state.openArchiveForm);
 
     const handleEdit = useCallback((client: Client) => {
         openForm(client);
@@ -62,23 +55,19 @@ export default function Clients({ clients }: { clients: Client[] }) {
                 />
             </div>
 
-            <ClientFormModal visible={isFormModalOpen} client={selected} onClose={closeModal} />
+            <ClientFormModal />
 
             <ConfirmDeleteModal
-                visible={isDeleteModalOpen}
-                onClose={closeModal}
-                id={selected?.id}
-                name={selected?.name}
+                useStore={useClientModalStore}
                 description="All projects and tasks associated with this client will also be deleted."
-                model="client"
+                getSuccessMessage={() => 'Client deleted successfully!'}
+                getErrorMessage={() => 'Failed to delete client. Please try again.'}
+                getRouteName={() => 'clients.destroy'}
             />
 
-            <ConfirmArchiveModal<Client>
-                visible={isArchiveModalOpen}
-                onClose={closeModal}
-                selected={selected}
-                description={
-                    selected?.archived
+            <ConfirmArchiveModal
+                getDescription={
+                    isArchived => isArchived
                         ? 'All projects, tasks and timers associated with this client will also be restored.'
                         : 'All projects, tasks and timers associated with this client will also be archived.'
                 }

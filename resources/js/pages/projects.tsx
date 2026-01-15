@@ -8,6 +8,7 @@ import { UserPlus } from "lucide-react";
 import useEntityModals from '@/hooks/use-entity-modals';
 import ProjectFormModal from '@/components/projects/project-form-modal';
 import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
+import { useProjectModalStore } from '@/stores/modal-stores';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -23,14 +24,8 @@ type ProjectsProps = {
 
 export default function Projects({ projects, clients }: ProjectsProps) {
 
-    const {
-        selected,
-        isFormModalOpen,
-        isDeleteModalOpen,
-        openForm,
-        openDeleteForm,
-        closeModal
-    } = useEntityModals<Project>();
+    const openForm = useProjectModalStore(state => state.openForm);
+    const openDeleteForm = useProjectModalStore(state => state.openDeleteForm);
 
     const handleEdit = useCallback((project: Project) => {
         openForm(project);
@@ -52,18 +47,23 @@ export default function Projects({ projects, clients }: ProjectsProps) {
                     </Button>
                 </div>
 
-                <ProjectList projects={projects} onEdit={handleEdit} onDelete={handleDelete} />
+                <ProjectList
+                    projects={projects}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                />
             </div>
 
-            <ProjectFormModal visible={isFormModalOpen} project={selected} clients={clients} onClose={closeModal} />
+            <ProjectFormModal
+                clients={clients}
+            />
 
             <ConfirmDeleteModal
-                visible={isDeleteModalOpen}
-                onClose={closeModal}
-                id={selected?.id}
-                name={selected?.name}
-                description={`This action cannot be undone.`}
-                model="project"
+                useStore={useProjectModalStore}
+                description="This action cannot be undone."
+                getSuccessMessage={() => 'Project deleted successfully!'}
+                getErrorMessage={() => 'Failed to delete project. Please try again.'}
+                getRouteName={() => 'projects.destroy'}
             />
         </AppLayout >
     );

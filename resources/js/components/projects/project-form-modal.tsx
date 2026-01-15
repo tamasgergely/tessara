@@ -1,15 +1,31 @@
-import type { Project, Client } from '@/types';
+import type { Client } from '@/types';
 import Modal from '@/components/modal';
 import ProjectForm from './project-form';
 import ModalHead from '../modal-head';
+import { useProjectModalStore } from '@/stores/modal-stores';
 
-export default function ProjectFormModal({ visible, project, clients, onClose }: { visible: boolean, project: Project | null, clients: Client[], onClose: () => void }) {
+type ProjectFormModalProps = {
+    clients: Client[]
+}
+
+export default function ProjectFormModal({ clients }: ProjectFormModalProps) {
+
+    const isFormModalOpen = useProjectModalStore(state => state.isFormModalOpen);
+    const closeModal = useProjectModalStore(state => state.closeModal);
+    const selected = useProjectModalStore(state => state.selected);
 
     return (
-        <Modal visible={visible} onClose={onClose}>
+        <Modal visible={isFormModalOpen} onClose={closeModal}>
             <div className="flex flex-col absolute inset-0">
-                <ModalHead title={project ? 'Edit Project' : 'Add New Project'} />
-                <ProjectForm project={project} clients={clients} onClose={onClose} visible={visible} />
+                <ModalHead
+                    title={selected ? 'Edit Project' : 'Add New Project'}
+                />
+                <ProjectForm
+                    project={selected}
+                    clients={clients}
+                    onClose={closeModal}
+                    visible={isFormModalOpen}
+                />
             </div>
         </Modal>
     );

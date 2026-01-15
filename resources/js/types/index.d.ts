@@ -104,3 +104,8 @@ export interface Timer{
     stop: boolean | null,
     intervals: TimerInterval[]
 }
+
+export interface DeletableEntity {
+    id: number,
+    name?: string
+}

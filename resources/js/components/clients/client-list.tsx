@@ -14,9 +14,6 @@ type ClientListProps = {
 }
 
 export default function ClientList({ clients, onArchive, onEdit, onDelete }: ClientListProps) {
-
-    console.log('client-list',clients);
-    
     return (
         <List>
             <ListHeader className="grid-cols-[minmax(150px,1fr)] grid">
@@ -54,5 +51,3 @@ export default function ClientList({ clients, onArchive, onEdit, onDelete }: Cli
         </List>
     )
 }
-
-// export default React.memo(ClientList);

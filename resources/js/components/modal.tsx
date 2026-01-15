@@ -2,6 +2,7 @@ import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
 import React from 'react';
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { cva } from "class-variance-authority"
 
 export default function Modal({
@@ -25,10 +26,12 @@ export default function Modal({
 
         if (visible) {
             document.addEventListener('keydown', handleEscape);
+            document.body.style.overflow = 'hidden';
         }
 
         return () => {
             document.removeEventListener('keydown', handleEscape);
+            document.body.style.overflow = 'unset';
         }
     }, [visible, onClose]);
 
@@ -65,7 +68,7 @@ export default function Modal({
         }
     );
 
-    return (
+    return createPortal(
 
         <div
             className={cn(
@@ -85,7 +88,7 @@ export default function Modal({
 
                 {children}
             </div>
-        </div >
-
+        </div >,
+        document.body
     );
 }

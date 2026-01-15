@@ -1,3 +1,4 @@
+import type { DeletableEntity } from '@/types';
 import { useForm } from '@inertiajs/react'
 import Modal from '@/components/modal';
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,19 @@ import { cn } from '@/lib/utils';
 import { useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 
-export default function ConfirmDeleteModal({ visible, onClose, id, name, description, model }: { visible: boolean, onClose: () => void, id?: number, name?: string, description: string, model: string }) {
+type ConfirmDeleteModalProps = {
+    useStore: any,
+    description: string,
+    getRouteName: (entity: DeletableEntity) => string,
+    getSuccessMessage?: (entity: DeletableEntity) => string,
+    getErrorMessage?: (entity: DeletableEntity) => string
+}
+
+export default function ConfirmDeleteModal({ useStore, description, getRouteName, getSuccessMessage, getErrorMessage }: ConfirmDeleteModalProps) {
+
+    const isDeleteModalOpen = useStore(state => state.isDeleteModalOpen);
+    const selected = useStore(state => state.selected);
+    const closeModal = useStore(state => state.closeModal);
 
     const { delete: destroy, processing } = useForm();
 
@@ -16,29 +29,36 @@ export default function ConfirmDeleteModal({ visible, onClose, id, name, descrip
         if (submitRef.current) {
             submitRef.current.focus();
         }
-    }, [visible]);
+    }, [isDeleteModalOpen]);
 
-    const onDelete = () => {
-        if (!id) return;
-        destroy(route(`${model}s.destroy`, id), {
+    const handleDelete = () => {
+        if (!selected?.id) return;
+
+        destroy(route(getRouteName(selected), selected.id), {
             onSuccess: () => {
-                onClose();
-                toast.success(`${model.charAt(0).toUpperCase()}${model.slice(1)} deleted successfully!`);
+                closeModal();
+                const successMessage = getSuccessMessage
+                    ? getSuccessMessage(selected)
+                    : 'Deleted successfully!';
+                toast.success(successMessage);
             },
             onError: (errors) => {
                 console.error('Delete error:', errors);
-                toast.error(`Failed to delete ${model}. Please try again.`);
+                const errorMessage = getErrorMessage
+                    ? getErrorMessage(selected)
+                    : 'Failed to delete. Please try again.';
+                toast.error(errorMessage);
             }
         });
     };
 
     return (
-        <Modal visible={visible} onClose={onClose} variant="center">
+        <Modal visible={isDeleteModalOpen} onClose={closeModal} variant="center">
             <>
                 <div className="flex flex-col">
                     <div className="border-b p-5 pr-15">
                         <h2 className="text-3xl" aria-describedby="delete-description">
-                            {name ? `Are you sure you want to delete "${name}"?` : 'Are you sure you want to delete?' }
+                            Are you sure you want to delete <strong>{selected?.name}</strong>?
                         </h2>
                     </div>
                 </div>
@@ -46,14 +66,14 @@ export default function ConfirmDeleteModal({ visible, onClose, id, name, descrip
                     <p id="delete-description">{description}</p>
                 </div>
                 <div className="flex justify-end gap-x-5 p-5">
-                    <Button type="button" variant="ghost" size="lg" onClick={onClose}>
+                    <Button type="button" variant="ghost" size="lg" onClick={closeModal}>
                         Cancel
                     </Button>
                     <Button
                         type="button"
                         size="lg"
-                        onClick={() => onDelete()}
-                        disabled={!id || processing} className={cn(processing ? 'opacity-50 cursor-not-allowed' : '')}
+                        onClick={() => handleDelete()}
+                        disabled={!selected?.id || processing} className={cn(processing ? 'opacity-50 cursor-not-allowed' : '')}
                         ref={submitRef}
                     >
                         {processing ? 'Deleting' : 'Confirm'}

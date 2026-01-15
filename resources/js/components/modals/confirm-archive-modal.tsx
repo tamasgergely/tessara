@@ -5,22 +5,18 @@ import { LoaderCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
+import { useClientModalStore } from '@/stores/modal-stores';
 
-type ConfirmArchiveModalProps<T extends { id: number | string, name?: string, archived: boolean }> = {
-    visible: boolean,
-    onClose: () => void,
-    selected: T | null,
-    description: string,
-    model: string
+type ConfirmArchiveModalProps = {
+    model: string,
+    getDescription?: (isArchived: boolean) => string;
 }
 
-export default function ConfirmArchiveModal<T extends { id: number | string, name?: string, archived: boolean }>({
-    visible,
-    onClose,
-    selected,
-    description,
-    model
-}: ConfirmArchiveModalProps<T>) {
+export default function ConfirmArchiveModal({ model, getDescription }: ConfirmArchiveModalProps) {
+
+    const isArchiveModalOpen = useClientModalStore(state => state.isArchiveModalOpen);
+    const selected = useClientModalStore(state => state.selected);
+    const closeModal = useClientModalStore(state => state.closeModal);
 
     const { patch, processing } = useForm();
     const submitRef = useRef<HTMLButtonElement>(null);
@@ -29,7 +25,7 @@ export default function ConfirmArchiveModal<T extends { id: number | string, nam
         if (submitRef.current) {
             submitRef.current.focus();
         }
-    }, [visible]);
+    }, [isArchiveModalOpen]);
 
     if (!selected) return null;
 
@@ -38,7 +34,7 @@ export default function ConfirmArchiveModal<T extends { id: number | string, nam
     const handleArchive = () => {
         patch(route(`${model}s.toggle-archive`, selected.id), {
             onSuccess: () => {
-                onClose();
+                closeModal();
                 toast.success(`${model.charAt(0).toUpperCase()}${model.slice(1)} ${action}d successfully!`);
             },
             onError: (errors) => {
@@ -52,8 +48,10 @@ export default function ConfirmArchiveModal<T extends { id: number | string, nam
         ? `Are you sure you want to ${action} "${selected.name}"?`
         : `Are you sure you want to ${action}?`;
 
+    const description = getDescription ? getDescription(selected.archived) : '';
+
     return (
-        <Modal visible={visible} onClose={onClose} variant="center">
+        <Modal visible={isArchiveModalOpen} onClose={closeModal} variant="center">
             <div className="flex flex-col">
                 <div className="border-b p-5 pr-15">
                     <h2 className="text-3xl" aria-describedby="archive-description">
@@ -65,7 +63,7 @@ export default function ConfirmArchiveModal<T extends { id: number | string, nam
                 <p id="archive-description">{description}</p>
             </div>
             <div className="flex justify-end gap-x-5 p-5">
-                <Button type="button" variant="ghost" size="lg" onClick={onClose}>
+                <Button type="button" variant="ghost" size="lg" onClick={closeModal}>
                     Cancel
                 </Button>
                 <Button

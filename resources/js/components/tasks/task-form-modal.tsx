@@ -1,29 +1,31 @@
-import type { Task, Project, Client } from '@/types';
+import type { Project, Client } from '@/types';
 import Modal from '@/components/modal';
 import TaskForm from './task-form';
 import ModalHead from '../modal-head';
+import { useTaskModalStore } from '@/stores/modal-stores';
 
 type TaskFormModalProps = {
-    visible: boolean,
-    task: Task | null,
     projects: Project[],
     clients: Client[],
-    onClose: () => void
 }
 
-export default function TaskFormModal({ visible, task, projects, clients, onClose }: TaskFormModalProps) {
+export default function TaskFormModal({ projects, clients }: TaskFormModalProps) {
+
+    const isFormModalOpen = useTaskModalStore(state => state.isFormModalOpen);
+    const closeModal = useTaskModalStore(state => state.closeModal);
+    const selected = useTaskModalStore(state => state.selected);
 
     return (
-        <Modal visible={visible} onClose={onClose}>
+        <Modal visible={isFormModalOpen} onClose={closeModal}>
             <div className="flex flex-col absolute inset-0">
-                <ModalHead title={task ? 'Edit Task' : 'Add New Task'} />
+                <ModalHead title={selected ? 'Edit Task' : 'Add New Task'} />
 
                 <TaskForm
-                    task={task}
+                    task={selected}
                     projects={projects}
                     clients={clients}
-                    onClose={onClose}
-                    visible={visible}
+                    onClose={closeModal}
+                    visible={isFormModalOpen}
                 />
             </div>
         </Modal>

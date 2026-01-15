@@ -1,13 +1,13 @@
 import AppLayout from '@/layouts/app-layout';
-import type { Project, BreadcrumbItem, Timer, TimerInterval, Task, Client } from '@/types';
+import type { Project, BreadcrumbItem, Timer, TimerInterval, Task, Client, DeletableEntity } from '@/types';
 import { useCallback } from 'react';
 import { Head } from '@inertiajs/react';
-import useEntityModals from '@/hooks/use-entity-modals';
 import TimerFormModal from '@/components/timers/timer-form-modal';
 import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
 import { Button } from "@/components/ui/button";
 import { Clock } from "lucide-react";
 import TimerList from '@/components/timers/timer-list';
+import { useTimerModalStore } from '@/stores/modal-stores';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -25,14 +25,8 @@ type TimersProps = {
 
 export default function Timers({ timers, tasks, projects, clients }: TimersProps) {
 
-    const {
-        selected,
-        isFormModalOpen,
-        isDeleteModalOpen,
-        openForm,
-        openDeleteForm,
-        closeModal
-    } = useEntityModals<Timer | TimerInterval>();
+    const openForm = useTimerModalStore(state => state.openForm);
+    const openDeleteForm = useTimerModalStore(state => state.openDeleteForm);
 
     const handleEdit = useCallback((timer: Timer) => {
         openForm(timer);
@@ -42,7 +36,7 @@ export default function Timers({ timers, tasks, projects, clients }: TimersProps
         openDeleteForm(item);
     }, [openDeleteForm]);
 
-    function isTimer(entity: Timer | TimerInterval | null): entity is Timer {
+    function isTimer(entity: DeletableEntity | null): entity is Timer {
         return !!entity && 'project_id' in entity;
     }
 
@@ -62,20 +56,20 @@ export default function Timers({ timers, tasks, projects, clients }: TimersProps
             </div>
 
             <TimerFormModal
-                visible={isFormModalOpen}
-                timer={isTimer(selected) ? selected : null}
                 projects={projects}
                 tasks={tasks}
                 clients={clients}
-                onClose={closeModal}
             />
 
             <ConfirmDeleteModal
-                visible={isDeleteModalOpen}
-                onClose={closeModal}
-                id={selected?.id}
+                useStore={useTimerModalStore}
                 description={`This action cannot be undone.`}
-                model={isTimer(selected) ? 'timer' : 'time-interval'}
+                getSuccessMessage={
+                    (entity) => {
+                        const type = isTimer(entity) ? 'Timer' : 'Time interval';
+                        return `${type} deleted successfully!`;
+                    }}
+                getRouteName={(entity) => isTimer(entity) ? 'timers.destroy' : 'time-intervals.destroy'}
             />
         </AppLayout>
     );

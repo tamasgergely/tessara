@@ -5,9 +5,9 @@ import { Head } from '@inertiajs/react';
 import TaskList from '@/components/tasks/task-list';
 import { Button } from "@/components/ui/button";
 import { StickyNote } from "lucide-react";
-import useEntityModals from '@/hooks/use-entity-modals';
 import TaskFormModal from '@/components/tasks/task-form-modal';
 import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
+import { useTaskModalStore } from '@/stores/modal-stores';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -24,14 +24,8 @@ type TaskProps = {
 
 export default function Tasks({ tasks, projects, clients }: TaskProps) {
 
-    const {
-        selected,
-        isFormModalOpen,
-        isDeleteModalOpen,
-        openForm,
-        openDeleteForm,
-        closeModal
-    } = useEntityModals<Task>();
+    const openForm = useTaskModalStore(state => state.openForm);
+    const openDeleteForm = useTaskModalStore(state => state.openDeleteForm);
 
     const handleEdit = useCallback((task: Task) => {
         openForm(task);
@@ -61,20 +55,16 @@ export default function Tasks({ tasks, projects, clients }: TaskProps) {
             </div>
 
             <TaskFormModal
-                visible={isFormModalOpen}
-                task={selected}
                 projects={projects}
                 clients={clients}
-                onClose={closeModal}
             />
 
             <ConfirmDeleteModal
-                visible={isDeleteModalOpen}
-                onClose={closeModal}
-                id={selected?.id}
-                name={selected?.name}
-                description={`This action cannot be undone.`}
-                model="task"
+                useStore={useTaskModalStore}
+                description="This action cannot be undone."
+                getSuccessMessage={() => 'Task deleted successfully!'}
+                getErrorMessage={() => 'Failed to delete task. Please try again.'}
+                getRouteName={() => 'tasks.destroy'}
             />
         </AppLayout >
     );
