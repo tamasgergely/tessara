@@ -70,6 +70,11 @@ export default function TimerCreateForm({ projects, tasks, clients, onClose, vis
         const options = {
             onSuccess: () => {
                 onClose();
+
+                setSelectedTaskOption(null);
+                setData('description', '');
+                resetForm();
+
                 toast.success('Time entry saved successfully!');
 
             },
@@ -128,7 +133,7 @@ export default function TimerCreateForm({ projects, tasks, clients, onClose, vis
                         onChange={handleTaskChange}
                         getOptionLabel={(task) => task.name}
                         getOptionValue={(task) => String(task.id)}
-                        getOptionSubLabel={(task) => task.client ? task.client.name : '' }
+                        getOptionSubLabel={(task) => task.client ? task.client.name : ''}
                         ref={taskSelectRef}
                     />
                     <InputError message={errors.task_id} />
