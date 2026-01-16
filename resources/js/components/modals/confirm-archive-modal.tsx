@@ -27,12 +27,10 @@ export default function ConfirmArchiveModal({ model, getDescription }: ConfirmAr
         }
     }, [isArchiveModalOpen]);
 
-    if (!selected) return null;
-
-    const action = selected.archived ? 'restore' : 'archive';
+    const action = selected?.archived ? 'restore' : 'archive';
 
     const handleArchive = () => {
-        patch(route(`${model}s.toggle-archive`, selected.id), {
+        patch(route(`${model}s.toggle-archive`, selected?.id), {
             onSuccess: () => {
                 closeModal();
                 toast.success(`${model.charAt(0).toUpperCase()}${model.slice(1)} ${action}d successfully!`);
@@ -44,39 +42,41 @@ export default function ConfirmArchiveModal({ model, getDescription }: ConfirmAr
         });
     };
 
-    const title = selected.name
+    const title = selected?.name
         ? `Are you sure you want to ${action} "${selected.name}"?`
         : `Are you sure you want to ${action}?`;
 
-    const description = getDescription ? getDescription(selected.archived) : '';
+    const description = getDescription ? getDescription(selected?.archived ?? false) : '';
 
     return (
         <Modal visible={isArchiveModalOpen} onClose={closeModal} variant="center">
-            <div className="flex flex-col">
-                <div className="border-b p-5 pr-15">
-                    <h2 className="text-3xl" aria-describedby="archive-description">
-                        {title}
-                    </h2>
+            <>
+                <div className="flex flex-col">
+                    <div className="border-b p-5 pr-15">
+                        <h2 className="text-3xl" aria-describedby="archive-description">
+                            {title}
+                        </h2>
+                    </div>
                 </div>
-            </div>
-            <div className="p-5">
-                <p id="archive-description">{description}</p>
-            </div>
-            <div className="flex justify-end gap-x-5 p-5">
-                <Button type="button" variant="ghost" size="lg" onClick={closeModal}>
-                    Cancel
-                </Button>
-                <Button
-                    type="button"
-                    size="lg"
-                    onClick={handleArchive}
-                    disabled={processing} className={cn(processing ? 'opacity-50 cursor-not-allowed' : '')}
-                    ref={submitRef}
-                >
-                    {processing ? 'Archiving' : 'Confirm'}
-                    {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                </Button>
-            </div>
+                <div className="p-5">
+                    <p id="archive-description">{description}</p>
+                </div>
+                <div className="flex justify-end gap-x-5 p-5">
+                    <Button type="button" variant="ghost" size="lg" onClick={closeModal}>
+                        Cancel
+                    </Button>
+                    <Button
+                        type="button"
+                        size="lg"
+                        onClick={handleArchive}
+                        disabled={processing} className={cn(processing ? 'opacity-50 cursor-not-allowed' : '')}
+                        ref={submitRef}
+                    >
+                        {processing ? 'Archiving' : 'Confirm'}
+                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                    </Button>
+                </div>
+            </>
         </Modal>
     )
 }
