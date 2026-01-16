@@ -109,3 +109,9 @@ export interface DeletableEntity {
     id: number,
     name?: string
 }
+
+export interface ArchiveableEntity {
+    id: number,
+    name?: string,
+    archived: boolean
+}

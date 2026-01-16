@@ -5,18 +5,21 @@ import { LoaderCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
-import { useClientModalStore } from '@/stores/modal-stores';
+import { ArchiveableEntity } from '@/types';
 
 type ConfirmArchiveModalProps = {
-    model: string,
+    useStore: any,
+    getRouteName: (entity: ArchiveableEntity) => string,
     getDescription?: (isArchived: boolean) => string;
+    getSuccessMessage?: (entity: ArchiveableEntity) => string,
+    getErrorMessage?: (entity: ArchiveableEntity) => string
 }
 
-export default function ConfirmArchiveModal({ model, getDescription }: ConfirmArchiveModalProps) {
+export default function ConfirmArchiveModal({ useStore, getRouteName, getDescription, getSuccessMessage, getErrorMessage }: ConfirmArchiveModalProps) {
 
-    const isArchiveModalOpen = useClientModalStore(state => state.isArchiveModalOpen);
-    const selected = useClientModalStore(state => state.selected);
-    const closeModal = useClientModalStore(state => state.closeModal);
+    const isArchiveModalOpen = useStore(state => state.isArchiveModalOpen);
+    const selected = useStore(state => state.selected);
+    const closeModal = useStore(state => state.closeModal);
 
     const { patch, processing } = useForm();
     const submitRef = useRef<HTMLButtonElement>(null);
@@ -30,14 +33,21 @@ export default function ConfirmArchiveModal({ model, getDescription }: ConfirmAr
     const action = selected?.archived ? 'restore' : 'archive';
 
     const handleArchive = () => {
-        patch(route(`${model}s.toggle-archive`, selected?.id), {
+
+        patch(route(getRouteName(selected), selected?.id), {
             onSuccess: () => {
                 closeModal();
-                toast.success(`${model.charAt(0).toUpperCase()}${model.slice(1)} ${action}d successfully!`);
+                const successMessage = getSuccessMessage
+                    ? getSuccessMessage(selected)
+                    : 'Archived successfully!';
+                toast.success(successMessage);
             },
             onError: (errors) => {
                 console.error('Archive error:', errors);
-                toast.error(`Failed to ${action} ${model}. Please try again.`);
+                const errorMessage = getErrorMessage
+                    ? getErrorMessage(selected)
+                    : 'Failed to archive. Please try again.';
+                toast.error(errorMessage);
             }
         });
     };

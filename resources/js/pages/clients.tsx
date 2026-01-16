@@ -66,12 +66,23 @@ export default function Clients({ clients }: { clients: Client[] }) {
             />
 
             <ConfirmArchiveModal
+                useStore={useClientModalStore}
                 getDescription={
                     isArchived => isArchived
                         ? 'All projects, tasks and timers associated with this client will also be restored.'
                         : 'All projects, tasks and timers associated with this client will also be archived.'
                 }
-                model="client"
+                getSuccessMessage={
+                    entity => entity.archived
+                        ? `${entity.name ? entity.name : 'Client'} restored successfully.`
+                        : `${entity.name ? entity.name : 'Client'} archived successfully.`
+                }
+                getErrorMessage={
+                    entity => entity.archived
+                        ? 'Failed to restore client! Please try again.'
+                        : 'Failed to archive client. Please try again.'
+                }
+                getRouteName={() => 'clients.toggle-archive'}
             />
         </AppLayout >
     );

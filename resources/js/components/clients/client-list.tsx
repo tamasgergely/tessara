@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import type { Client } from '@/types';
 import { User, Trash2, Pencil, Download, Upload } from 'lucide-react';
 import List from '@/components/list/list';
