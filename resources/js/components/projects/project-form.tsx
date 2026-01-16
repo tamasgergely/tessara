@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 import type { Project, Client } from '@/types';
 import { useForm } from '@inertiajs/react'
 import InputError from '@/components/input-error';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -10,11 +9,17 @@ import toast from 'react-hot-toast';
 import SelectWrapper from '../select-wrapper';
 import FormActions from '../forms/form-actions';
 
-export default function ProjectForm({ project, clients, onClose, visible }: { project: Project | null, clients: Client[], onClose: () => void, visible: boolean }) {
+type ProjectFormProps = {
+    project: Project | null,
+    clients: Client[],
+    onClose: () => void,
+    visible: boolean
+}
+
+export default function ProjectForm({ project, clients, onClose, visible }: ProjectFormProps) {
 
     type FormData = {
         name: string,
-        archived: boolean,
         client_id: number | null,
         description: string
     }
@@ -23,7 +28,6 @@ export default function ProjectForm({ project, clients, onClose, visible }: { pr
 
     const { data, setData, post, patch, reset, processing, errors } = useForm<FormData>({
         name: '',
-        archived: false,
         client_id: null,
         description: ''
     });
@@ -35,7 +39,6 @@ export default function ProjectForm({ project, clients, onClose, visible }: { pr
 
         setData({
             name: project?.name ?? '',
-            archived: project?.archived ?? false,
             client_id: project?.client?.id ?? null,
             description: project?.description ?? ''
         });
@@ -90,7 +93,7 @@ export default function ProjectForm({ project, clients, onClose, visible }: { pr
                         className="mt-1 block w-full"
                         value={data.name}
                         required
-                        onChange={(e) => setData('name', e.target.value)    }
+                        onChange={(e) => setData('name', e.target.value)}
                         autoComplete="name"
                         ref={nameInputRef}
                         placeholder="Full name"
@@ -120,19 +123,6 @@ export default function ProjectForm({ project, clients, onClose, visible }: { pr
                     />
                     <InputError message={errors.description} />
                 </div>
-
-                {project && (
-                    <div className="flex items-center gap-2">
-                        <Checkbox
-                            id="archived"
-                            className="w-5 h-5"
-                            checked={data.archived}
-                            onCheckedChange={(checked) => setData('archived', Boolean(checked))}
-                        />
-                        <Label htmlFor="archived">Archive</Label>
-                        <InputError className="mt-2" message={errors.archived} />
-                    </div>
-                )}
             </div>
 
             <FormActions
