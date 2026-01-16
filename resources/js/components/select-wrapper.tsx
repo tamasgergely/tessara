@@ -64,6 +64,12 @@ export default function SelectWrapper<T>({
                 },
             })}
             styles={{
+                container: (base) => ({
+                    ...base,
+                    width: '100%',
+                    maxWidth: '100%',
+                    minWidth: 0
+                }),
                 option: (base, state) => ({
                     ...base,
                     fontSize: '.875rem',
@@ -92,17 +98,28 @@ export default function SelectWrapper<T>({
                     }),
                     "&:hover": {
                         borderColor: schemeIsDark ? '#717171' : '#e5e5e5',
-                    }
+                    },
+                    width: '100%',
+                    maxWidth: '100%',
+                }),
+                valueContainer: (base) => ({
+                    ...base,
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    minWidth: 0,
                 }),
                 singleValue: (base) => ({
                     ...base,
                     color: schemeIsDark ? 'white' : 'black',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxWidth: '100%',
                 }),
                 menu: (base) => ({
                     ...base,
                     backgroundColor: schemeIsDark ? '#171717' : 'white',
                     borderRadius: 8,
-                    margin: 0                    
+                    margin: 0
                 }),
                 menuList: (base) => ({
                     ...base,

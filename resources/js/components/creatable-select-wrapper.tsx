@@ -91,6 +91,12 @@ export default function CreatableSelectWrapper<T>({
                 },
             })}
             styles={{
+                container: (base) => ({
+                    ...base,
+                    width: '100%',
+                    maxWidth: '100%',
+                    minWidth: 0
+                }),                
                 option: (base, state) => ({
                     ...base,
                     fontSize: '.875rem',
