@@ -1,4 +1,4 @@
-import type { Project, Task, Client } from '@/types';
+import type { Timer, TimerInterval, Project, Task, Client } from '@/types';
 import Modal from '@/components/modal';
 import TimerCreateForm from './timer-create-form';
 import TimerEditForm from './timer-edit-form';
@@ -11,11 +11,19 @@ type TimerFormModalProps = {
     clients: Client[]
 }
 
+function isTimer(entity: Timer | TimerInterval | null): entity is Timer {
+    return !!entity && 'project_id' in entity;
+}
+
 export default function TimerFormModal({ projects, tasks, clients }: TimerFormModalProps) {
 
     const isFormModalOpen = useTimerModalStore(state => state.isFormModalOpen);
     const closeModal = useTimerModalStore(state => state.closeModal);
     const selected = useTimerModalStore(state => state.selected);
+
+    if (selected && !isTimer(selected)) {
+        return null;
+    }
 
     return (
         <Modal visible={isFormModalOpen} onClose={closeModal}>
