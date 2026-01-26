@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Projects;
 
-use App\Models\Client;
 use App\Models\Project;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
@@ -38,7 +37,6 @@ class ProjectController extends Controller
 
         $project->update(
             $request->safe()->only(['name', 'client_id', 'description'])
-                + ['archived_at' => $request->boolean('archived') ? now() : null]
         );
 
         return redirect()->route('projects.index');
