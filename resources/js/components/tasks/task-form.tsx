@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import type { Task, Project, Client } from '@/types';
 import { useForm } from '@inertiajs/react'
 import InputError from '@/components/input-error';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -27,7 +26,6 @@ export default function TaskForm({ task, projects, clients, onClose, visible }: 
         project_id: number | null,
         client_id: number | null,
         description: string
-        archived: boolean,
     }
 
     const { data, setData, post, patch, reset, processing, errors } = useForm<FormData>({
@@ -36,7 +34,6 @@ export default function TaskForm({ task, projects, clients, onClose, visible }: 
         project_id: null,
         client_id: null,
         description: '',
-        archived: false,
     });
 
     const {
@@ -67,7 +64,6 @@ export default function TaskForm({ task, projects, clients, onClose, visible }: 
             project_id: task?.project?.id ?? null,
             client_id: task?.client?.id ?? null,
             description: task?.description ?? '',
-            archived: task?.archived ?? false,
         });
 
         const selectedProject = task?.project
@@ -165,19 +161,6 @@ export default function TaskForm({ task, projects, clients, onClose, visible }: 
                     />
                     <InputError message={errors.description} />
                 </div>
-
-                {task && (
-                    <div className="flex items-center gap-2">
-                        <Checkbox
-                            id="archived"
-                            className="w-5 h-5"
-                            checked={data.archived}
-                            onCheckedChange={(checked) => setData('archived', Boolean(checked))}
-                        />
-                        <Label htmlFor="archived">Archive</Label>
-                        <InputError className="mt-2" message={errors.archived} />
-                    </div>
-                )}
             </div>
 
             <FormActions

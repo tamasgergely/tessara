@@ -8,6 +8,7 @@ use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Projects\ProjectController;
 use App\Http\Controllers\Timers\TimerToggleController;
 use App\Http\Controllers\Timers\TimeIntervalController;
+use App\Http\Controllers\Tasks\TaskToggleArchiveController;
 use App\Http\Controllers\Clients\ClientToggleArchiveController;
 use App\Http\Controllers\Projects\ProjectToggleArchiveController;
 
@@ -27,7 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('projects', ProjectController::class)->except(['create', 'show', 'edit']);
     Route::patch('projects/{project}/toggle-archive', ProjectToggleArchiveController::class)->name('projects.toggle-archive');
 
-    Route::resource('tasks', TaskController::class)->except(['create', 'show', 'edit',]);
+    Route::resource('tasks', TaskController::class)->except(['create', 'show', 'edit']);
+    Route::patch('tasks/{task}/toggle-archive', TaskToggleArchiveController::class)->name('tasks.toggle-archive');
 
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
 });

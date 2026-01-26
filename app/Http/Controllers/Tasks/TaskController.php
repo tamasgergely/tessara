@@ -42,9 +42,7 @@ class TaskController extends Controller
     {
         Gate::authorize('update', $task);
 
-        $task->update(
-            $request->safe()->except('archived') + ['archived_at' => $request->boolean('archived') ? now() : null]
-        );
+        $task->update($request->safe()->toArray());
 
         return redirect()->route('tasks.index');
     }
