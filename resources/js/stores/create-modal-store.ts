@@ -1,57 +1,102 @@
+// create-modal-store.ts
 import { create } from 'zustand';
 
-type ModalType = 'form' | 'delete' | 'archive' | null;
+type ModalType = 'form' | 'delete' | 'archive' | 'upload' | null;
 
 interface ModalState<T> {
-    selected: T | null;
+    formSelected: T | null;
+    deleteSelected: T | null;
+    archiveSelected: T | null;
+    uploadSelected: T | null;
+    
     modalType: ModalType;
     isFormModalOpen: boolean;
     isDeleteModalOpen: boolean;
     isArchiveModalOpen: boolean;
+    isUploadFileModalOpen: boolean;
+    
     openForm: (entity?: T | null) => void;
     openDeleteForm: (entity: T) => void;
     openArchiveForm: (entity: T) => void;
+    openFileUploadForm: (entity: T) => void;
+    updateSelected: (entity: T, modalType: ModalType) => void;
     closeModal: () => void;
 }
 
 export function createModalStore<T>() {
     return create<ModalState<T>>((set) => ({
-        selected: null,
+        formSelected: null,
+        deleteSelected: null,
+        archiveSelected: null,
+        uploadSelected: null,
+        
         modalType: null,
         isFormModalOpen: false,
         isDeleteModalOpen: false,
         isArchiveModalOpen: false,
+        isUploadFileModalOpen: false,
         
         openForm: (entity = null) => set({ 
-            selected: entity, 
+            formSelected: entity,
             modalType: 'form',
             isFormModalOpen: true,
             isDeleteModalOpen: false,
             isArchiveModalOpen: false,
+            isUploadFileModalOpen: false,
         }),
         
         openDeleteForm: (entity) => set({ 
-            selected: entity, 
+            deleteSelected: entity,
             modalType: 'delete',
             isFormModalOpen: false,
             isDeleteModalOpen: true,
             isArchiveModalOpen: false,
+            isUploadFileModalOpen: false,
         }),
         
         openArchiveForm: (entity) => set({ 
-            selected: entity, 
+            archiveSelected: entity,
             modalType: 'archive',
             isFormModalOpen: false,
             isDeleteModalOpen: false,
             isArchiveModalOpen: true,
+            isUploadFileModalOpen: false,
+        }),
+
+        openFileUploadForm: (entity) => set({
+            uploadSelected: entity,
+            modalType: 'file',
+            isFormModalOpen: false,
+            isDeleteModalOpen: false,
+            isArchiveModalOpen: false,
+            isUploadFileModalOpen: true,
         }),
         
+        updateSelected: (entity, modalType) => set((state) => {
+            switch(modalType) {
+                case 'form':
+                    return { formSelected: entity };
+                case 'delete':
+                    return { deleteSelected: entity };
+                case 'archive':
+                    return { archiveSelected: entity };
+                case 'upload':
+                    return { uploadSelected: entity };
+                default:
+                    return state;
+            }
+        }),
+
         closeModal: () => set({ 
-            selected: null, 
+            formSelected: null,
+            deleteSelected: null,
+            archiveSelected: null,
+            uploadSelected: null,
             modalType: null,
             isFormModalOpen: false,
             isDeleteModalOpen: false,
             isArchiveModalOpen: false,
+            isUploadFileModalOpen: false,
         }),
     }));
 }

@@ -9,12 +9,14 @@ export default function Modal({
     visible,
     onClose,
     variant = 'side',
-    children
+    children,
+    className
 }: {
     visible: boolean,
     onClose: () => void,
-    variant?: "side" | "center"
-    children: React.ReactNode
+    variant?: "side" | "center",
+    children: React.ReactNode,
+    className?: string 
 }) {
 
     useEffect(() => {
@@ -79,7 +81,7 @@ export default function Modal({
             onClick={onClose}
             aria-hidden={!visible}
         >
-            <div className={cn(modalClasses({ variant, visible }))} onClick={(e) => e.stopPropagation()}>
+            <div className={cn(modalClasses({ variant, visible }), className)} onClick={(e) => e.stopPropagation()}>
                 <span className="absolute p-2 right-3 top-3 hover:bg-gray-200 dark:hover:bg-gray-800 cursor-pointer z-50 hover:rounded-full"
                     onClick={onClose}
                 >

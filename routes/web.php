@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\File\FileController;
 use App\Http\Controllers\Tasks\TaskController;
 use App\Http\Controllers\Timers\TimerController;
 use App\Http\Controllers\Clients\ClientController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Projects\ProjectController;
 use App\Http\Controllers\Timers\TimerToggleController;
 use App\Http\Controllers\Timers\TimeIntervalController;
+use App\Http\Controllers\Projects\ProjectFileController;
 use App\Http\Controllers\Tasks\TaskToggleArchiveController;
 use App\Http\Controllers\Clients\ClientToggleArchiveController;
 use App\Http\Controllers\Projects\ProjectToggleArchiveController;
@@ -27,11 +29,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('projects', ProjectController::class)->except(['create', 'show', 'edit']);
     Route::patch('projects/{project}/toggle-archive', ProjectToggleArchiveController::class)->name('projects.toggle-archive');
+    Route::post('projects/{project}/files', [ProjectFileController::class, 'store'])->name('projects.files.store');
 
     Route::resource('tasks', TaskController::class)->except(['create', 'show', 'edit']);
     Route::patch('tasks/{task}/toggle-archive', TaskToggleArchiveController::class)->name('tasks.toggle-archive');
 
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+
+    Route::prefix('files')->name('files.')->group(function () {
+        Route::get('{file}/download', [FileController::class, 'download'])->name('download');
+        Route::get('{file}/view', [FileController::class, 'show'])->name('show');
+        Route::patch('{file}', [FileController::class, 'update'])->name('update');
+        Route::delete('{file}', [FileController::class, 'destroy'])->name('destroy');
+    });
 });
 
 require __DIR__ . '/settings.php';

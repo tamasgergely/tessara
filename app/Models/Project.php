@@ -19,6 +19,16 @@ class Project extends Model
 
     protected $guarded = [];
 
+    public function files()
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);

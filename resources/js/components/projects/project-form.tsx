@@ -17,7 +17,7 @@ type ProjectFormProps = {
 }
 
 export default function ProjectForm({ project, clients, onClose, visible }: ProjectFormProps) {
-
+    
     type FormData = {
         name: string,
         client_id: number | null,
@@ -80,8 +80,6 @@ export default function ProjectForm({ project, clients, onClose, visible }: Proj
         setSelectedClient(client);
         setData('client_id', client?.id ?? null);
     };
-
-
 
     return (
         <form onSubmit={submit} className="h-full flex flex-col flex-1">

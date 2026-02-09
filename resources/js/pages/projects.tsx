@@ -9,6 +9,7 @@ import ProjectFormModal from '@/components/projects/project-form-modal';
 import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
 import ConfirmArchiveModal from '@/components/modals/confirm-archive-modal';
 import { useProjectModalStore } from '@/stores/modal-stores';
+import FileUploadModal from '@/components/modals/file-upload/file-upload-modal';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -27,6 +28,7 @@ export default function Projects({ projects, clients }: ProjectsProps) {
     const openForm = useProjectModalStore(state => state.openForm);
     const openDeleteForm = useProjectModalStore(state => state.openDeleteForm);
     const openArchiveForm = useProjectModalStore(state => state.openArchiveForm);
+    const openFileUploadForm = useProjectModalStore(state => state.openFileUploadForm);
 
     const handleEdit = useCallback((project: Project) => {
         openForm(project);
@@ -39,6 +41,10 @@ export default function Projects({ projects, clients }: ProjectsProps) {
     const handleArchive = useCallback((project: Project) => {
         openArchiveForm(project);
     }, [openArchiveForm]);
+
+    const handleFileUpload = useCallback((project: Project) => {
+        openFileUploadForm(project);
+    }, [openFileUploadForm]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -57,6 +63,7 @@ export default function Projects({ projects, clients }: ProjectsProps) {
                     onArchive={handleArchive}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
+                    onFileUpload={handleFileUpload}
                 />
             </div>
 
@@ -90,6 +97,11 @@ export default function Projects({ projects, clients }: ProjectsProps) {
                         : 'Failed to archive project. Please try again.'
                 }
                 getRouteName={() => 'projects.toggle-archive'}
+            />
+
+            <FileUploadModal
+                useStore={useProjectModalStore}
+                projects={projects}
             />
         </AppLayout >
     );

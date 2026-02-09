@@ -60,17 +60,10 @@ function TaskList({ tasks, onArchive, onEdit, onDelete }: TaskListProps) {
                             {task.description}
                         </div>
                         <ListActions
-                            actions={[
-                                {
-                                    key: 'archive',
-                                    icon: task.archived
-                                        ? <Upload className="w-4 h-4 sm:w-auto sm:h-auto" />
-                                        : <Download className="w-4 h-4 sm:w-auto sm:h-auto" />,
-                                    onClick: () => onArchive(task)
-                                },
-                                { key: 'edit', icon: <Pencil className="w-4 h-4 sm:w-auto sm:h-auto" />, onClick: () => onEdit(task) },
-                                { key: 'delete', icon: <Trash2 className="w-4 h-4 sm:w-auto sm:h-auto" />, onClick: () => onDelete(task) },
-                            ]}
+                            onArchive={() => onArchive(task)}
+                            onEdit={() => onEdit(task)}
+                            onDelete={() => onDelete(task)}
+                            entity={task}
                         />
                     </ListRow>
                 ))

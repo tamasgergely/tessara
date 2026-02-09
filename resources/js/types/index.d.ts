@@ -115,3 +115,14 @@ export interface ArchiveableEntity {
     name?: string,
     archived: boolean
 }
+
+export interface FileItem {
+    id: number;
+    name: string;
+    mime_type: string;
+    size: number;
+    title?: string | null;
+    description?: string | null;
+    created_at: string;
+    user: User
+}

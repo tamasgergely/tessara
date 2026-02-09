@@ -19,10 +19,15 @@ class ProjectResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'archived' => (bool) $this->archived_at,
-            'client' => $this->client ? [
+
+            'client' => $this->whenLoaded('client', fn() => [
                 'id' => $this->client->id,
-                'name' => $this->client->name
-            ] : null
+                'name' => $this->client->name,
+            ]),
+
+            'files' => FileResource::collection(
+                $this->relationLoaded('files') ? $this->files : collect()
+            ),
         ];
     }
 }

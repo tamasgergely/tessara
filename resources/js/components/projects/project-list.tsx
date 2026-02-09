@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Project } from '@/types';
-import { User, Trash2, Pencil, Download, Upload } from 'lucide-react';
+import { User, Trash2, Pencil, Download, Upload, Paperclip } from 'lucide-react';
 import List from '@/components/list/list';
 import ListHeader from '@/components/list/list-header';
 import ListRow from '@/components/list/list-row';
@@ -10,10 +10,11 @@ type ProjectListProps = {
     projects: Project[],
     onArchive: (project: Project) => void,
     onEdit: (project: Project) => void,
-    onDelete: (project: Project) => void
+    onDelete: (project: Project) => void,
+    onFileUpload: (project: Project) => void
 }
 
-function ProjectList({ projects, onArchive, onEdit, onDelete }: ProjectListProps) {
+function ProjectList({ projects, onArchive, onEdit, onDelete, onFileUpload }: ProjectListProps) {
 
     return (
         <List>
@@ -51,17 +52,11 @@ function ProjectList({ projects, onArchive, onEdit, onDelete }: ProjectListProps
                             {project.description}
                         </div>
                         <ListActions
-                            actions={[
-                                {
-                                    key: 'archive',
-                                    icon: project.archived
-                                        ? <Upload className="w-4 h-4 sm:w-auto sm:h-auto" />
-                                        : <Download className="w-4 h-4 sm:w-auto sm:h-auto" />,
-                                    onClick: () => onArchive(project)
-                                },
-                                { key: 'edit', icon: <Pencil className="w-4 h-4 sm:w-auto sm:h-auto" />, onClick: () => onEdit(project) },
-                                { key: 'delete', icon: <Trash2 className="w-4 h-4 sm:w-auto sm:h-auto" />, onClick: () => onDelete(project) },
-                            ]}
+                            onFileUpload={() => onFileUpload(project)}
+                            onArchive={() => onArchive(project)}
+                            onEdit={() => onEdit(project)}
+                            onDelete={() => onDelete(project)}
+                            entity={project}
                         />
                     </ListRow>
                 ))

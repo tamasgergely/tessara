@@ -1,5 +1,5 @@
 import type { Client } from '@/types';
-import { User, Trash2, Pencil, Download, Upload } from 'lucide-react';
+import { User } from 'lucide-react';
 import List from '@/components/list/list';
 import ListHeader from '@/components/list/list-header';
 import ListRow from '@/components/list/list-row';
@@ -29,17 +29,10 @@ export default function ClientList({ clients, onArchive, onEdit, onDelete }: Cli
                             {client.name}
                         </div>
                         <ListActions
-                            actions={[
-                                {
-                                    key: 'archive',
-                                    icon: client.archived
-                                        ? <Upload className="w-4 h-4 sm:w-auto sm:h-auto" />
-                                        : <Download className="w-4 h-4 sm:w-auto sm:h-auto" />,
-                                    onClick: () => onArchive(client)
-                                },
-                                { key: 'edit', icon: <Pencil className="w-4 h-4 sm:w-auto sm:h-auto" />, onClick: () => onEdit(client) },
-                                { key: 'delete', icon: <Trash2 className="w-4 h-4 sm:w-auto sm:h-auto" />, onClick: () => onDelete(client) },
-                            ]}
+                            onArchive={() => onArchive(client)}
+                            onEdit={() => onEdit(client)}
+                            onDelete={() => onDelete(client)}
+                            entity={client}
                         />
                     </ListRow>
                 ))

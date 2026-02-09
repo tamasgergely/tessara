@@ -17,8 +17,10 @@ type ConfirmArchiveModalProps = {
 
 export default function ConfirmArchiveModal({ useStore, getRouteName, getDescription, getSuccessMessage, getErrorMessage }: ConfirmArchiveModalProps) {
 
+    console.log('render archive modal');
+
     const isArchiveModalOpen = useStore(state => state.isArchiveModalOpen);
-    const selected = useStore(state => state.selected);
+    const selected = useStore(state => state.archiveSelected);
     const closeModal = useStore(state => state.closeModal);
 
     const { patch, processing } = useForm();
