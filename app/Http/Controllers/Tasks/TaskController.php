@@ -20,7 +20,12 @@ class TaskController extends Controller
 
         return inertia('tasks', [
             'tasks' => TaskResource::collection(
-                $user->tasks()->forListing(includeArchived: true)->get()
+                $user->tasks()
+                    ->with(['files' => function ($query) {
+                        $query->orderBy('created_at', 'DESC');
+                    }, 'files.user'])
+                    ->forListing(includeArchived: true)
+                    ->get()
             ),
             'projects' => ProjectResource::collection(
                 $user->projects()->forListing()->get()

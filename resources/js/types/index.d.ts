@@ -126,3 +126,7 @@ export interface FileItem {
     created_at: string;
     user: User
 }
+
+export interface Identifiable { 
+    id: string | number;
+}

@@ -9,6 +9,7 @@ import TaskFormModal from '@/components/tasks/task-form-modal';
 import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
 import ConfirmArchiveModal from '@/components/modals/confirm-archive-modal';
 import { useTaskModalStore } from '@/stores/modal-stores';
+import FileUploadModal from '@/components/modals/file-upload/file-upload-modal';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -28,6 +29,7 @@ export default function Tasks({ tasks, projects, clients }: TaskProps) {
     const openForm = useTaskModalStore(state => state.openForm);
     const openDeleteForm = useTaskModalStore(state => state.openDeleteForm);
     const openArchiveForm = useTaskModalStore((state) => state.openArchiveForm);
+    const openFileUploadForm = useTaskModalStore(state => state.openFileUploadForm);
 
     const handleEdit = useCallback((task: Task) => {
         openForm(task);
@@ -40,6 +42,10 @@ export default function Tasks({ tasks, projects, clients }: TaskProps) {
     const handleArchive = useCallback((task: Task) => {
         openArchiveForm(task);
     }, [openArchiveForm]);
+
+    const handleFileUpload = useCallback((task: Task) => {
+        openFileUploadForm(task);
+    }, [openFileUploadForm]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -58,6 +64,7 @@ export default function Tasks({ tasks, projects, clients }: TaskProps) {
                     onArchive={handleArchive}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
+                    onFileUpload={handleFileUpload}
                 />
             </div>
 
@@ -94,6 +101,11 @@ export default function Tasks({ tasks, projects, clients }: TaskProps) {
                 getRouteName={() => 'tasks.toggle-archive'}
             />
 
+            <FileUploadModal
+                useStore={useTaskModalStore}
+                items={tasks}
+                getRouteName={() => 'tasks.files.store'}
+            />
         </AppLayout >
     );
 }

@@ -28,8 +28,6 @@ type ErrorType =
 
 function FileUploadModalFileCard({ file, isTitleEditing, isDescriptionEditing, onStartEdit, setFilesState }: FileUploadModalFileCardProps) {
 
-    console.log('render file card');
-
     const [editValue, setEditValue] = useState<string>('');
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
     const [errors, setErrors] = useState<ErrorType>(null);
@@ -100,9 +98,6 @@ function FileUploadModalFileCard({ file, isTitleEditing, isDescriptionEditing, o
                 body: JSON.stringify({ [field]: editValue })
             });
 
-            console.log(response);
-
-
             if (!response.ok) {
                 const errorData = await response.json();
                 throw (errorData);
@@ -119,7 +114,6 @@ function FileUploadModalFileCard({ file, isTitleEditing, isDescriptionEditing, o
             cancelEditing();
 
         } catch (error: any) {
-            // console.log(error);
             setErrors(error);
         }
     };

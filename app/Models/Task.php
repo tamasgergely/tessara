@@ -19,6 +19,11 @@ class Task extends Model
 
     protected $guarded = [];
 
+    public function files()
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
+
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);

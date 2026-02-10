@@ -10,8 +10,6 @@ type ProjectFormModalProps = {
 
 export default function ProjectFormModal({ clients }: ProjectFormModalProps) {
 
-        console.log('render form modal');
-
     const isFormModalOpen = useProjectModalStore(state => state.isFormModalOpen);
     const closeModal = useProjectModalStore(state => state.closeModal);
     const selected = useProjectModalStore(state => state.formSelected);

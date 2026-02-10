@@ -65,7 +65,7 @@ export function createModalStore<T>() {
 
         openFileUploadForm: (entity) => set({
             uploadSelected: entity,
-            modalType: 'file',
+            modalType: 'upload',
             isFormModalOpen: false,
             isDeleteModalOpen: false,
             isArchiveModalOpen: false,

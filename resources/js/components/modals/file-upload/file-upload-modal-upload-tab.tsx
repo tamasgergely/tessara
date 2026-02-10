@@ -1,4 +1,4 @@
-import type { Project } from "@/types";
+import type { Identifiable } from "@/types";
 import { useRef, useState } from "react";
 import { useForm } from '@inertiajs/react'
 import { X, Upload, FileText, Image, File, ChevronRight, ChevronLeft, LoaderCircle } from 'lucide-react';
@@ -22,13 +22,14 @@ type FormData = {
     files: UploadedFile[],
 }
 
-type FileUploadModalUploadTabProps = {
+type FileUploadModalUploadTabProps<T extends Identifiable> = {
     closeModal: () => void,
-    project: Project,
-    setActiveTab: (type: 'files' | 'upload') => void
+    item: T,
+    setActiveTab: (type: 'files' | 'upload') => void,
+    getRouteName: () => string,
 }
 
-export default function FileUploadModalUploadTab({ closeModal, project, setActiveTab }: FileUploadModalUploadTabProps) {
+export default function FileUploadModalUploadTab<T extends Identifiable>({ closeModal, item, setActiveTab, getRouteName }: FileUploadModalUploadTabProps<T>) {
 
     const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -164,7 +165,7 @@ export default function FileUploadModalUploadTab({ closeModal, project, setActiv
 
         e.preventDefault();
 
-        post(route('projects.files.store', project.id), {
+        post(route(getRouteName(), item.id), {
             preserveScroll: true,
             preserveState: true,
 
@@ -242,7 +243,7 @@ export default function FileUploadModalUploadTab({ closeModal, project, setActiv
                                 Drag and drop files here, or click to select
                             </p>
                             <p className="text-xs textforeground">
-                                Maximum 10 files per upload • 10MB per file • PDF, DOC, Images
+                                Maximum 5 files per upload • 10MB per file • PDF, DOC, Images
                             </p>
                             <input
                                 ref={fileInputRef}
@@ -315,7 +316,7 @@ export default function FileUploadModalUploadTab({ closeModal, project, setActiv
                                             value={file.title}
                                             required
                                             onChange={(e) => updateFileTitle(file.id, e.target.value)}
-                                            placeholder="e.g., Project Requirements Document"
+                                            placeholder="e.g., Requirements Document"
                                         />
                                     </div>
 

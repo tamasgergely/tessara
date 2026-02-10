@@ -101,7 +101,8 @@ export default function Projects({ projects, clients }: ProjectsProps) {
 
             <FileUploadModal
                 useStore={useProjectModalStore}
-                projects={projects}
+                items={projects}
+                getRouteName={() => 'projects.files.store'}
             />
         </AppLayout >
     );

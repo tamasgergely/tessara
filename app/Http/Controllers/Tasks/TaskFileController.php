@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Projects;
+namespace App\Http\Controllers\Tasks;
 
-use App\Models\Project;
+use App\Models\Task;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\File\FileRequest;
 use App\Http\Services\FileUploadService;
 
-class ProjectFileController extends Controller
+class TaskFileController extends Controller
 {
-    public function store(FileRequest $request, Project $project, FileUploadService $uploader)
+    public function store(FileRequest $request, Task $task, FileUploadService $uploader)
     {
         $validated = $request->validated();
 
@@ -23,12 +23,12 @@ class ProjectFileController extends Controller
             foreach ($validated['files'] as $fileArray) {
                 $upload = $uploader->store(
                     $fileArray['file'],
-                    "files/projects/{$project->id}"
+                    "files/tasks/{$task->id}"
                 );
 
                 $storedFiles[] = $upload;
 
-                $project->files()->create([
+                $task->files()->create([
                     'user_id' => $request->user()->id,
                     'filename' => $upload['original_filename'],
                     'stored_filename' => $upload['stored_filename'],
@@ -42,7 +42,7 @@ class ProjectFileController extends Controller
 
             DB::commit();
 
-            return redirect()->route('projects.index');
+            return redirect()->route('tasks.index');
         } catch (\Throwable $e) {
             DB::rollBack();
 
@@ -51,7 +51,7 @@ class ProjectFileController extends Controller
             }
 
             Log::error('File upload failed', [
-                'project_id' => $project->id,
+                'task_id' => $task->id,
                 'user_id' => $request->user()->id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()

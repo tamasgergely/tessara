@@ -1,17 +1,18 @@
-import type { Project } from '@/types';
+import type { Identifiable } from '@/types';
 import FileUploadModalHead from './file-upload-modal-head';
 import FileUploadModalTabs from './file-upload-modal-tabs';
 import FileUploadModalFilesTab from './file-upload-modal-files-tab';
 import FileUploadModalUploadTab from './file-upload-modal-upload-tab';
 import { useState, useEffect } from 'react';
 
-type FileUploadModalContentProps = {
+type FileUploadModalContentProps<T> = {
     useStore: any,
-    projects: Project[],
-    closeModal: () => void
+    items: T[];
+    closeModal: () => void,
+    getRouteName: () => string,
 }
 
-export default function FileUploadModalContent({ useStore, projects, closeModal }: FileUploadModalContentProps) {
+export default function FileUploadModalContent<T extends Identifiable>({ useStore, items, closeModal, getRouteName }: FileUploadModalContentProps<T>) {
     const updateSelected = useStore(state => state.updateSelected);
     const selected = useStore(state => state.uploadSelected);
 
@@ -19,24 +20,24 @@ export default function FileUploadModalContent({ useStore, projects, closeModal 
 
     useEffect(() => {
         if (selected?.id) {
-            const freshProject = projects.find(p => p.id === selected.id);
-            if (freshProject) {
-                updateSelected(freshProject, 'upload');
+            const freshItem = items.find(p => p.id === selected.id);
+            if (freshItem) {
+                updateSelected(freshItem, 'upload');
             }
         }
-    }, [projects]);
+    }, [items]);
 
     return (
         <div className="w-full max-h-[80vh] flex flex-col">
             <FileUploadModalHead
                 activeTab={activeTab}
-                project={selected}
+                item={selected}
             />
 
             <FileUploadModalTabs
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
-                uploadedFilesCount={selected?.files?.length}
+                uploadedFilesCount={selected?.files?.length ?? 0}
             />
 
             {activeTab === 'files' ? (
@@ -44,8 +45,9 @@ export default function FileUploadModalContent({ useStore, projects, closeModal 
             ) : (
                 <FileUploadModalUploadTab
                     closeModal={closeModal}
-                    project={selected}
+                    item={selected}
                     setActiveTab={setActiveTab}
+                    getRouteName={getRouteName}
                 />
             )}
         </div>

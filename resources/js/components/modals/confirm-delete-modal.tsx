@@ -17,8 +17,6 @@ type ConfirmDeleteModalProps = {
 
 export default function ConfirmDeleteModal({ useStore, description, getRouteName, getSuccessMessage, getErrorMessage }: ConfirmDeleteModalProps) {
 
-    console.log('render delete modal');
-
     const isDeleteModalOpen = useStore(state => state.isDeleteModalOpen);
     const selected = useStore(state => state.deleteSelected);
     const closeModal = useStore(state => state.closeModal);

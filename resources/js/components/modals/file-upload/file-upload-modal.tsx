@@ -1,18 +1,17 @@
-import type { Project } from '@/types';
+import type { Identifiable } from '@/types';
 import Modal from '@/components/modal';
 import FileUploadModalContent from './file-upload-modal-content';
 
-type ConfirmArchiveModalProps = {
+type ConfirmArchiveModalProps<T> = {
     useStore: any,
-    projects: Project[]
+    items: T[],
+    getRouteName: () => string,
 }
 
-export default function FileUploadModal({ useStore, projects }: ConfirmArchiveModalProps) {
+export default function FileUploadModal<T extends Identifiable>({ useStore, items, getRouteName }: ConfirmArchiveModalProps<T>) {
 
     const isUploadFileModalOpen = useStore(state => state.isUploadFileModalOpen);
     const closeModal = useStore(state => state.closeModal);
-
-    console.log('render file upload modal');
 
     return (
         <Modal
@@ -24,8 +23,9 @@ export default function FileUploadModal({ useStore, projects }: ConfirmArchiveMo
             {isUploadFileModalOpen && (
                 <FileUploadModalContent
                     useStore={useStore}
-                    projects={projects}
+                    items={items}
                     closeModal={closeModal}
+                    getRouteName={getRouteName}
                 />
             )}
         </Modal>

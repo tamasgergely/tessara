@@ -47,7 +47,7 @@ export default function ListActions<T>({ onEdit, onDelete, onArchive, onFileUplo
                         <>
                             <DropdownMenuItem asChild>
                                 <button className="block w-full cursor-pointer" onClick={() => onFileUpload(entity)}>
-                                    Project files
+                                    Files
                                 </button>
                             </DropdownMenuItem>
 

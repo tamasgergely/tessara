@@ -27,6 +27,9 @@ class TaskResource extends JsonResource
                 'id' => $this->client->id,
                 'name' => $this->client->name
             ] : null,
+            'files' => FileResource::collection(
+                $this->relationLoaded('files') ? $this->files : collect()
+            ),
         ];
     }
 }

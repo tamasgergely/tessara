@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Task } from '@/types';
-import { NotepadText, Trash2, Pencil, StickyNote, User, Download, Upload } from 'lucide-react';
+import { NotepadText, StickyNote, User } from 'lucide-react';
 import List from '@/components/list/list';
 import ListHeader from '@/components/list/list-header';
 import ListRow from '@/components/list/list-row';
@@ -10,10 +10,11 @@ type TaskListProps = {
     tasks: Task[],
     onArchive: (task: Task) => void,
     onEdit: (task: Task) => void,
-    onDelete: (task: Task) => void
+    onDelete: (task: Task) => void,
+    onFileUpload: (task: Task) => void
 }
 
-function TaskList({ tasks, onArchive, onEdit, onDelete }: TaskListProps) {
+function TaskList({ tasks, onArchive, onEdit, onDelete, onFileUpload }: TaskListProps) {
     return (
         <List>
             <ListHeader className="sm:hidden xl:grid xl:grid-cols-[minmax(100px,400px)_minmax(100px,400px)_minmax(100px,400px)_minmax(200px,1fr)]">
@@ -60,6 +61,7 @@ function TaskList({ tasks, onArchive, onEdit, onDelete }: TaskListProps) {
                             {task.description}
                         </div>
                         <ListActions
+                            onFileUpload={() => onFileUpload(task)}
                             onArchive={() => onArchive(task)}
                             onEdit={() => onEdit(task)}
                             onDelete={() => onDelete(task)}
