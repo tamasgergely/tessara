@@ -59,4 +59,27 @@ class Project extends Model
             ->when(!$includeArchived, fn($q) => $q->whereNull('archived_at'))
             ->orderBy('name');
     }
+
+    protected function scopeFilterListing($query, array $filters)
+    {
+        return $query
+            ->when(!empty($filters['client_id']), function ($q) use ($filters) {
+                return $q->where('client_id', $filters['client_id']);
+            })
+
+            ->when(!empty($filters['search']), function ($q) use ($filters) {
+                return $q->where(function ($query) use ($filters) {
+                    $query->where('name', 'like', '%' . $filters['search'] . '%')
+                        ->orWhere('description', 'like', '%' . $filters['search'] . '%');
+                });
+            })
+
+            ->when($filters['state'] ?? 'active', function ($q, $state) {
+                if ($state === 'active') {
+                    return $q->whereNull('archived_at');
+                } elseif ($state === 'archived') {
+                    return $q->whereNotNull('archived_at');
+                }
+            });
+    }
 }

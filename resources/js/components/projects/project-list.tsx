@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Project } from '@/types';
-import { User, Trash2, Pencil, Download, Upload, Paperclip } from 'lucide-react';
+import { User } from 'lucide-react';
 import List from '@/components/list/list';
 import ListHeader from '@/components/list/list-header';
 import ListRow from '@/components/list/list-row';

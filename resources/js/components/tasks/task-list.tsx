@@ -17,7 +17,7 @@ type TaskListProps = {
 function TaskList({ tasks, onArchive, onEdit, onDelete, onFileUpload }: TaskListProps) {
     return (
         <List>
-            <ListHeader className="sm:hidden xl:grid xl:grid-cols-[minmax(100px,400px)_minmax(100px,400px)_minmax(100px,400px)_minmax(200px,1fr)]">
+            <ListHeader className="sm:hidden xl:grid xl:grid-cols-[minmax(100px,350px)_minmax(100px,350px)_minmax(100px,300px)_minmax(200px,1fr)]">
                 <div>
                     Task
                 </div>
@@ -34,7 +34,7 @@ function TaskList({ tasks, onArchive, onEdit, onDelete, onFileUpload }: TaskList
             {tasks?.length > 0 ?
                 tasks.map(task => (
                     <ListRow
-                        className={`xl:grid-cols-[minmax(100px,400px)_minmax(100px,400px)_minmax(100px,400px)_minmax(200px,1fr)] ${task.archived ? 'text-archive' : ''}`}
+                        className={`xl:grid-cols-[minmax(100px,350px)_minmax(100px,350px)_minmax(100px,300px)_minmax(200px,1fr)] ${task.archived ? 'text-archive' : ''}`}
                         key={task.id}
                     >
                         <div className={`flex gap-1 items-center ${task.archived ? 'text-archive' : 'text-primary'}`}>

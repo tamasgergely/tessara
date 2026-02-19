@@ -44,7 +44,7 @@ export default function Timers({ timers, tasks, projects, clients }: TimersProps
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Timers" />
 
-            <div className="pt-2 px-2 md:px-5">
+            <div className="px-2 md:px-5">
                 <div className="flex justify-between items-center px-2 mb-5 lg:px-0">
                     <h1 className="text-2xl">Time entries</h1>
                     <Button onClick={() => openForm()}>

@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import type { BreadcrumbItem, Client } from '@/types';
+import type { BreadcrumbItem, Client, PaginatedResponse, PaginationMetaLink } from '@/types';
 import { useCallback } from 'react';
 import { Head } from '@inertiajs/react';
 import ClientList from '@/components/clients/client-list';
@@ -9,6 +9,16 @@ import ClientFormModal from '@/components/clients/client-form-modal';
 import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
 import ConfirmArchiveModal from '@/components/modals/confirm-archive-modal';
 import { useClientModalStore } from '@/stores/modal-stores';
+import ClientFilterForm from '@/components/clients/client-filter-form';
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -17,7 +27,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Clients({ clients }: { clients: Client[] }) {
+export default function Clients({ clients }: { clients: PaginatedResponse<Client> }) {
 
     const openForm = useClientModalStore((state) => state.openForm);
     const openDeleteForm = useClientModalStore((state) => state.openDeleteForm);
@@ -47,12 +57,55 @@ export default function Clients({ clients }: { clients: Client[] }) {
                     </Button>
                 </div>
 
+                <ClientFilterForm />
+
                 <ClientList
-                    clients={clients}
+                    clients={clients.data}
                     onArchive={handleArchive}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                 />
+
+                {clients.meta.last_page > 1 && (
+                    <Pagination className="mt-5">
+                        <PaginationContent>
+                            {clients.meta?.links?.map((link: PaginationMetaLink, index: number) => {
+                                if (link.label === '...') {
+                                    return (
+                                        <PaginationItem key={index}>
+                                            <PaginationEllipsis />
+                                        </PaginationItem>
+                                    );
+                                }
+
+                                if (link.label.includes('Previous')) {
+                                    return link.url ? (
+                                        <PaginationItem key={index}>
+                                            <PaginationPrevious href={link.url} />
+                                        </PaginationItem>
+                                    ) : null;
+                                }
+
+                                if (link.label.includes('Next')) {
+                                    return link.url ? (
+                                        <PaginationItem key={index}>
+                                            <PaginationNext href={link.url} />
+                                        </PaginationItem>
+                                    ) : null;
+                                }
+
+                                return (
+                                    <PaginationItem key={index}>
+                                        <PaginationLink href={link.url || '#'} isActive={link.active}>
+                                            {link.label}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                );
+                            })}
+                        </PaginationContent>
+                    </Pagination>
+                )}
+
             </div>
 
             <ClientFormModal />

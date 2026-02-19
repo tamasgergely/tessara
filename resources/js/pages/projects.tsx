@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import type { BreadcrumbItem, Project, Client } from '@/types';
+import type { BreadcrumbItem, Project, Client, PaginatedResponse, PaginationMetaLink } from '@/types';
 import { useCallback } from 'react';
 import { Head } from '@inertiajs/react';
 import ProjectList from '@/components/projects/project-list';
@@ -10,6 +10,16 @@ import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
 import ConfirmArchiveModal from '@/components/modals/confirm-archive-modal';
 import { useProjectModalStore } from '@/stores/modal-stores';
 import FileUploadModal from '@/components/modals/file-upload/file-upload-modal';
+import ProjectFilterForm from '@/components/projects/project-filter-form';
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,7 +29,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type ProjectsProps = {
-    projects: Project[],
+    projects: PaginatedResponse<Project>,
     clients: Client[]
 }
 
@@ -58,13 +68,57 @@ export default function Projects({ projects, clients }: ProjectsProps) {
                     </Button>
                 </div>
 
+                <ProjectFilterForm
+                    initialClients={clients}
+                />
+
                 <ProjectList
-                    projects={projects}
+                    projects={projects.data}
                     onArchive={handleArchive}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onFileUpload={handleFileUpload}
                 />
+
+                {projects.meta.last_page > 1 && (
+                    <Pagination className="mt-5">
+                        <PaginationContent>
+                            {projects.meta?.links?.map((link: PaginationMetaLink, index: number) => {
+                                if (link.label === '...') {
+                                    return (
+                                        <PaginationItem key={index}>
+                                            <PaginationEllipsis />
+                                        </PaginationItem>
+                                    );
+                                }
+
+                                if (link.label.includes('Previous')) {
+                                    return link.url ? (
+                                        <PaginationItem key={index}>
+                                            <PaginationPrevious href={link.url} />
+                                        </PaginationItem>
+                                    ) : null;
+                                }
+
+                                if (link.label.includes('Next')) {
+                                    return link.url ? (
+                                        <PaginationItem key={index}>
+                                            <PaginationNext href={link.url} />
+                                        </PaginationItem>
+                                    ) : null;
+                                }
+
+                                return (
+                                    <PaginationItem key={index}>
+                                        <PaginationLink href={link.url || '#'} isActive={link.active}>
+                                            {link.label}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                );
+                            })}
+                        </PaginationContent>
+                    </Pagination>
+                )}
             </div>
 
             <ProjectFormModal
@@ -101,7 +155,7 @@ export default function Projects({ projects, clients }: ProjectsProps) {
 
             <FileUploadModal
                 useStore={useProjectModalStore}
-                items={projects}
+                items={projects.data}
                 getRouteName={() => 'projects.files.store'}
             />
         </AppLayout >

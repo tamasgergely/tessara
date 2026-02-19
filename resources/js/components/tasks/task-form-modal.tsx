@@ -13,7 +13,7 @@ export default function TaskFormModal({ projects, clients }: TaskFormModalProps)
 
     const isFormModalOpen = useTaskModalStore(state => state.isFormModalOpen);
     const closeModal = useTaskModalStore(state => state.closeModal);
-    const selected = useTaskModalStore(state => state.selected);
+    const selected = useTaskModalStore(state => state.formSelected);
 
     return (
         <Modal visible={isFormModalOpen} onClose={closeModal}>

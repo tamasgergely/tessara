@@ -18,7 +18,6 @@ class TaskToggleArchiveController extends Controller
             $task->timers()->update(['timers.archived_at' => $archivedAt]);
         });
 
-
-        return redirect()->route('tasks.index');
+        return redirect()->back();
     }
 }

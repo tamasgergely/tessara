@@ -2,20 +2,28 @@
 
 namespace App\Http\Controllers\Clients;
 
-use App\Models\Client;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Gate;
-use App\Http\Resources\ClientResource;
 use App\Http\Requests\Client\ClientStoreRequest;
 use App\Http\Requests\Client\ClientUpdateRequest;
+use App\Http\Requests\Clients\ClientRequest;
+use App\Http\Resources\ClientResource;
+use App\Models\Client;
+use Illuminate\Support\Facades\Gate;
 
 class ClientController extends Controller
 {
-    public function index()
+    public function index(ClientRequest $request)
     {
+        $validated = $request->validated();
+
         return inertia('clients', [
             'clients' => ClientResource::collection(
-                auth()->user()->clients()->forListing(includeArchived: true)->get()
+                auth()
+                    ->user()
+                    ->clients()
+                    ->filterListing($validated)
+                    ->paginate($request->user()->getPreference('pagination.clients', 25))
+                    ->withQueryString()
             )
         ]);
     }
@@ -33,7 +41,7 @@ class ClientController extends Controller
 
         $client->update(['name' => $request->name]);
 
-        return redirect()->route('clients.index');
+        return redirect()->back();
     }
 
     public function destroy(Client $client)
@@ -42,6 +50,6 @@ class ClientController extends Controller
 
         $client->delete();
 
-        return redirect()->route('clients.index');
+        return redirect()->back();
     }
 }

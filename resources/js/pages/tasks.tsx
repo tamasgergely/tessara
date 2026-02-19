@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import type { BreadcrumbItem, Project, Task, Client } from '@/types';
+import type { BreadcrumbItem, Project, Task, Client, PaginatedResponse, PaginationMetaLink } from '@/types';
 import { useCallback } from 'react';
 import { Head } from '@inertiajs/react';
 import TaskList from '@/components/tasks/task-list';
@@ -10,6 +10,16 @@ import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
 import ConfirmArchiveModal from '@/components/modals/confirm-archive-modal';
 import { useTaskModalStore } from '@/stores/modal-stores';
 import FileUploadModal from '@/components/modals/file-upload/file-upload-modal';
+import TaskFilterForm from '@/components/tasks/task-filter-form';
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,7 +29,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type TaskProps = {
-    tasks: Task[],
+    tasks: PaginatedResponse<Task>,
     projects: Project[],
     clients: Client[]
 }
@@ -59,13 +69,58 @@ export default function Tasks({ tasks, projects, clients }: TaskProps) {
                     </Button>
                 </div>
 
+                <TaskFilterForm
+                    initialClients={clients}
+                    initialProjects={projects}
+                />
+
                 <TaskList
-                    tasks={tasks}
+                    tasks={tasks.data}
                     onArchive={handleArchive}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onFileUpload={handleFileUpload}
                 />
+
+                {tasks.meta.last_page > 1 && (
+                    <Pagination className="mt-5">
+                        <PaginationContent>
+                            {tasks.meta?.links?.map((link: PaginationMetaLink, index: number) => {
+                                if (link.label === '...') {
+                                    return (
+                                        <PaginationItem key={index}>
+                                            <PaginationEllipsis />
+                                        </PaginationItem>
+                                    );
+                                }
+
+                                if (link.label.includes('Previous')) {
+                                    return link.url ? (
+                                        <PaginationItem key={index}>
+                                            <PaginationPrevious href={link.url} />
+                                        </PaginationItem>
+                                    ) : null;
+                                }
+
+                                if (link.label.includes('Next')) {
+                                    return link.url ? (
+                                        <PaginationItem key={index}>
+                                            <PaginationNext href={link.url} />
+                                        </PaginationItem>
+                                    ) : null;
+                                }
+
+                                return (
+                                    <PaginationItem key={index}>
+                                        <PaginationLink href={link.url || '#'} isActive={link.active}>
+                                            {link.label}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                );
+                            })}
+                        </PaginationContent>
+                    </Pagination>
+                )}
             </div>
 
             <TaskFormModal
@@ -103,7 +158,7 @@ export default function Tasks({ tasks, projects, clients }: TaskProps) {
 
             <FileUploadModal
                 useStore={useTaskModalStore}
-                items={tasks}
+                items={tasks.data}
                 getRouteName={() => 'tasks.files.store'}
             />
         </AppLayout >

@@ -42,7 +42,7 @@ class TaskFileController extends Controller
 
             DB::commit();
 
-            return redirect()->route('tasks.index');
+            return redirect()->back();
         } catch (\Throwable $e) {
             DB::rollBack();
 

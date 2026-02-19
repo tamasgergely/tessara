@@ -164,7 +164,7 @@ export default function CreatableSelectWrapper<T>({
                 }),
                 indicatorSeparator: (base, state) => ({
                     ...base,
-                    backgroundColor: "#717171",
+                    backgroundColor: schemeIsDark ? '#717171' : '#ccc',
                 }),
             }}
         />

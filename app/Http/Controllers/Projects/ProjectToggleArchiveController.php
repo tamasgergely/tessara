@@ -20,6 +20,6 @@ class ProjectToggleArchiveController extends Controller
         });
 
 
-        return redirect()->route('projects.index');
+        return redirect()->back();
     }
 }

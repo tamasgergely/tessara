@@ -10,6 +10,7 @@ type SelectWrapperProps<T> = {
     getOptionLabel: (option: T) => string;
     getOptionValue: (option: T) => string;
     isDisabled?: boolean,
+    isClearable?: boolean,
     placeholder?: string
 };
 
@@ -20,6 +21,7 @@ export default function SelectWrapper<T>({
     getOptionLabel,
     getOptionValue,
     isDisabled,
+    isClearable = true,
     placeholder
 }: SelectWrapperProps<T>) {
 
@@ -47,7 +49,7 @@ export default function SelectWrapper<T>({
 
     return (
         <Select<Option>
-            isClearable
+            isClearable={isClearable}
             isDisabled={isDisabled}
             options={options}
             onChange={handleChange}
@@ -151,7 +153,7 @@ export default function SelectWrapper<T>({
                 }),
                 indicatorSeparator: (base, state) => ({
                     ...base,
-                    backgroundColor: "#717171",
+                    backgroundColor: schemeIsDark ? '#717171' : '#ccc',
                 }),
             }}
         />

@@ -33,7 +33,6 @@ export default function ConfirmArchiveModal({ useStore, getRouteName, getDescrip
     const action = selected?.archived ? 'restore' : 'archive';
 
     const handleArchive = () => {
-
         patch(route(getRouteName(selected), selected?.id), {
             onSuccess: () => {
                 closeModal();
@@ -48,7 +47,7 @@ export default function ConfirmArchiveModal({ useStore, getRouteName, getDescrip
                     ? getErrorMessage(selected)
                     : 'Failed to archive. Please try again.';
                 toast.error(errorMessage);
-            }
+            },
         });
     };
 

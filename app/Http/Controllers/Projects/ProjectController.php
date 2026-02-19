@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Projects;
 
 use App\Models\Project;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Project\ProjectRequest;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Resources\ClientResource;
 use App\Http\Resources\ProjectResource;
@@ -12,21 +13,29 @@ use App\Http\Requests\Project\ProjectUpdateRequest;
 
 class ProjectController extends Controller
 {
-    public function index()
+    public function index(ProjectRequest $request)
     {
+        $user = $request->user();
+
+        $validated = $request->validated();
+
         return inertia('projects', [
             'projects' => ProjectResource::collection(
-                auth()
-                    ->user()
-                    ->projects()
-                    ->with(['files' => function ($query) {
-                        $query->orderBy('created_at', 'DESC');
-                    }, 'files.user'])
-                    ->forListing(includeArchived: true)
-                    ->get()
+                $user->projects()
+                    ->with([
+                        'client',
+                        'tasks',
+                        'files' => function ($query) {
+                            $query->orderBy('created_at', 'DESC');
+                        },
+                        'files.user'
+                    ])
+                    ->filterListing($validated)
+                    ->paginate($request->user()->getPreference('pagination.projects', 25))
+                    ->withQueryString()
             ),
             'clients' => ClientResource::collection(
-                auth()->user()->clients()->forListing()->get()
+                $user->clients()->forListing()->get()
             )
         ]);
     }
@@ -46,7 +55,7 @@ class ProjectController extends Controller
             $request->safe()->only(['name', 'client_id', 'description'])
         );
 
-        return redirect()->route('projects.index');
+        return redirect()->back();
     }
 
     public function destroy(Project $project)
@@ -55,6 +64,6 @@ class ProjectController extends Controller
 
         $project->delete();
 
-        return redirect()->route('projects.index');
+        return redirect()->back();
     }
 }

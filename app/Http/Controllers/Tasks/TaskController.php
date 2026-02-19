@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tasks;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Task\TaskRequest;
 use App\Http\Resources\TaskResource;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Resources\ClientResource;
@@ -14,18 +15,26 @@ use App\Http\Requests\Task\TaskUpdateRequest;
 
 class TaskController extends Controller
 {
-    public function index(Request $request)
+    public function index(TaskRequest $request)
     {
         $user = $request->user();
+
+        $validated = $request->validated();
 
         return inertia('tasks', [
             'tasks' => TaskResource::collection(
                 $user->tasks()
-                    ->with(['files' => function ($query) {
-                        $query->orderBy('created_at', 'DESC');
-                    }, 'files.user'])
-                    ->forListing(includeArchived: true)
-                    ->get()
+                    ->with([
+                        'project',
+                        'client',
+                        'files' => function ($query) {
+                            $query->orderBy('created_at', 'DESC');
+                        },
+                        'files.user'
+                    ])
+                    ->filterListing($validated)
+                    ->paginate($request->user()->getPreference('pagination.tasks', 25))
+                    ->withQueryString()
             ),
             'projects' => ProjectResource::collection(
                 $user->projects()->forListing()->get()
@@ -49,7 +58,7 @@ class TaskController extends Controller
 
         $task->update($request->safe()->toArray());
 
-        return redirect()->route('tasks.index');
+        return redirect()->back();
     }
 
     public function destroy(Task $task)
@@ -58,6 +67,6 @@ class TaskController extends Controller
 
         $task->delete();
 
-        return redirect()->route('tasks.index');
+        return redirect()->back();
     }
 }

@@ -31,12 +31,23 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
+export interface UserPreferences {
+    pagination?: {
+        tasks?: number,
+        projects?: number,
+        clients?: number,
+        [key: string]: unknown;
+    } ;
+    [key: string]: unknown;
+}
+
 export interface User {
     id: number;
     name: string;
     email: string;
     avatar?: string;
     email_verified_at: string | null;
+    preferences?: UserPreferences;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
@@ -129,4 +140,34 @@ export interface FileItem {
 
 export interface Identifiable { 
     id: string | number;
+}
+
+export interface PaginationLinks {
+    first: string;
+    last: string;
+    prev: string | null;
+    next: string | null;
+}
+
+export interface PaginationMetaLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
+export interface PaginationMeta {
+    current_page: number;
+    from: number | null;
+    last_page: number;
+    path: string;
+    per_page: number;
+    to: number | null;
+    total: number;
+    links?: PaginationMetaLink[];
+}
+
+export interface PaginatedResponse<T> {
+    data: T[];
+    links: PaginationLinks;
+    meta: PaginationMeta;
 }
