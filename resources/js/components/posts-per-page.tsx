@@ -6,16 +6,17 @@ export default function PostsPerPage({ type }: { type: string }) {
 
     const { auth } = usePage<{ auth: { user: User } }>().props;
 
-    const initialLimit = auth.user.preferences?.pagination?.[type] ?? 25;
+    const initialLimit = auth.user.preferences?.pagination?.[type] ?? 20;
 
     const perPageOptions: Option[] = [
-        { value: '25', label: '25' },
+        { value: '10', label: '10' },
+        { value: '20', label: '20' },
         { value: '50', label: '50' },
         { value: '100', label: '100' },
     ];
 
     const handleLimitChange = (option: Option | null) => {
-        const limit = option?.value ?? '25';
+        const limit = option?.value ?? '20';
 
         router.patch(route('settings.preferences.update'), {
             [`pagination_${type}`]: parseInt(limit)

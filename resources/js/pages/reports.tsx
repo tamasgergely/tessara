@@ -30,7 +30,7 @@ export default function Reports({ groupedTimers, clients, projects, tasks }: Rep
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Reports" />
 
-            <div className="px-5">
+            <div className="px-5 py-5">
                 <div className="flex justify-between items-center mb-5">
                     <h1 className="text-2xl">Reports</h1>
                 </div>

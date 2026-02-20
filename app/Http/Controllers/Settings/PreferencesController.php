@@ -12,9 +12,9 @@ class PreferencesController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'pagination_tasks' => ['nullable', 'integer', Rule::in([25, 50, 100])],
-            'pagination_projects' => ['nullable', 'integer', Rule::in([25, 50, 100])],
-            'pagination_clients' => ['nullable', 'integer', Rule::in([25, 50, 100])],
+            'pagination_tasks' => ['nullable', 'integer', Rule::in([10, 20, 50, 100])],
+            'pagination_projects' => ['nullable', 'integer', Rule::in([10, 20, 50, 100])],
+            'pagination_clients' => ['nullable', 'integer', Rule::in([10, 20, 50, 100])],
         ]);
 
         foreach ($validated as $key => $value) {

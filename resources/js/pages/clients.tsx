@@ -49,7 +49,7 @@ export default function Clients({ clients }: { clients: PaginatedResponse<Client
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Clients" />
 
-            <div className="px-5">
+            <div className="px-5 py-5">
                 <div className="flex justify-between items-center mb-5">
                     <h1 className="text-2xl">Clients</h1>
                     <Button onClick={() => openForm()}>

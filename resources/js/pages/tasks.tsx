@@ -61,7 +61,7 @@ export default function Tasks({ tasks, projects, clients }: TaskProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Tasks" />
 
-            <div className="px-5">
+            <div className="px-5 py-5">
                 <div className="flex justify-between items-center mb-5">
                     <h1 className="text-2xl">Tasks</h1>
                     <Button onClick={() => openForm()}>
