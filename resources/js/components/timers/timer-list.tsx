@@ -13,17 +13,14 @@ export default function TimerList({ timers, onEdit, onDelete }: TimerListProps) 
     return (
         <List>
             <ListHeader
-                className="xl:grid xl:grid-cols-[minmax(200px,350px)_minmax(250px,1fr)_200px_80px_80px_30px]
-                           sm:hidden
-                           lg:pr-0 pr-0">
+                className="xl:grid xl:grid-cols-[minmax(200px,400px)_minmax(250px,1fr)_100px_80px_30px]
+                           lg:pr-0 pr-0 pl-8
+                           sm:hidden">
                 <div>
                     Task & Project & Client
                 </div>
                 <div>
                     Task description
-                </div>
-                <div>
-                    Intervals
                 </div>
                 <div>
                     Duration
@@ -33,7 +30,11 @@ export default function TimerList({ timers, onEdit, onDelete }: TimerListProps) 
             {
                 timers.length > 0 ?
                     timers.map(timer => (
-                        <TimerRow key={timer.id} initialTimer={timer} onEdit={onEdit} onDelete={onDelete} />
+                        <TimerRow
+                            key={timer.id}
+                            initialTimer={timer}
+                            onEdit={onEdit}
+                            onDelete={onDelete} />
                     ))
                     : <div className="py-3">
                         No timers found.

@@ -52,7 +52,11 @@ export default function Timers({ timers, tasks, projects, clients }: TimersProps
                     </Button>
                 </div>
 
-                <TimerList timers={timers} onEdit={handleEdit} onDelete={handleDelete} />
+                <TimerList
+                    timers={timers}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                />
             </div>
 
             <TimerFormModal

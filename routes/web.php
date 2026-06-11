@@ -8,7 +8,6 @@ use App\Http\Controllers\Clients\ClientController;
 use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Tasks\TaskFileController;
 use App\Http\Controllers\Projects\ProjectController;
-use App\Http\Controllers\User\UserSettingsController;
 use App\Http\Controllers\Timers\TimerToggleController;
 use App\Http\Controllers\Timers\TimeIntervalController;
 use App\Http\Controllers\Projects\ProjectFileController;

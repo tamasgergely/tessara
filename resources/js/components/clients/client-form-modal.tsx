@@ -6,7 +6,7 @@ import { useClientModalStore } from '@/stores/modal-stores';
 export default function ClientFormModal() {
 
     const isFormModalOpen = useClientModalStore((state) => state.isFormModalOpen);
-    const selected = useClientModalStore((state) => state.selected);
+    const selected = useClientModalStore((state) => state.formSelected);
     const closeModal = useClientModalStore((state) => state.closeModal);
 
     return (

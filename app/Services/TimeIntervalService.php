@@ -30,6 +30,20 @@ class TimeIntervalService
 
     private function validateInterval(TimeInterval $interval): void
     {
+        $now = now();
+
+        if ($interval->start && $interval->start->gt($now)) {
+            throw ValidationException::withMessages([
+                'time' => 'The start time cannot be in the future.'
+            ]);
+        }
+
+        if ($interval->stop && $interval->stop->gt($now)) {
+            throw ValidationException::withMessages([
+                'time' => 'The end time cannot be in the future.'
+            ]);
+        }
+
         if ($interval->start && $interval->stop) {
             if ($interval->start->gte($interval->stop)) {
                 throw ValidationException::withMessages([
@@ -46,30 +60,35 @@ class TimeIntervalService
         }
 
         $start = $interval->start;
-        $stop = $interval->stop ? $interval->stop : null;
+        $stop = $interval->stop;
 
         $overlapping = TimeInterval::where('timer_id', $interval->timer_id)
             ->where('id', '!=', $interval->id)
             ->where(function ($q) use ($start, $stop) {
-                $q->whereBetween('start', [$start, $stop])
-                    ->orWhereBetween('stop', [$start, $stop])
-                    ->orWhere(function ($subQ) use ($start, $stop) {
-                        $subQ->where('start', '<=', $start)
-                            ->where('stop', '>=', $stop);
-                    })
-                    ->orWhere(function ($subQ) use ($start) {
-                        $subQ->where('start', '<=', $start)
-                            ->whereNull('stop');
+                if ($stop) {
+                    $q->where(function ($sub) use ($start, $stop) {
+                        // másik intervallum kezdete beleesik
+                        $sub->where('start', '<', $stop)
+                            ->where(function ($s) use ($start) {
+                                $s->where('stop', '>', $start)
+                                    ->orWhereNull('stop');
+                            });
                     });
-            })->first();
+                } else {
+                    // szerkesztett intervallum fut — minden ami utána kezdődik vagy átfed
+                    $q->where(function ($sub) use ($start) {
+                        $sub->where('stop', '>', $start)
+                            ->orWhereNull('stop');
+                    });
+                }
+            })->exists();
 
         if ($overlapping) {
             throw ValidationException::withMessages([
-                'time' => "The time interval overlaps with another interval."
+                'time' => 'The time interval overlaps with another interval.'
             ]);
         }
     }
-
     /**
      * Calculate the total time intervals in seconds from an array of time intervals
      * and convert the result to hours, minutes, and seconds.

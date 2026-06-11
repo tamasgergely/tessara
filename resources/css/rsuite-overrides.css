@@ -20,6 +20,7 @@
 
 .dark {
     --rs-input-bg: transparent;
+    --rs-input-disabled-bg: transparent;
     --rs-text-primary: var(--color-foreground);
     --rs-bg-overlay: var(--sidebar);
     --rs-calendar-range-bg: #cb5200;

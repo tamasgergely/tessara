@@ -19,7 +19,7 @@ export default function TimerFormModal({ projects, tasks, clients }: TimerFormMo
 
     const isFormModalOpen = useTimerModalStore(state => state.isFormModalOpen);
     const closeModal = useTimerModalStore(state => state.closeModal);
-    const selected = useTimerModalStore(state => state.selected);
+    const selected = useTimerModalStore(state => state.formSelected);
 
     if (selected && !isTimer(selected)) {
         return null;
