@@ -68,7 +68,7 @@ export default function TimerRow({ initialTimer, onEdit, onDelete }: TimerRowPro
                             taskName={timer.task_name} />
                     </div>
                     <div className={`order-6 col-span-4 md:col-span-5 xl:order-2 xl:col-span-1 ${!timer.description ? 'hidden sm:block' : 'block'}`}>
-                        <p className="text-sm line-clamp-2 whitespace-pre-line text-muted-foreground leading-snug">
+                        <p className="text-sm line-clamp-2 whitespace-pre-line text-foreground leading-snug">
                             {timer.description}
                         </p>
                     </div>

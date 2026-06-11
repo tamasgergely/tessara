@@ -1,4 +1,5 @@
-:root {
+html .rs-picker,
+html .rs-picker-popup{
     --rs-input-bg: #ffffff;
     --rs-text-primary: var(--color-foreground);
     --rs-bg-overlay: #ffffff;
@@ -18,7 +19,8 @@
     --rs-color-focus-ring: none;
 }
 
-.dark {
+.dark .rs-picker,
+.dark .rs-picker-popup {
     --rs-input-bg: transparent;
     --rs-input-disabled-bg: transparent;
     --rs-text-primary: var(--color-foreground);
@@ -28,6 +30,7 @@
     --rs-btn-link-text: var(--primary);
     --rs-border-primary: var(--input-border);
     --rs-color-focus-ring: none;
+    --rs-btn-subtle-text: var(--color-foreground);
 }
 
 .rs-input {
