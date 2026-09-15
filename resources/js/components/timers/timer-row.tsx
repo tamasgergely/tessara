@@ -8,6 +8,7 @@ import TimerDuration from './timer-duration';
 import TimerControls from './timer-controls';
 import TimerActions from './timer-actions';
 import { ChevronRight } from 'lucide-react';
+import { elapsedSecondsAt, toHMS } from '@/utils/elapsed';
 
 type TimerRowProps = {
     initialTimer: Timer,
@@ -19,8 +20,8 @@ export default function TimerRow({ initialTimer, onEdit, onDelete }: TimerRowPro
 
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-    const { timer, setTimer, workerRef } = useTimer(initialTimer);
-    const { handleStart, handleStop } = useTimerActions({ timer, setTimer, workerRef });
+    const { timer, setTimer, isRunning } = useTimer(initialTimer);
+    const { handleStart, handleStop } = useTimerActions({ timer, setTimer });
 
     const handleIntervalUpdate = (updatedInterval: TimerInterval) => {
         setTimer(prev => {
@@ -28,20 +29,10 @@ export default function TimerRow({ initialTimer, onEdit, onDelete }: TimerRowPro
                 i.id === updatedInterval.id ? updatedInterval : i
             );
 
-            const totalSeconds = updatedIntervals.reduce((sum, interval) => {
-                const start = new Date(interval.start).getTime();
-                const stop = interval.stop ? new Date(interval.stop).getTime() : Date.now();
-                return sum + Math.floor((stop - start) / 1000);
-            }, 0);
-
             return {
                 ...prev,
                 intervals: updatedIntervals,
-                elapsedTimeAsHMS: {
-                    hours: Math.floor(totalSeconds / 3600),
-                    minutes: Math.floor((totalSeconds % 3600) / 60),
-                    seconds: totalSeconds % 60,
-                }
+                elapsedTimeAsHMS: toHMS(elapsedSecondsAt(updatedIntervals, Date.now()))
             };
         });
     };
@@ -80,7 +71,7 @@ export default function TimerRow({ initialTimer, onEdit, onDelete }: TimerRowPro
                     </div>
                     <div className="order-4 col-span-1 flex items-center">
                         <TimerControls
-                            isRunning={!timer.stop}
+                            isRunning={isRunning}
                             onStart={handleStart}
                             onStop={handleStop} />
                     </div>

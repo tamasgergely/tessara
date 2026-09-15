@@ -5,10 +5,9 @@ import { timerApi } from '@/services/timerApi';
 type UseTimerActionsProps = {
     timer: Timer;
     setTimer: React.Dispatch<React.SetStateAction<Timer>>;
-    workerRef: React.MutableRefObject<Worker | null>;
 };
 
-export function useTimerActions({ timer, setTimer, workerRef }: UseTimerActionsProps) {
+export function useTimerActions({ timer, setTimer }: UseTimerActionsProps) {
 
     const updateIntervalState = useCallback((updatedInterval: TimerInterval, action: 'start' | 'stop') => {
         const index = timer.intervals.findIndex(interval => interval.id === updatedInterval.id);
@@ -38,7 +37,7 @@ export function useTimerActions({ timer, setTimer, workerRef }: UseTimerActionsP
         if (updatedInterval) {
             updateIntervalState(updatedInterval, 'start');
         }
-    }, [timer.intervals, workerRef, setTimer, updateIntervalState]);
+    }, [timer.intervals, setTimer, updateIntervalState]);
 
     const handleStop = useCallback(async () => {
         if (!timer.intervals?.length) {
@@ -51,7 +50,7 @@ export function useTimerActions({ timer, setTimer, workerRef }: UseTimerActionsP
         if (updatedInterval) {
             updateIntervalState(updatedInterval, 'stop');
         }
-    }, [timer.intervals, workerRef, setTimer, updateIntervalState]);
+    }, [timer.intervals, setTimer, updateIntervalState]);
 
     return {
         handleStart,

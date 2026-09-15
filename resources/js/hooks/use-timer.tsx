@@ -1,12 +1,19 @@
 import { useState, useRef, useEffect } from 'react';
 import type { Timer } from '@/types';
+import { clockOffsetMs, elapsedSecondsAt, hasRunningInterval, toHMS } from '@/utils/elapsed';
 
 export function useTimer(initialTimer: Timer) {
     const [timer, setTimer] = useState(initialTimer);
-    const workerRef = useRef<Worker | null>(null);
+    const clockOffset = useRef(0);
 
     useEffect(() => {
         setTimer(initialTimer);
+
+        clockOffset.current = clockOffsetMs(
+            initialTimer.intervals,
+            initialTimer.elapsedTimeAsHMS,
+            Date.now()
+        );
     }, [
         initialTimer.project_id,
         initialTimer.task_id,
@@ -17,79 +24,47 @@ export function useTimer(initialTimer: Timer) {
         initialTimer.intervals
     ]);
 
+    const isRunning = hasRunningInterval(timer.intervals);
+
     useEffect(() => {
-        try {
-            workerRef.current = new Worker('/js/timerWorker.js');
+        const refresh = () => setTimer(prev => ({
+            ...prev,
+            elapsedTimeAsHMS: toHMS(
+                elapsedSecondsAt(prev.intervals, Date.now() + clockOffset.current)
+            ),
+        }));
 
-            workerRef.current.onmessage = (e) => {
-                if (e.data.tick) {
-                    setTimer(prev => {
-                        const elapsed = { ...prev.elapsedTimeAsHMS };
+        refresh();
 
-                        elapsed.seconds++;
+        if (!isRunning) return;
 
-                        if (elapsed.seconds > 59) {
-                            elapsed.seconds = 0;
-                            elapsed.minutes++;
-                        }
+        // Driven by the paint cycle rather than by a timer: a hidden or
+        // minimised window runs no frames at all, and the first frame after it
+        // comes back lands before anything reaches the screen. Timers are
+        // throttled in that state, and visibilitychange is not dependable when
+        // the whole window is minimised rather than the tab switched.
+        let frame = 0;
+        let shownSecond = -1;
 
-                        if (elapsed.minutes > 59) {
-                            elapsed.seconds = 0;
-                            elapsed.minutes = 0;
-                            elapsed.hours++;
-                        }
+        const tick = () => {
+            const second = Math.floor((Date.now() + clockOffset.current) / 1000);
 
-                        return {
-                            ...prev,
-                            elapsedTimeAsHMS: elapsed,
-                        };
-                    });
-                }
-            };
-
-            workerRef.current.onerror = (event) => {
-                console.error('Worker error:', event.message);
-                workerRef.current?.terminate();
-                workerRef.current = null;
-            };
-
-            workerRef.current.onmessageerror = (event) => {
-                console.error('Worker message error:', event);
-            };
-
-            if (!timer.stop) {
-                workerRef.current.postMessage('start');
+            if (second !== shownSecond) {
+                shownSecond = second;
+                refresh();
             }
 
-        } catch (error) {
-            console.error('Worker creation failed:', error);
-        }
-
-        return () => {
-            if (workerRef.current) {
-                try {
-                    workerRef.current.postMessage('stop');
-                    workerRef.current.terminate();
-                    workerRef.current = null;
-                } catch (e) {
-                    console.warn('Failed to clean up worker:', e);
-                }
-            }
+            frame = requestAnimationFrame(tick);
         };
 
-    }, []);
+        frame = requestAnimationFrame(tick);
 
-    useEffect(() => {
-        if (!timer.stop && workerRef.current) {
-            workerRef.current.postMessage('start');
-        } else if (timer.stop && workerRef.current) {
-            workerRef.current.postMessage('stop');
-        }
-    }, [timer.stop]);
+        return () => cancelAnimationFrame(frame);
+    }, [isRunning]);
 
     return {
         timer,
         setTimer,
-        workerRef
+        isRunning
     };
 }
