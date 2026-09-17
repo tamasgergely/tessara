@@ -3,55 +3,40 @@ import type { Timer } from '@/types';
 import { clockOffsetMs, elapsedSecondsAt, hasRunningInterval, toHMS } from '@/utils/elapsed';
 
 export function useTimer(initialTimer: Timer) {
-    const [timer, setTimer] = useState(initialTimer);
+    const [intervals, setIntervals] = useState(initialTimer.intervals);
+    const [nowMs, setNowMs] = useState(() => Date.now());
     const clockOffset = useRef(0);
 
+    const isRunning = hasRunningInterval(intervals);
+    const elapsed = toHMS(elapsedSecondsAt(intervals, nowMs + clockOffset.current));
+
     useEffect(() => {
-        setTimer(initialTimer);
+        setIntervals(initialTimer.intervals);
 
         clockOffset.current = clockOffsetMs(
             initialTimer.intervals,
             initialTimer.elapsedTimeAsHMS,
             Date.now()
         );
-    }, [
-        initialTimer.project_id,
-        initialTimer.task_id,
-        initialTimer.description,
-        initialTimer.project_name,
-        initialTimer.task_name,
-        initialTimer.client_name,
-        initialTimer.intervals
-    ]);
-
-    const isRunning = hasRunningInterval(timer.intervals);
+    }, [initialTimer.intervals]);
 
     useEffect(() => {
-        const refresh = () => setTimer(prev => ({
-            ...prev,
-            elapsedTimeAsHMS: toHMS(
-                elapsedSecondsAt(prev.intervals, Date.now() + clockOffset.current)
-            ),
-        }));
-
-        refresh();
-
         if (!isRunning) return;
 
-        // Driven by the paint cycle rather than by a timer: a hidden or
-        // minimised window runs no frames at all, and the first frame after it
-        // comes back lands before anything reaches the screen. Timers are
-        // throttled in that state, and visibilitychange is not dependable when
-        // the whole window is minimised rather than the tab switched.
+        // Paint cycle, not a timer: timers throttle in a hidden window, and
+        // visibilitychange is unreliable when it is minimised rather than
+        // switched. Hidden windows run no frames, and the first frame back
+        // already paints the correct value.
         let frame = 0;
         let shownSecond = -1;
 
         const tick = () => {
-            const second = Math.floor((Date.now() + clockOffset.current) / 1000);
+            const now = Date.now();
+            const second = Math.floor((now + clockOffset.current) / 1000);
 
             if (second !== shownSecond) {
                 shownSecond = second;
-                refresh();
+                setNowMs(now);
             }
 
             frame = requestAnimationFrame(tick);
@@ -63,8 +48,9 @@ export function useTimer(initialTimer: Timer) {
     }, [isRunning]);
 
     return {
-        timer,
-        setTimer,
-        isRunning
+        intervals,
+        setIntervals,
+        isRunning,
+        elapsed
     };
 }

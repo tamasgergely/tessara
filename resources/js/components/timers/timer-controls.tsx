@@ -1,23 +1,23 @@
 import { Button } from "@/components/ui/button";
-import { CircleStop, CirclePlay } from 'lucide-react';
+import { CircleStop, CirclePlay, LoaderCircle } from 'lucide-react';
 
 type TimerControlsProps = {
     isRunning: boolean;
-    onStart: () => void
-    onStop: () => void;
+    pending: boolean;
+    toggle: () => void;
 };
 
-export default function TimerControls({ isRunning, onStart, onStop }: TimerControlsProps) {
+export default function TimerControls({ isRunning, pending, toggle }: TimerControlsProps) {
     return (
         <div className="self-center">
             {isRunning ? (
-                <Button onClick={onStop} variant="destructive">
-                    <CircleStop /> 
+                <Button onClick={toggle} disabled={pending} variant="destructive">
+                    {pending ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <CircleStop />}
                     <span className="hidden xl:inline">Stop</span>
                 </Button>
             ) : (
-                <Button onClick={onStart}>
-                    <CirclePlay /> 
+                <Button onClick={toggle} disabled={pending}>
+                    {pending ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <CirclePlay />}
                     <span className="hidden xl:inline">Start</span>
                 </Button>
             )}

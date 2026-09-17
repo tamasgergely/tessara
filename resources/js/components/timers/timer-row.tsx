@@ -1,14 +1,13 @@
-import type { Timer, TimerInterval } from '@/types';
-import { useState } from 'react';
 import { useTimer } from '@/hooks/use-timer';
 import { useTimerActions } from '@/hooks/use-timer-actions';
-import TimerProjectInfo from './timer-project-info';
-import TimerIntervals from './timer-intervals';
-import TimerDuration from './timer-duration';
-import TimerControls from './timer-controls';
-import TimerActions from './timer-actions';
+import type { Timer, TimerInterval } from '@/types';
 import { ChevronRight } from 'lucide-react';
-import { elapsedSecondsAt, toHMS } from '@/utils/elapsed';
+import { useState } from 'react';
+import TimerActions from './timer-actions';
+import TimerControls from './timer-controls';
+import TimerDuration from './timer-duration';
+import TimerIntervals from './timer-intervals';
+import TimerProjectInfo from './timer-project-info';
 
 type TimerRowProps = {
     initialTimer: Timer,
@@ -20,21 +19,15 @@ export default function TimerRow({ initialTimer, onEdit, onDelete }: TimerRowPro
 
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-    const { timer, setTimer, isRunning } = useTimer(initialTimer);
-    const { handleStart, handleStop } = useTimerActions({ timer, setTimer });
+    const { intervals, setIntervals, isRunning, elapsed } = useTimer(initialTimer);
+    const { toggle, pending } = useTimerActions({ timerId: initialTimer.id, setIntervals });
 
     const handleIntervalUpdate = (updatedInterval: TimerInterval) => {
-        setTimer(prev => {
-            const updatedIntervals = prev.intervals.map(i =>
-                i.id === updatedInterval.id ? updatedInterval : i
-            );
-
-            return {
-                ...prev,
-                intervals: updatedIntervals,
-                elapsedTimeAsHMS: toHMS(elapsedSecondsAt(updatedIntervals, Date.now()))
-            };
-        });
+        setIntervals(prevIntervals =>
+            prevIntervals.map(interval =>
+                interval.id === updatedInterval.id ? updatedInterval : interval
+            )
+        );
     };
 
     return (
@@ -54,30 +47,30 @@ export default function TimerRow({ initialTimer, onEdit, onDelete }: TimerRowPro
                                 py-3 gap-2 w-full">
                     <div className="order-1 col-span-4 md:col-span-1">
                         <TimerProjectInfo
-                            projectName={timer.project_name}
-                            clientName={timer.client_name}
-                            taskName={timer.task_name} />
+                            projectName={initialTimer.project_name}
+                            clientName={initialTimer.client_name}
+                            taskName={initialTimer.task_name} />
                     </div>
-                    <div className={`order-6 col-span-4 md:col-span-5 xl:order-2 xl:col-span-1 ${!timer.description ? 'hidden sm:block' : 'block'}`}>
+                    <div className={`order-6 col-span-4 md:col-span-5 xl:order-2 xl:col-span-1 ${!initialTimer.description ? 'hidden sm:block' : 'block'}`}>
                         <p className="text-sm line-clamp-2 whitespace-pre-line text-foreground leading-snug">
-                            {timer.description}
+                            {initialTimer.description}
                         </p>
                     </div>
                     <div className="order-3 col-span-1 text-base self-center text-primary text-right md:col-span-1 md:text-left md:text-xl lg:order-4">
                         <TimerDuration
-                            hours={timer.elapsedTimeAsHMS.hours}
-                            minutes={timer.elapsedTimeAsHMS.minutes}
-                            seconds={timer.elapsedTimeAsHMS.seconds} />
+                            hours={elapsed.hours}
+                            minutes={elapsed.minutes}
+                            seconds={elapsed.seconds} />
                     </div>
                     <div className="order-4 col-span-1 flex items-center">
                         <TimerControls
                             isRunning={isRunning}
-                            onStart={handleStart}
-                            onStop={handleStop} />
+                            pending={pending}
+                            toggle={toggle} />
                     </div>
                     <div className="order-5 col-span-1 flex items-center">
                         <TimerActions
-                            timer={timer}
+                            timer={initialTimer}
                             onEdit={onEdit}
                             onDelete={onDelete}
                         />
@@ -89,16 +82,16 @@ export default function TimerRow({ initialTimer, onEdit, onDelete }: TimerRowPro
                     <div className="order-2 col-span-1 md:col-span-1 lg:order-3">
                         <div className="text-xs text-muted-foreground mb-3">INTERVALS</div>
                         <TimerIntervals
-                            initalIntervals={timer.intervals}
+                            initialIntervals={intervals}
                             onDelete={onDelete}
                             onUpdate={handleIntervalUpdate}
                         />
                     </div>
-                    {timer.description && (
+                    {initialTimer.description && (
                         <div>
                             <div className="text-xs text-muted-foreground mb-2">DESCRIPTION</div>
                             <p className="text-sm whitespace-pre-line text-foreground leading-relaxed">
-                                {timer.description}
+                                {initialTimer.description}
                             </p>
                         </div>
                     )}

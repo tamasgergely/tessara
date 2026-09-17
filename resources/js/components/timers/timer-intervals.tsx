@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { TimerInterval } from '@/types';
 import { Trash2, Check } from 'lucide-react';
 import { getCookie } from "@/utils/cookie";
@@ -7,22 +7,17 @@ import 'rsuite/DatePicker/styles/index.css';
 import "../../../css/rsuite-overrides.css";
 
 type TimerIntervalsProps = {
-    initalIntervals: TimerInterval[],
+    initialIntervals: TimerInterval[],
     onDelete: (interval: TimerInterval) => void,
     onUpdate: (updatedInterval: TimerInterval) => void
 }
 
-export default function TimerIntervals({ initalIntervals, onDelete, onUpdate }: TimerIntervalsProps) {
+export default function TimerIntervals({ initialIntervals: intervals, onDelete, onUpdate }: TimerIntervalsProps) {
 
-    const [intervals, setIntervals] = useState<TimerInterval[]>(initalIntervals);
     const [editingValues, setEditingValues] = useState<Record<string, Date>>({});
     const [errors, setErrors] = useState<Record<string, string | undefined>>({});
     const [saving, setSaving] = useState<Record<string, boolean>>({});
     const [saved, setSaved] = useState<Record<string, boolean>>({});
-
-    useEffect(() => {
-        setIntervals(initalIntervals);
-    }, [initalIntervals]);
 
     const handleChange = (interval: TimerInterval, field: 'start' | 'stop', value: Date | null) => {
         if (value === null) return;
