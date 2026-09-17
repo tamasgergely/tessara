@@ -9,7 +9,7 @@ type TimerActionsProp = {
     onDelete: (timer: Timer) => void
 }
 
-export default function íTimerActions({ timer, onEdit, onDelete }: TimerActionsProp) {
+export default function TimerActions({ timer, onEdit, onDelete }: TimerActionsProp) {
 
     const { appearance, updateAppearance } = useAppearance();
 
