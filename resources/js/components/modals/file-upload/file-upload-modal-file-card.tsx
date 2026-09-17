@@ -8,7 +8,9 @@ import toast from 'react-hot-toast';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import InputError from '@/components/input-error';
-import { getCookie } from "@/utils/cookie";
+import { updateFile } from "@/services/fileApi";
+import { ApiError } from "@/utils/api";
+import { sessionExpiredToast } from "@/utils/session-toast";
 
 type ActiveEditor =
     | { fileId: number; field: 'title' | 'description' }
@@ -23,7 +25,7 @@ type FileUploadModalFileCardProps = {
 }
 
 type ErrorType =
-    | { title?: string, description?: string }
+    | { title?: string[], description?: string[] }
     | null;
 
 function FileUploadModalFileCard({ file, isTitleEditing, isDescriptionEditing, onStartEdit, setFilesState }: FileUploadModalFileCardProps) {
@@ -87,21 +89,7 @@ function FileUploadModalFileCard({ file, isTitleEditing, isDescriptionEditing, o
         if (field === 'description' && !isDescriptionEditing) return;
 
         try {
-            const xsrfToken = getCookie('XSRF-TOKEN');
-
-            const response = await fetch(route('files.update', file.id), {
-                method: 'PATCH',
-                headers: {
-                    'X-XSRF-TOKEN': xsrfToken,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ [field]: editValue })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw (errorData);
-            }
+            await updateFile(file.id, field, editValue);
 
             setFilesState((prev: FileItem[]) =>
                 prev.map(prevFile =>
@@ -113,8 +101,12 @@ function FileUploadModalFileCard({ file, isTitleEditing, isDescriptionEditing, o
 
             cancelEditing();
 
-        } catch (error: any) {
-            setErrors(error);
+        } catch (error) {
+            if (!(error instanceof ApiError)) throw error;
+
+            if (error.sessionExpired) sessionExpiredToast();
+
+            setErrors(error.data as ErrorType);
         }
     };
 
@@ -174,7 +166,7 @@ function FileUploadModalFileCard({ file, isTitleEditing, isDescriptionEditing, o
                                 </button>
                             </div>
                             <div>
-                                {errors?.title && <InputError message={errors.title} />}
+                                {errors?.title && <InputError message={errors.title[0]} />}
                             </div>
                         </>
                     ) : (
@@ -214,7 +206,7 @@ function FileUploadModalFileCard({ file, isTitleEditing, isDescriptionEditing, o
                                 </button>
                             </div>
                             <div>
-                                {errors?.description && <InputError message={errors.description} />}
+                                {errors?.description && <InputError message={errors.description[0]} />}
                             </div>
                         </>
                     ) : (

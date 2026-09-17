@@ -1,6 +1,10 @@
 import { useCallback, useState, useRef } from 'react';
 import type { TimerInterval } from '@/types';
-import { timerApi } from '@/services/timerApi';
+import { toggleTimer } from '@/services/timerApi';
+import { ApiError } from '@/utils/api';
+import toast from 'react-hot-toast';
+import { sessionExpiredToast } from '@/utils/session-toast';
+
 
 type UseTimerActionsProps = {
     timerId: number;
@@ -17,9 +21,7 @@ export function useTimerActions({ timerId, setIntervals }: UseTimerActionsProps)
         setPending(true);
 
         try {
-            const updatedInterval = await timerApi.toggleTimer(timerId);
-
-            if (!updatedInterval) return;
+            const updatedInterval = await toggleTimer(timerId);
 
             setIntervals(prev => {
                 const exists = prev.some(interval => interval.id === updatedInterval.id);
@@ -32,6 +34,14 @@ export function useTimerActions({ timerId, setIntervals }: UseTimerActionsProps)
                         : interval
                 );
             });
+        } catch (error) {
+            if (!(error instanceof ApiError)) throw error;
+
+            if (error.sessionExpired) {
+                sessionExpiredToast();
+            } else {
+                toast.error(error.message);
+            }
         } finally {
             inFlight.current = false;
             setPending(false);

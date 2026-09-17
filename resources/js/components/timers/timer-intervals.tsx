@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import type { TimerInterval } from '@/types';
 import { Trash2, Check } from 'lucide-react';
-import { getCookie } from "@/utils/cookie";
 import { DatePicker } from 'rsuite';
 import 'rsuite/DatePicker/styles/index.css';
 import "../../../css/rsuite-overrides.css";
+import { updateIntervalTime } from '@/services/timerApi';
+import { ApiError } from '@/utils/api';
+import { sessionExpiredToast } from '@/utils/session-toast';
 
 type TimerIntervalsProps = {
     initialIntervals: TimerInterval[],
@@ -41,38 +43,30 @@ export default function TimerIntervals({ initialIntervals: intervals, onDelete, 
         setErrors(prev => ({ ...prev, [key]: undefined }));
 
         try {
-            const csrfToken = getCookie('XSRF-TOKEN');
-
-            const response = await fetch(`/time-intervals/update-time/${interval.id}`, {
-                method: 'PATCH',
-                headers: {
-                    'X-XSRF-TOKEN': csrfToken,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ [field]: value.toISOString() })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Save failed.');
-            }
+            const data = await updateIntervalTime(interval.id, field, value.toISOString());
 
             onUpdate(data);
             setSaved(prev => ({ ...prev, [key]: true }));
             setTimeout(() => setSaved(prev => { const n = { ...prev }; delete n[key]; return n; }), 2000);
 
         } catch (error) {
-            setErrors(prev => ({
-                ...prev,
-                [key]: error instanceof Error ? error.message : 'An error has occured.'
-            }));
-
             setEditingValues(prev => {
                 const newValues = { ...prev };
                 delete newValues[key];
                 return newValues;
             });
+
+            if (!(error instanceof ApiError)) throw error;
+
+            if (error.sessionExpired) {
+                sessionExpiredToast();
+            }
+
+            setErrors(prev => ({
+                ...prev,
+                [key]: error.message
+            }));
+
         } finally {
             setSaving(prev => ({ ...prev, [key]: false }));
         }

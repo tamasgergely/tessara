@@ -40,9 +40,7 @@ class FileController extends Controller
 
         $file->update($request->only(['title', 'description']));
 
-        return response()->json([
-            'file' => $file->fresh()
-        ]);
+        return response()->json(null, 204);
     }
 
     public function download(File $file)
