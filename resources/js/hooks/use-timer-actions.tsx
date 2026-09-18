@@ -5,7 +5,6 @@ import { ApiError } from '@/utils/api';
 import toast from 'react-hot-toast';
 import { sessionExpiredToast } from '@/utils/session-toast';
 
-
 type UseTimerActionsProps = {
     timerId: number;
     setIntervals: React.Dispatch<React.SetStateAction<TimerInterval[]>>;

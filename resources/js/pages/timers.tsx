@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Clock } from "lucide-react";
 import TimerList from '@/components/timers/timer-list';
 import { useTimerModalStore } from '@/stores/modal-stores';
+import { useHeartbeat } from '@/hooks/use-heartbeat';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -24,6 +25,8 @@ type TimersProps = {
 }
 
 export default function Timers({ timers, tasks, projects, clients }: TimersProps) {
+
+    useHeartbeat();
 
     const openForm = useTimerModalStore(state => state.openForm);
     const openDeleteForm = useTimerModalStore(state => state.openDeleteForm);

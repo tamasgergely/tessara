@@ -46,14 +46,15 @@ export function elapsedSecondsAt(intervals: TimerInterval[], nowMs: number): num
  *
  * Only a running interval can reveal it: with every interval closed both sides
  * sum the same fixed timestamps, so there is nothing to compare and no skew to
- * correct.
+ * correct. Returns null in that case rather than zero: callers share a single
+ * offset, and a zero would overwrite a real measurement made elsewhere.
  */
 export function clockOffsetMs(
     intervals: TimerInterval[],
     serverElapsed: ElapsedTimeHMS,
     nowMs: number,
-): number {
-    if (!hasRunningInterval(intervals)) return 0;
+): number | null {
+    if (!hasRunningInterval(intervals)) return null;
 
     return (hmsToSeconds(serverElapsed) - elapsedSecondsAt(intervals, nowMs)) * 1000;
 }

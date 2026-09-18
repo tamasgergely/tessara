@@ -1,19 +1,20 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\File\FileController;
-use App\Http\Controllers\Tasks\TaskController;
-use App\Http\Controllers\Timers\TimerController;
 use App\Http\Controllers\Clients\ClientController;
-use App\Http\Controllers\Reports\ReportController;
-use App\Http\Controllers\Tasks\TaskFileController;
-use App\Http\Controllers\Projects\ProjectController;
-use App\Http\Controllers\Timers\TimerToggleController;
-use App\Http\Controllers\Timers\TimeIntervalController;
-use App\Http\Controllers\Projects\ProjectFileController;
-use App\Http\Controllers\Tasks\TaskToggleArchiveController;
 use App\Http\Controllers\Clients\ClientToggleArchiveController;
+use App\Http\Controllers\File\FileController;
+use App\Http\Controllers\HeartbeatController;
+use App\Http\Controllers\Projects\ProjectController;
+use App\Http\Controllers\Projects\ProjectFileController;
 use App\Http\Controllers\Projects\ProjectToggleArchiveController;
+use App\Http\Controllers\Reports\ReportController;
+use App\Http\Controllers\Tasks\TaskController;
+use App\Http\Controllers\Tasks\TaskFileController;
+use App\Http\Controllers\Tasks\TaskToggleArchiveController;
+use App\Http\Controllers\Timers\TimeIntervalController;
+use App\Http\Controllers\Timers\TimerController;
+use App\Http\Controllers\Timers\TimerToggleController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('time-entries', [TimerController::class, 'index'])->name('timers.index');
@@ -44,6 +45,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('{file}', [FileController::class, 'update'])->name('update');
         Route::delete('{file}', [FileController::class, 'destroy'])->name('destroy');
     });
+
+    Route::get('heartbeat', HeartbeatController::class)->name('heartbeat');
+
 });
 
 require __DIR__ . '/settings.php';

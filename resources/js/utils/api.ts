@@ -12,7 +12,7 @@ export class ApiError extends Error {
     }
 
     get sessionExpired(): boolean {
-        return this.status === 419;
+        return this.status === 419 || this.status === 401;
     }
 }
 
