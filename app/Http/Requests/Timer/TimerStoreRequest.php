@@ -24,14 +24,21 @@ class TimerStoreRequest extends FormRequest
     {
         return [
             'task_id' => [
-                'nullable', 
-                'integer', 
-                Rule::exists('tasks', 'id')
-                    ->where('user_id', request()->user()->id)
+                'nullable',
+                'integer',
+                Rule::exists('tasks', 'id')->where('user_id', $this->user()->id)
+            ],
+            'project_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('projects', 'id')->where('user_id', $this->user()->id)
+            ],
+            'client_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('clients', 'id')->where('user_id', $this->user()->id)
             ],
             'task_name' => ['required', 'string'],
-            'project_id' => ['nullable', 'required_without:client_id', 'integer', 'exists:projects,id'],
-            'client_id' => ['nullable', 'required_without:project_id', 'integer', 'exists:clients,id'],
             'description' => ['nullable', 'string'],
         ];
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Timer;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TimerUpdateRequest extends FormRequest
 {
@@ -22,10 +23,17 @@ class TimerUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'timer_id' => ['required', 'exists:timers,id'],
+            'project_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('projects', 'id')->where('user_id', $this->user()->id)
+            ],
+            'client_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('clients', 'id')->where('user_id', $this->user()->id)
+            ],
             'task_name' => ['required', 'string'],
-            'project_id' => ['nullable', 'required_without:client_id', 'integer', 'exists:projects,id'],
-            'client_id' => ['nullable', 'required_without:project_id', 'integer', 'exists:clients,id'],
             'description' => ['nullable', 'string'],
         ];
     }

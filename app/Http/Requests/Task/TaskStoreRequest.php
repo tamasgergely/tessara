@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Task;
 
 use Illuminate\Validation\Rule;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TaskStoreRequest extends FormRequest
@@ -28,10 +27,18 @@ class TaskStoreRequest extends FormRequest
                 'required',
                 'string',
                 'max:191',
-                'name' => Rule::unique('tasks')->where(fn(Builder $query) => $query->whereNull('deleted_at'))
+                Rule::unique('tasks')->whereNull('deleted_at')
             ],
-            'project_id' => ['nullable', 'integer', 'required_without:client_id', 'exists:projects,id'],
-            'client_id' => ['nullable', 'integer', 'required_without:project_id', 'exists:clients,id'],
+            'project_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('projects', 'id')->where('user_id', $this->user()->id)
+            ],
+            'client_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('clients', 'id')->where('user_id', $this->user()->id)
+            ],
             'description' => ['nullable', 'string'],
         ];
     }
