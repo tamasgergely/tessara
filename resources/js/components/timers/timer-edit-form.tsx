@@ -40,7 +40,6 @@ export default function TimerEditForm({ timer, projects, clients, onClose, visib
     const {
         selectedProject,
         selectedClient,
-        isClientSelectDisabled,
         filteredProjects,
         handleProjectChange,
         handleClientChange,
@@ -128,7 +127,6 @@ export default function TimerEditForm({ timer, projects, clients, onClose, visib
                         onChange={handleClientChange}
                         getOptionLabel={c => c.name}
                         getOptionValue={c => String(c.id)}
-                        isDisabled={isClientSelectDisabled}
                     />
                     <InputError message={errors.client_id} />
                 </div>

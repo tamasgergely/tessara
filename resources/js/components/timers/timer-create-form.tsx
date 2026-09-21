@@ -41,20 +41,14 @@ export default function TimerCreateForm({ projects, tasks, clients, onClose, vis
     const {
         selectedProject,
         selectedClient,
-        isProjectSelectDisabled,
-        isClientSelectDisabled,
         filteredProjects,
         handleProjectChange,
         handleClientChange,
-        resetForm,
         resetSelects,
-        enableSelects,
         applyTaskContext
     } = useTaskForm({
         projects,
-        setData,
-        initialProjectSelectDisabled: true,
-        initialClientSelectDisabled: true
+        setData
     });
 
     const taskSelectRef = useRef<HTMLInputElement>(null);
@@ -73,7 +67,7 @@ export default function TimerCreateForm({ projects, tasks, clients, onClose, vis
 
                 setSelectedTaskOption(null);
                 setData('description', '');
-                resetForm();
+                resetSelects();
 
                 toast.success('Time entry saved successfully!');
 
@@ -97,7 +91,7 @@ export default function TimerCreateForm({ projects, tasks, clients, onClose, vis
             setData('project_id', null);
             setData('client_id', null);
 
-            resetForm();
+            resetSelects();
             return;
         }
 
@@ -109,7 +103,6 @@ export default function TimerCreateForm({ projects, tasks, clients, onClose, vis
             setData('client_id', null);
 
             resetSelects();
-            enableSelects();
 
             return;
         }
@@ -147,7 +140,6 @@ export default function TimerCreateForm({ projects, tasks, clients, onClose, vis
                         onChange={handleClientChange}
                         getOptionLabel={c => c.name}
                         getOptionValue={c => String(c.id)}
-                        isDisabled={isClientSelectDisabled}
                     />
                     <InputError message={errors.client_id} />
                 </div>
@@ -160,7 +152,6 @@ export default function TimerCreateForm({ projects, tasks, clients, onClose, vis
                         onChange={handleProjectChange}
                         getOptionLabel={c => c.name}
                         getOptionValue={c => String(c.id)}
-                        isDisabled={isProjectSelectDisabled}
                     />
                     <InputError message={errors.project_id} />
                 </div>

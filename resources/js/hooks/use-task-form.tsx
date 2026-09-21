@@ -4,16 +4,12 @@ import type { Project, Client, Task } from '@/types';
 interface UseTaskFormOptions {
     projects: Project[];
     setData: (key: string, value: any) => void;
-    initialProjectSelectDisabled?: boolean;
-    initialClientSelectDisabled?: boolean;
 }
 
-export function useTaskForm({ projects, setData, initialProjectSelectDisabled = false, initialClientSelectDisabled = false }: UseTaskFormOptions) {
+export function useTaskForm({ projects, setData }: UseTaskFormOptions) {
 
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
     const [selectedClient, setSelectedClient] = useState<Client | null>(null);
-    const [isProjectSelectDisabled, setIsProjectSelectDisabled] = useState<boolean>(initialProjectSelectDisabled);
-    const [isClientSelectDisabled, setIsClientSelectDisabled] = useState<boolean>(initialClientSelectDisabled);
     const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects);
 
     const handleProjectChange = (project: Project | null) => {
@@ -24,8 +20,6 @@ export function useTaskForm({ projects, setData, initialProjectSelectDisabled = 
         setSelectedClient(client);
         setData('client_id', client?.id || null);
 
-        setIsClientSelectDisabled(!!project);
-
         if (!client && !project) {
             setFilteredProjects(projects);
         }
@@ -34,12 +28,15 @@ export function useTaskForm({ projects, setData, initialProjectSelectDisabled = 
     const handleClientChange = (client: Client | null) => {
         setSelectedClient(client);
         setData('client_id', client?.id ?? null);
-        setFilteredProjects(client ? projects.filter(project => project.client?.id === client.id) : projects)
-    };
 
-    const resetForm = () => {
-        resetSelects();
-        disableSelects();
+        const projectFitsClient = selectedProject?.client?.id === client?.id;
+
+        if (!projectFitsClient) {
+            setSelectedProject(null);
+            setData('project_id', null);
+        }
+
+        setFilteredProjects(client ? projects.filter(p => p.client?.id === client.id) : projects);
     };
 
     const resetSelects = () => {
@@ -48,18 +45,8 @@ export function useTaskForm({ projects, setData, initialProjectSelectDisabled = 
         setFilteredProjects(projects);
     }
 
-    const enableSelects = () => {
-        setIsProjectSelectDisabled(false);
-        setIsClientSelectDisabled(false);
-    };
-
-    const disableSelects = () => {
-        setIsProjectSelectDisabled(true);
-        setIsClientSelectDisabled(true);
-    };
-
     const applyTaskContext = (selectedTask?: Task) => {
-        const project = selectedTask?.project ?? null;
+        const project = projects.find(p => p.id === selectedTask?.project?.id) ?? null;
         const client = selectedTask?.client ?? null;
 
         setSelectedProject(project);
@@ -69,16 +56,12 @@ export function useTaskForm({ projects, setData, initialProjectSelectDisabled = 
         setData('client_id', client?.id ?? null);
 
         setFilteredProjects(projects.filter(project => project.client?.id === client?.id));
-
-        disableSelects();
     }
 
     return {
         // State
         selectedProject,
         selectedClient,
-        isProjectSelectDisabled,
-        isClientSelectDisabled,
         filteredProjects,
 
         // Handlers
@@ -86,17 +69,12 @@ export function useTaskForm({ projects, setData, initialProjectSelectDisabled = 
         handleClientChange,
 
         // Helpers
-        resetForm,
         resetSelects,
-        enableSelects,
-        disableSelects,
         applyTaskContext,
 
         // Setters (ha kell külső hozzáférés)
         setSelectedProject,
         setSelectedClient,
-        setIsProjectSelectDisabled,
-        setIsClientSelectDisabled,
         setFilteredProjects,
     };
 

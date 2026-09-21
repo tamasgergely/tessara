@@ -39,12 +39,9 @@ export default function TaskForm({ task, projects, clients, onClose, visible }: 
     const {
         selectedProject,
         selectedClient,
-        isProjectSelectDisabled,
-        isClientSelectDisabled,
         filteredProjects,
         handleProjectChange,
         handleClientChange,
-        enableSelects,
         resetSelects,
         setSelectedProject,
         setSelectedClient,
@@ -87,7 +84,6 @@ export default function TaskForm({ task, projects, clients, onClose, visible }: 
         const options = {
             onSuccess: () => {
                 if (!task) {
-                    enableSelects();
                     resetSelects();
                 }
                 onClose();
@@ -133,7 +129,6 @@ export default function TaskForm({ task, projects, clients, onClose, visible }: 
                         onChange={handleClientChange}
                         getOptionLabel={c => c.name}
                         getOptionValue={c => String(c.id)}
-                        isDisabled={isClientSelectDisabled}
                     />
                     <InputError message={errors.client_id} />
                 </div>
@@ -146,7 +141,6 @@ export default function TaskForm({ task, projects, clients, onClose, visible }: 
                         onChange={handleProjectChange}
                         getOptionLabel={c => c.name}
                         getOptionValue={c => String(c.id)}
-                        isDisabled={isProjectSelectDisabled}
                     />
                     <InputError message={errors.project_id} />
                 </div>
