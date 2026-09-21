@@ -28,10 +28,10 @@ class TimerController extends Controller
                 $user->tasks()->forListing()->get()
             ),
             'projects' => ProjectResource::collection(
-                $user->projects()->forListing()->get()
+                $user->projects()->forPicking()->get()
             ),
             'clients' => ClientResource::collection(
-                $user->clients()->forListing()->get()
+                $user->clients()->forPicking()->get()
             ),
         ]);
     }

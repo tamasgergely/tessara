@@ -40,12 +40,14 @@ class Task extends Model
     }
 
     // #[Scope]
-    protected function scopeForListing($query, $includeArchived = false, string $column = 'name', string $direction = 'asc')
+    protected function scopeForListing($query, $includeArchived = false)
     {
         return $query
             ->with(['project', 'client'])
             ->when(!$includeArchived, fn($q) => $q->whereNull('archived_at'))
-            ->orderBy($column, $direction);
+            ->withMax('timers', 'created_at')
+            ->orderByRaw('coalesce(timers_max_created_at, tasks.created_at) desc')
+            ->orderBy('name');
     }
 
     protected function scopeFilterListing($query, array $filters)

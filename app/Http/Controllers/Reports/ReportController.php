@@ -20,7 +20,7 @@ class ReportController extends Controller
         if (collect($validated)->filter()->isNotEmpty()) {
             $timers = $user
                 ->timers()
-                ->forListing(column: 'created_at', direction: 'DESC')
+                ->forListing()
                 ->filterListing($validated)
                 ->get()
                 ->groupBy(fn($timer) => $timer->created_at->format('Y-m-d'));

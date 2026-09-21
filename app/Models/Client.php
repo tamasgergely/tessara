@@ -54,6 +54,15 @@ class Client extends Model
             ->orderBy('name');
     }
 
+    protected function scopeForPicking($query, $includeArchived = false)
+    {
+        return $query
+            ->when(!$includeArchived, fn($q) => $q->whereNull('archived_at'))
+            ->withMax('timers', 'created_at')
+            ->orderByRaw('coalesce(timers_max_created_at, clients.created_at) desc')
+            ->orderBy('name');
+    }
+
     protected function scopeFilterListing($query, array $filters)
     {
         return $query

@@ -22,9 +22,8 @@ class ProjectController extends Controller
         return inertia('projects', [
             'projects' => ProjectResource::collection(
                 $user->projects()
+                    ->forListing()
                     ->with([
-                        'client',
-                        'tasks',
                         'files' => function ($query) {
                             $query->orderBy('created_at', 'DESC');
                         },

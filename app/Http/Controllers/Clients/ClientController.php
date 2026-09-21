@@ -22,6 +22,7 @@ class ClientController extends Controller
                     ->user()
                     ->clients()
                     ->filterListing($validated)
+                    ->forListing()
                     ->paginate($request->user()->getPreference('pagination.clients', 25))
                     ->withQueryString()
             )

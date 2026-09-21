@@ -54,7 +54,7 @@ class Timer extends Model
     }
 
     // #[Scope]
-    protected function scopeForListing($query, string $column = 'created_at', string $direction = 'asc')
+    protected function scopeForListing($query, string $column = 'created_at', string $direction = 'desc')
     {
         return $query
             ->with([

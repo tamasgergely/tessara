@@ -55,8 +55,18 @@ class Project extends Model
     protected function scopeForListing($query, $includeArchived = false)
     {
         return $query
-            ->with(['client', 'tasks'])
+            ->with('client')
             ->when(!$includeArchived, fn($q) => $q->whereNull('archived_at'))
+            ->orderBy('name');
+    }
+
+    protected function scopeForPicking($query, $includeArchived = false)
+    {
+        return $query
+            ->with('client')
+            ->when(!$includeArchived, fn($q) => $q->whereNull('archived_at'))
+            ->withMax('timers', 'created_at')
+            ->orderByRaw('coalesce(timers_max_created_at, projects.created_at) desc')
             ->orderBy('name');
     }
 
