@@ -21,7 +21,7 @@ export default function Modal({
 
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
+            if (e.key === 'Escape' && !e.defaultPrevented) {
                 onClose();
             }
         }
