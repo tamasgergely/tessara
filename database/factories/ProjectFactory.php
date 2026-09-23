@@ -19,10 +19,8 @@ class ProjectFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'client_id' => null,
             'name' => fake()->sentence(4),
             'description' => fake()->sentence(),
-            'active' => fake()->boolean()
         ];
     }
 }

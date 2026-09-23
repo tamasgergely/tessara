@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Task;
 use App\Models\User;
-use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,7 +20,7 @@ class TimerFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'project_id' => Project::factory(),
+            'task_id' => Task::factory(),
             'description' => fake()->sentence(12)
         ];
     }

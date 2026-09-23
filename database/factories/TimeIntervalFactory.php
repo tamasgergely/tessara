@@ -26,4 +26,9 @@ class TimeIntervalFactory extends Factory
             'stop' => $endDate
         ];
     }
+
+    public function running(): static
+    {
+        return $this->state(fn() => ['stop' => null]);
+    }
 }
