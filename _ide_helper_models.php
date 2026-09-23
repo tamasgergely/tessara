@@ -23,9 +23,15 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Project> $projects
  * @property-read int|null $projects_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Task> $tasks
+ * @property-read int|null $tasks_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Timer> $timers
+ * @property-read int|null $timers_count
  * @property-read \App\Models\User $user
  * @method static \Database\Factories\ClientFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client filterListing(array $filters)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client forListing($includeArchived = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client forPicking($includeArchived = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client onlyTrashed()
@@ -45,6 +51,43 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $fileable_type
+ * @property int $fileable_id
+ * @property int $user_id
+ * @property string $filename
+ * @property string $stored_filename
+ * @property string $path
+ * @property string $mime_type
+ * @property int $size
+ * @property string|null $title
+ * @property string|null $description
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $fileable
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereFileableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereFileableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereFilename($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereMimeType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File wherePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereStoredFilename($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereUserId($value)
+ */
+	class File extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * @mixin IdeHelperProject
  * @property int $id
  * @property int $user_id
@@ -56,12 +99,17 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Client|null $client
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\File> $files
+ * @property-read int|null $files_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Task> $tasks
  * @property-read int|null $tasks_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Timer> $timers
  * @property-read int|null $timers_count
+ * @property-read \App\Models\User $user
  * @method static \Database\Factories\ProjectFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project filterListing(array $filters)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project forListing($includeArchived = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project forPicking($includeArchived = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project onlyTrashed()
@@ -95,10 +143,13 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Client|null $client
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\File> $files
+ * @property-read int|null $files_count
  * @property-read \App\Models\Project|null $project
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Timer> $timers
  * @property-read int|null $timers_count
  * @method static \Database\Factories\TaskFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task filterListing(array $filters)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task forListing($includeArchived = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task newQuery()
@@ -122,11 +173,10 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @mixin IdeHelperTimeInterval
+ * @property Carbon $start
+ * @property Carbon|null $stop
  * @property int $id
  * @property int $timer_id
- * @property string $start
- * @property string|null $stop
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Timer $timer
@@ -151,6 +201,7 @@ namespace App\Models{
  * @property int $user_id
  * @property int $task_id
  * @property string|null $description
+ * @property string|null $archived_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Client|null $client
@@ -159,10 +210,12 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TimeInterval> $timeIntervals
  * @property-read int|null $time_intervals_count
  * @method static \Database\Factories\TimerFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer forListing(?string $date = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer filterListing(array $filters)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer forListing(string $column = 'created_at', string $direction = 'desc')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereArchivedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereId($value)
@@ -182,6 +235,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $remember_token
+ * @property array<array-key, mixed>|null $preferences
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Client> $clients
@@ -204,6 +258,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePreferences($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  */
