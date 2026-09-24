@@ -27,7 +27,9 @@ class TaskStoreRequest extends FormRequest
                 'required',
                 'string',
                 'max:191',
-                Rule::unique('tasks')->whereNull('deleted_at')
+                Rule::unique('tasks')
+                    ->whereNull('deleted_at')
+                    ->where('user_id', $this->user()->id)
             ],
             'project_id' => [
                 'nullable',

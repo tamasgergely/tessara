@@ -28,7 +28,9 @@ class ProjectStoreRequest extends FormRequest
                 'required',
                 'string',
                 'max:191',
-                Rule::unique('projects')->where(fn(Builder $query) => $query->whereNull('deleted_at'))
+                Rule::unique('projects')
+                    ->whereNull('deleted_at')
+                    ->where('user_id', $this->user()->id)
             ],
             'client_id' => ['nullable', 'exists:clients,id'],
             'description' => ['nullable', 'string'],

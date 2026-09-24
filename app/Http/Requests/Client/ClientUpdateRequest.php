@@ -28,7 +28,10 @@ class ClientUpdateRequest extends FormRequest
                 'required',
                 'string',
                 'max:191',
-                Rule::unique('clients')->where(fn(Builder $query) => $query->whereNull('deleted_at'))->ignore($this->route('client'))
+                Rule::unique('clients')
+                    ->whereNull('deleted_at')
+                    ->where('user_id', $this->user()->id)
+                    ->ignore($this->route('client'))
             ]
         ];
     }

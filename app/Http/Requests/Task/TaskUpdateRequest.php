@@ -27,7 +27,10 @@ class TaskUpdateRequest extends FormRequest
                 'required',
                 'string',
                 'max:191',
-                Rule::unique('tasks')->whereNull('deleted_at')->ignore($this->route('task'))
+                Rule::unique('tasks')
+                    ->whereNull('deleted_at')
+                    ->where('user_id', $this->user()->id)
+                    ->ignore($this->route('task'))
             ],
             'project_id' => [
                 'nullable',

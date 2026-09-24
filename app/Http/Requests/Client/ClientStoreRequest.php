@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Client;
 
 use Illuminate\Validation\Rule;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ClientStoreRequest extends FormRequest
@@ -28,7 +27,9 @@ class ClientStoreRequest extends FormRequest
                 'required',
                 'string',
                 'max:191',
-                Rule::unique('clients')->where(fn(Builder $query) => $query->whereNull('deleted_at'))
+                Rule::unique('clients')
+                    ->whereNull('deleted_at')
+                    ->where('user_id', $this->user()->id)
             ],
         ];
     }
