@@ -52,19 +52,19 @@ class Project extends Model
     }
 
     // #[Scope]
-    protected function scopeForListing($query, $includeArchived = false)
+    protected function scopeForListing($query)
     {
         return $query
             ->with('client')
-            ->when(!$includeArchived, fn($q) => $q->whereNull('archived_at'))
             ->orderBy('name');
     }
 
-    protected function scopeForPicking($query, $includeArchived = false)
+    protected function scopeForPicking($query)
     {
         return $query
             ->with('client')
-            ->when(!$includeArchived, fn($q) => $q->whereNull('archived_at'))
+            ->whereNull('archived_at')
+            ->whereDoesntHave('client', fn($q) => $q->whereNotNull('archived_at'))
             ->withMax('timers', 'created_at')
             ->orderByRaw('coalesce(timers_max_created_at, projects.created_at) desc')
             ->orderBy('name');
@@ -86,9 +86,15 @@ class Project extends Model
 
             ->when($filters['state'] ?? 'active', function ($q, $state) {
                 if ($state === 'active') {
-                    return $q->whereNull('archived_at');
-                } elseif ($state === 'archived') {
-                    return $q->whereNotNull('archived_at');
+                    return $q->whereNull('archived_at')
+                        ->whereDoesntHave('client', fn($c) => $c->whereNotNull('archived_at'));
+                }
+
+                if ($state === 'archived') {
+                    return $q->where(function ($sub) {
+                        $sub->whereNotNull('archived_at')
+                            ->orWhereHas('client', fn($c) => $c->whereNotNull('archived_at'));
+                    });
                 }
             });
     }

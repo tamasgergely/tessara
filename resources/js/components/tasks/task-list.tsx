@@ -8,13 +8,12 @@ import ListActions from '@/components/list/list-actions';
 
 type TaskListProps = {
     tasks: Task[],
-    onArchive: (task: Task) => void,
     onEdit: (task: Task) => void,
     onDelete: (task: Task) => void,
     onFileUpload: (task: Task) => void
 }
 
-function TaskList({ tasks, onArchive, onEdit, onDelete, onFileUpload }: TaskListProps) {
+function TaskList({ tasks, onEdit, onDelete, onFileUpload }: TaskListProps) {
     return (
         <List>
             <ListHeader className="sm:hidden xl:grid xl:grid-cols-[minmax(100px,350px)_minmax(100px,350px)_minmax(100px,300px)_minmax(200px,1fr)]">
@@ -62,7 +61,6 @@ function TaskList({ tasks, onArchive, onEdit, onDelete, onFileUpload }: TaskList
                         </div>
                         <ListActions
                             onFileUpload={() => onFileUpload(task)}
-                            onArchive={() => onArchive(task)}
                             onEdit={() => onEdit(task)}
                             onDelete={() => onDelete(task)}
                             entity={task}

@@ -18,7 +18,7 @@ class ProjectResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'archived' => (bool) $this->archived_at,
+            'archived' => (bool) ($this->archived_at ?? $this->client?->archived_at),
 
             'client' => $this->whenLoaded('client', fn() => [
                 'id' => $this->client->id,

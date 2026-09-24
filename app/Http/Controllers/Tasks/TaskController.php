@@ -26,8 +26,6 @@ class TaskController extends Controller
                 $user->tasks()
                     ->forListing()
                     ->with([
-                        'project',
-                        'client',
                         'files' => function ($query) {
                             $query->orderBy('created_at', 'DESC');
                         },

@@ -47,17 +47,16 @@ class Client extends Model
     }
 
     // #[Scope]
-    protected function scopeForListing($query, $includeArchived = false)
+    protected function scopeForListing($query)
     {
         return $query
-            ->when(!$includeArchived, fn($q) => $q->whereNull('archived_at'))
             ->orderBy('name');
     }
 
-    protected function scopeForPicking($query, $includeArchived = false)
+    protected function scopeForPicking($query)
     {
         return $query
-            ->when(!$includeArchived, fn($q) => $q->whereNull('archived_at'))
+            ->whereNull('archived_at')
             ->withMax('timers', 'created_at')
             ->orderByRaw('coalesce(timers_max_created_at, clients.created_at) desc')
             ->orderBy('name');

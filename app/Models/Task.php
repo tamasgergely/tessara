@@ -45,11 +45,21 @@ class Task extends Model
     }
 
     // #[Scope]
-    protected function scopeForListing($query, $includeArchived = false)
+    protected function scopeForPicking($query)
     {
         return $query
             ->with(['project', 'client'])
-            ->when(!$includeArchived, fn($q) => $q->whereNull('archived_at'))
+            ->whereDoesntHave('client',  fn($q) => $q->whereNotNull('archived_at'))
+            ->whereDoesntHave('project', fn($q) => $q->whereNotNull('archived_at'))
+            ->withMax('timers', 'created_at')
+            ->orderByRaw('coalesce(timers_max_created_at, tasks.created_at) desc')
+            ->orderBy('name');
+    }
+
+    protected function scopeForListing($query)
+    {
+        return $query
+            ->with(['project', 'client'])
             ->withMax('timers', 'created_at')
             ->orderByRaw('coalesce(timers_max_created_at, tasks.created_at) desc')
             ->orderBy('name');
@@ -71,14 +81,6 @@ class Task extends Model
                     $query->where('name', 'like', '%' . $filters['search'] . '%')
                         ->orWhere('description', 'like', '%' . $filters['search'] . '%');
                 });
-            })
-
-            ->when($filters['state'] ?? 'active', function ($q, $state) {
-                if ($state === 'active') {
-                    return $q->whereNull('archived_at');
-                } elseif ($state === 'archived') {
-                    return $q->whereNotNull('archived_at');
-                }
             });
     }
 }

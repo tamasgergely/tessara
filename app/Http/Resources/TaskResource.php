@@ -18,7 +18,6 @@ class TaskResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'archived' => (bool) $this->archived_at,
             'project' => $this->project ?  [
                 'id' => $this->project->id,
                 'name' => $this->project->name,
@@ -30,6 +29,7 @@ class TaskResource extends JsonResource
             'files' => FileResource::collection(
                 $this->relationLoaded('files') ? $this->files : collect()
             ),
+            'archived' => (bool) ($this->archived_at ?? $this->client?->archived_at ?? $this->project?->archived_at),
         ];
     }
 }

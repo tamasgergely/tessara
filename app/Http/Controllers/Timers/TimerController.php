@@ -25,7 +25,7 @@ class TimerController extends Controller
                 $user->timers()->forListing()->filterListing(['date' => $request->date ?? today()])->get()
             ),
             'tasks' => TaskResource::collection(
-                $user->tasks()->forListing()->get()
+                $user->tasks()->forPicking()->get()
             ),
             'projects' => ProjectResource::collection(
                 $user->projects()->forPicking()->get()
