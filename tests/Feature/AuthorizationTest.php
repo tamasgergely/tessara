@@ -120,3 +120,19 @@ test('a user can not delete another users file', function () {
         ->delete(route('files.destroy', $file))
         ->assertForbidden();
 });
+
+test('a user can not archive another users client', function(){
+    $client = Client::factory()->for($this->owner)->create();
+
+    $this->actingAs($this->intruder)
+        ->patch(route('clients.toggle-archive', $client))
+        ->assertForbidden();
+});
+
+test('a user can not archive another users project', function(){
+    $project = Project::factory()->for($this->owner)->create();
+
+    $this->actingAs($this->intruder)
+        ->patch(route('projects.toggle-archive', $project))
+        ->assertForbidden();
+});
