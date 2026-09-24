@@ -2,25 +2,17 @@
 
 namespace App\Http\Controllers\Clients;
 
-use App\Models\Client;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Client;
+use Illuminate\Support\Facades\Gate;
 
 class ClientToggleArchiveController extends Controller
 {
     public function __invoke(Client $client)
     {
-        DB::transaction(function () use ($client) {
+        Gate::authorize('update', $client);
 
-            $archivedAt = $client->archived_at ? null : now();
-
-            $client->update(['archived_at' => $archivedAt]);
-            $client->projects()->update(['archived_at' => $archivedAt]);
-
-            $client->tasks()->update(['archived_at' => $archivedAt]);
-            $client->timers()->update(['timers.archived_at' => $archivedAt]);
-        });
-
+        $client->update(['archived_at' => $client->archived_at ? null : now()]);
 
         return redirect()->route('clients.index');
     }
