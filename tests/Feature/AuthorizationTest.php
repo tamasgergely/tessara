@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Client;
+use App\Models\File;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\TimeInterval;
@@ -85,5 +86,37 @@ test('a user can not delete another users task', function () {
 
     $this->actingAs($this->intruder)
         ->delete(route('tasks.destroy', $task))
+        ->assertForbidden();
+});
+
+test('a user can not view another users file', function () {
+    $file = File::factory()->for($this->owner)->create();
+
+    $this->actingAs($this->intruder)
+        ->get(route('files.show', $file))
+        ->assertForbidden();
+});
+
+test('a user can not download another users file', function () {
+    $file = File::factory()->for($this->owner)->create();
+
+    $this->actingAs($this->intruder)
+        ->get(route('files.download', $file))
+        ->assertForbidden();
+});
+
+test('a user can not update another users file', function () {
+    $file = File::factory()->for($this->owner)->create();
+
+    $this->actingAs($this->intruder)
+        ->patch(route('files.update', $file))
+        ->assertForbidden();
+});
+
+test('a user can not delete another users file', function () {
+    $file = File::factory()->for($this->owner)->create();
+
+    $this->actingAs($this->intruder)
+        ->delete(route('files.destroy', $file))
         ->assertForbidden();
 });
