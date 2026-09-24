@@ -14,6 +14,6 @@ class ClientToggleArchiveController extends Controller
 
         $client->update(['archived_at' => $client->archived_at ? null : now()]);
 
-        return redirect()->route('clients.index');
+        return redirect()->back();
     }
 }
