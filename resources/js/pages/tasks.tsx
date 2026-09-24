@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { StickyNote } from "lucide-react";
 import TaskFormModal from '@/components/tasks/task-form-modal';
 import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
-import ConfirmArchiveModal from '@/components/modals/confirm-archive-modal';
 import { useTaskModalStore } from '@/stores/modal-stores';
 import FileUploadModal from '@/components/modals/file-upload/file-upload-modal';
 import TaskFilterForm from '@/components/tasks/task-filter-form';
@@ -38,7 +37,6 @@ export default function Tasks({ tasks, projects, clients }: TaskProps) {
 
     const openForm = useTaskModalStore(state => state.openForm);
     const openDeleteForm = useTaskModalStore(state => state.openDeleteForm);
-    const openArchiveForm = useTaskModalStore((state) => state.openArchiveForm);
     const openFileUploadForm = useTaskModalStore(state => state.openFileUploadForm);
 
     const handleEdit = useCallback((task: Task) => {
@@ -48,10 +46,6 @@ export default function Tasks({ tasks, projects, clients }: TaskProps) {
     const handleDelete = useCallback((task: Task) => {
         openDeleteForm(task);
     }, [openDeleteForm]);
-
-    const handleArchive = useCallback((task: Task) => {
-        openArchiveForm(task);
-    }, [openArchiveForm]);
 
     const handleFileUpload = useCallback((task: Task) => {
         openFileUploadForm(task);
@@ -76,7 +70,6 @@ export default function Tasks({ tasks, projects, clients }: TaskProps) {
 
                 <TaskList
                     tasks={tasks.data}
-                    onArchive={handleArchive}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onFileUpload={handleFileUpload}
@@ -134,26 +127,6 @@ export default function Tasks({ tasks, projects, clients }: TaskProps) {
                 getSuccessMessage={() => 'Task deleted successfully!'}
                 getErrorMessage={() => 'Failed to delete task. Please try again.'}
                 getRouteName={() => 'tasks.destroy'}
-            />
-
-            <ConfirmArchiveModal
-                useStore={useTaskModalStore}
-                getDescription={
-                    isArchived => isArchived
-                        ? 'All timers associated with this task will also be restored.'
-                        : 'All timers associated with this task will also be archived.'
-                }
-                getSuccessMessage={
-                    entity => entity.archived
-                        ? `${entity.name ? entity.name : 'Task'} restored successfully.`
-                        : `${entity.name ? entity.name : 'Task'} archived successfully.`
-                }
-                getErrorMessage={
-                    entity => entity.archived
-                        ? 'Failed to restore task! Please try again.'
-                        : 'Failed to archive task. Please try again.'
-                }
-                getRouteName={() => 'tasks.toggle-archive'}
             />
 
             <FileUploadModal

@@ -43,7 +43,6 @@ class TaskUpdateRequest extends FormRequest
                 Rule::exists('clients', 'id')->where('user_id', $this->user()->id)
             ],
             'description' => ['nullable', 'string'],
-            'archived' => ['boolean']
         ];
     }
 }

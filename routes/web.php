@@ -10,7 +10,6 @@ use App\Http\Controllers\Projects\ProjectToggleArchiveController;
 use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Tasks\TaskController;
 use App\Http\Controllers\Tasks\TaskFileController;
-use App\Http\Controllers\Tasks\TaskToggleArchiveController;
 use App\Http\Controllers\Timers\TimeIntervalController;
 use App\Http\Controllers\Timers\TimerController;
 use App\Http\Controllers\Timers\TimerToggleController;
@@ -34,7 +33,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('projects/{project}/files', [ProjectFileController::class, 'store'])->name('projects.files.store');
 
     Route::resource('tasks', TaskController::class)->except(['create', 'show', 'edit']);
-    Route::patch('tasks/{task}/toggle-archive', TaskToggleArchiveController::class)->name('tasks.toggle-archive');
     Route::post('tasks/{task}/files', [TaskFileController::class, 'store'])->name('tasks.files.store');
 
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');

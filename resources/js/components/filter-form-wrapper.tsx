@@ -14,9 +14,10 @@ type FilterFormWrapperProps = {
     setData: (callback: (prev: any) => any) => void;
     errors: Record<string, any>;
     type: string;
+    showStateFilter?: boolean;
 }
 
-export default function FilterFormWrapper({ children, className, data, setData, errors, type }: FilterFormWrapperProps) {
+export default function FilterFormWrapper({ children, className, data, setData, errors, type, showStateFilter = true }: FilterFormWrapperProps) {
     const searchInputRef = useRef<HTMLInputElement>(null);
 
     const stateOptions: Option[] = [
@@ -45,16 +46,18 @@ export default function FilterFormWrapper({ children, className, data, setData, 
                 "grid gap-5 w-full sm:grid-cols-2",
                 className
             )}>
-                <div className="grid gap-2">
-                    <SelectWrapper
-                        options={stateOptions}
-                        value={stateOptions.find(option => option.value === data.state) ?? null}
-                        onChange={handleStateChange}
-                        getOptionLabel={c => c.label}
-                        getOptionValue={c => String(c.value)}
-                    />
-                    <InputError message={errors?.filterFormError?.state} />
-                </div>
+                {showStateFilter && (
+                    <div className="grid gap-2">
+                        <SelectWrapper
+                            options={stateOptions}
+                            value={stateOptions.find(option => option.value === data.state) ?? null}
+                            onChange={handleStateChange}
+                            getOptionLabel={c => c.label}
+                            getOptionValue={c => String(c.value)}
+                        />
+                        <InputError message={errors?.filterFormError?.state} />
+                    </div>
+                )}
                 {children}
                 <div className="grid gap-2">
                     <Input

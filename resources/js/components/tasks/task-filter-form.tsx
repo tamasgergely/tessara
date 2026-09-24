@@ -88,6 +88,7 @@ export default function TaskFilterForm({ initialClients, initialProjects }: Task
             data={data}
             setData={setData}
             errors={errors}
+            showStateFilter={false}
             type="tasks"
             className="md:grid-cols-4 xl:grid-cols-[minmax(100px,200px)_minmax(200px,200px)_minmax(200px,200px)_minmax(200px,250px)]"
         >

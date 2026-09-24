@@ -27,7 +27,6 @@ class TaskRequest extends FormRequest
             'client_id' => ['nullable', 'integer', 'exists:clients,id'],
             'project_id' => ['nullable', 'integer', 'exists:projects,id'],
             'search' => ['nullable', 'string', 'max:10'],
-            'state' => ['nullable', 'string', 'in:active,archived,all'],
         ];
     }
 
