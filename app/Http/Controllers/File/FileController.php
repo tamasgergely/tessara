@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\File;
 
-use App\Models\File;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\File;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,7 +16,8 @@ class FileController extends Controller
 
     public function show(File $file)
     {
-        abort_if($file->user_id !== auth()->id(), 403);
+        Gate::authorize('view', $file);
+
         abort_if(!Storage::disk('local')->exists($file->path), 404);
 
         return response()->file(
@@ -26,6 +28,8 @@ class FileController extends Controller
 
     public function update(Request $request, File $file): JsonResponse
     {
+        Gate::authorize('update', $file);
+
         $validator = Validator::make($request->all(), [
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string'
@@ -45,7 +49,8 @@ class FileController extends Controller
 
     public function download(File $file)
     {
-        abort_if($file->user_id !== auth()->id(), 403);
+        Gate::authorize('view', $file);
+
         abort_if(!Storage::disk('local')->exists($file->path), 404);
 
         return Storage::disk('local')->download($file->path, $file->filename);
@@ -54,7 +59,8 @@ class FileController extends Controller
 
     public function destroy(File $file): RedirectResponse
     {
-        abort_if($file->user_id !== auth()->id(), 403);
+        Gate::authorize('delete', $file);
+
         abort_if(!Storage::disk('local')->exists($file->path), 404);
 
         Storage::disk('local')->delete($file->path);
