@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use App\Services\TimeIntervalService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,7 +18,6 @@ class TimerResource extends JsonResource
         $service = app(TimeIntervalService::class);
 
         $elapsedTimeInHMS = $service->calculateElapsedTimeAsHMS($this->timeIntervals);
-        $lastInterval = $this->timeIntervals->last();
 
         return [
             "id" => $this->id,
@@ -31,8 +29,6 @@ class TimerResource extends JsonResource
             'client_name' => $this->task->client?->name,
             "description" => $this->description,
             'elapsedTimeAsHMS' => $elapsedTimeInHMS,
-            'start' => Carbon::parse($lastInterval->start)->format('Y-m-d\TH:i:s.v\Z'),
-            'stop' => $lastInterval->stop ? Carbon::parse($lastInterval->stop)->format('Y-m-d\TH:i:s.v\Z') : null,
             'intervals' => $this->timeIntervals
         ];
     }

@@ -111,8 +111,6 @@ export interface Timer{
     project_name: string,
     description: string,
     elapsedTimeAsHMS: ElapsedTimeHMS,
-    start: boolean,
-    stop: boolean | null,
     intervals: TimerInterval[]
 }
 
