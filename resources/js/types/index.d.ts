@@ -114,6 +114,14 @@ export interface Timer {
     intervals: TimerInterval[];
 }
 
+export interface StuckTimer {
+    id: number;
+    task_name: string;
+    client_name: string | null;
+    started_at: string;
+    date: string;
+}
+
 export interface DeletableEntity {
     id: number;
     name?: string;

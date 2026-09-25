@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import type { Project, BreadcrumbItem, Timer, TimerInterval, Task, Client, DeletableEntity } from '@/types';
+import type { Project, BreadcrumbItem, Timer, TimerInterval, Task, Client, DeletableEntity, StuckTimer } from '@/types';
 import { useCallback } from 'react';
 import { Head } from '@inertiajs/react';
 import TimerFormModal from '@/components/timers/timer-form-modal';
@@ -9,6 +9,7 @@ import { Clock } from "lucide-react";
 import TimerList from '@/components/timers/timer-list';
 import { useTimerModalStore } from '@/stores/modal-stores';
 import { useHeartbeat } from '@/hooks/use-heartbeat';
+import StuckTimersAlert from '@/components/timers/stuck-timers-alert';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -21,10 +22,11 @@ type TimersProps = {
     timers: Timer[],
     tasks: Task[],
     projects: Project[],
-    clients: Client[]
+    clients: Client[],
+    stuckTimers: StuckTimer[]
 }
 
-export default function Timers({ timers, tasks, projects, clients }: TimersProps) {
+export default function Timers({ timers, tasks, projects, clients, stuckTimers }: TimersProps) {
 
     useHeartbeat();
 
@@ -54,6 +56,8 @@ export default function Timers({ timers, tasks, projects, clients }: TimersProps
                         <Clock /> Add time entry
                     </Button>
                 </div>
+
+                <StuckTimersAlert timers={stuckTimers} />
 
                 <TimerList
                     timers={timers}
