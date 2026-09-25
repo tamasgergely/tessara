@@ -33,11 +33,11 @@ export interface SharedData {
 
 export interface UserPreferences {
     pagination?: {
-        tasks?: number,
-        projects?: number,
-        clients?: number,
+        tasks?: number;
+        projects?: number;
+        clients?: number;
         [key: string]: unknown;
-    } ;
+    };
     [key: string]: unknown;
 }
 
@@ -54,75 +54,75 @@ export interface User {
 }
 
 export interface Option {
-    value: string,
-    label: string,
+    value: string;
+    label: string;
     __isNew__?: boolean;
-    subLabel? :string
+    subLabel?: string;
 }
 
 export interface Client {
-    id: number,
-    name: string,
-    archived: boolean
+    id: number;
+    name: string;
+    archived: boolean;
 }
 
 export interface Project {
-    id: number,
-    name: string,
-    description: string,
-    archived: boolean
-    client: Client | null
-    tasks: Task[] | null
+    id: number;
+    name: string;
+    description: string;
+    archived: boolean;
+    client: Client | null;
+    tasks: Task[] | null;
 }
 
 export interface Task {
-    id: number,
-    name: string,
-    description: string,
-    archived: boolean
-    project: Project | null,
-    client: Client | null
+    id: number;
+    name: string;
+    description: string;
+    archived: boolean;
+    project: Project | null;
+    client: Client | null;
 }
 
 export interface ClientOption extends Option {
-    projects: Project[]
+    projects: Project[];
 }
 
 export interface ElapsedTimeHMS {
-    hours: number,
-    minutes: number,
-    seconds: number
+    hours: number;
+    minutes: number;
+    seconds: number;
 }
 
 export interface TimerInterval {
-    id: number,
-    timer_id: number,
-    start: string,
-    stop?: string | null
+    id: number;
+    timer_id: number;
+    start: string;
+    stop?: string | null;
 }
 
-export interface Timer{
-    id: number,
-    client_id: number,
-    client_name: string,
-    project_id: number,
-    task_id: number,
-    task_name: string,
-    project_name: string,
-    description: string,
-    elapsedTimeAsHMS: ElapsedTimeHMS,
-    intervals: TimerInterval[]
+export interface Timer {
+    id: number;
+    client_id: number;
+    client_name: string;
+    project_id: number;
+    task_id: number;
+    task_name: string;
+    project_name: string;
+    description: string;
+    elapsedTimeAsHMS: ElapsedTimeHMS;
+    intervals: TimerInterval[];
 }
 
 export interface DeletableEntity {
-    id: number,
-    name?: string
+    id: number;
+    name?: string;
 }
 
 export interface ArchiveableEntity {
-    id: number,
-    name?: string,
-    archived: boolean
+    id: number;
+    name?: string;
+    archived: boolean;
 }
 
 export interface FileItem {
@@ -133,10 +133,10 @@ export interface FileItem {
     title?: string | null;
     description?: string | null;
     created_at: string;
-    user: User
+    user: User;
 }
 
-export interface Identifiable { 
+export interface Identifiable {
     id: string | number;
 }
 
