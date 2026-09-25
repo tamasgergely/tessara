@@ -13,6 +13,7 @@ use App\Http\Resources\ClientResource;
 use App\Http\Resources\ProjectResource;
 use App\Http\Requests\Timer\TimerStoreRequest;
 use App\Http\Requests\Timer\TimerUpdateRequest;
+use App\Http\Resources\StuckTimerResource;
 
 class TimerController extends Controller
 {
@@ -33,6 +34,14 @@ class TimerController extends Controller
             'clients' => ClientResource::collection(
                 $user->clients()->forPicking()->get()
             ),
+            'stuckTimers' => StuckTimerResource::collection(
+                $user->timers()->stuck()->with([
+                    'task.client',
+                    'timeIntervals' => function ($query) {
+                        $query->whereNull('stop')->orderBy('start', 'asc');
+                    }
+                ])->get()
+            )
         ]);
     }
 

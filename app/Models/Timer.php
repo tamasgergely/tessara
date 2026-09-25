@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use App\Models\TimeInterval;
-use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @mixin IdeHelperTimer
@@ -98,6 +98,14 @@ class Timer extends Model
                 return $q->whereHas('task', function ($q) use ($filters) {
                     $q->where('client_id', $filters['client_id']);
                 });
+            });
+    }
+
+    protected function scopeStuck($query)
+    {
+        return $query
+            ->whereHas('timeIntervals', function ($query) {
+                $query->whereNull('stop')->where('start', '<', now()->subHours(12));
             });
     }
 }
