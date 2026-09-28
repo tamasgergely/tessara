@@ -38,6 +38,7 @@ export interface UserPreferences {
         clients?: number;
         [key: string]: unknown;
     };
+    timezone?: string;
     [key: string]: unknown;
 }
 
