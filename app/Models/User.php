@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -83,5 +84,21 @@ class User extends Authenticatable
         data_set($preferences, $key, $value);
         $this->preferences = $preferences;
         $this->save();
+    }
+
+    /** @return array{0: CarbonImmutable, 1: CarbonImmutable} UTC, the end is exclusive */
+    public function localDayBounds(string $from, ?string $to = null): array
+    {
+        $timezone = $this->timezone();
+
+        $start = CarbonImmutable::parse($from, $timezone)->startOfDay()->utc();
+        $end = CarbonImmutable::parse($to ?? $from, $timezone)->startOfDay()->addDay()->utc();
+
+        return [$start, $end];
+    }
+
+    public function timezone(): string
+    {
+        return $this->getPreference('timezone', 'UTC');
     }
 }
