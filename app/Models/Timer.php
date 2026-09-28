@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @mixin IdeHelperTimer
@@ -69,9 +70,12 @@ class Timer extends Model
     protected function scopeFilterListing($query, array $filters)
     {
         return $query
-            ->when(!empty($filters['date']), function ($q) use ($filters) {
-                $date = rescue(fn() => Carbon::parse($filters['date']), Carbon::today());
-                return $q->whereDate('created_at', $date);
+            ->when(!empty($filters['day']), function ($q) use ($filters) {
+                [$start, $end] = $filters['day'];
+
+                $timerDay = DB::raw('COALESCE((SELECT MIN(start) FROM time_intervals WHERE time_intervals.timer_id = timers.id), timers.created_at)');
+
+                return $q->where($timerDay, '>=', $start)->where($timerDay, '<', $end);
             })
 
             ->when(!empty($filters['date_range']), function ($q) use ($filters) {

@@ -21,9 +21,16 @@ class TimerController extends Controller
     {
         $user = $request->user();
 
+        $today = now($user->timezone())->toDateString();
+        [$start, $end] = rescue(
+            fn() => $user->localDayBounds($request->date ?? $today),
+            fn() => $user->localDayBounds($today),
+            report: false,
+        );
+
         return inertia('timers', [
             'timers' => TimerResource::collection(
-                $user->timers()->forListing()->filterListing(['date' => $request->date ?? today()])->get()
+                $user->timers()->forListing()->filterListing(['day' => [$start, $end]])->get()
             ),
             'tasks' => TaskResource::collection(
                 $user->tasks()->forPicking()->get()
