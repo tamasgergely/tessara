@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -70,22 +69,12 @@ class Timer extends Model
     protected function scopeFilterListing($query, array $filters)
     {
         return $query
-            ->when(!empty($filters['day']), function ($q) use ($filters) {
-                [$start, $end] = $filters['day'];
+            ->when(!empty($filters['between']), function ($q) use ($filters) {
+                [$start, $end] = $filters['between'];
 
                 $timerDay = DB::raw('COALESCE((SELECT MIN(start) FROM time_intervals WHERE time_intervals.timer_id = timers.id), timers.created_at)');
 
                 return $q->where($timerDay, '>=', $start)->where($timerDay, '<', $end);
-            })
-
-            ->when(!empty($filters['date_range']), function ($q) use ($filters) {
-                return rescue(
-                    fn() => $q->whereBetween('created_at', [
-                        Carbon::parse($filters['date_range']['start'])->startOfDay(),
-                        Carbon::parse($filters['date_range']['end'])->endOfDay(),
-                    ]),
-                    $q
-                );
             })
 
             ->when(!empty($filters['project_id']), function ($q) use ($filters) {
@@ -111,5 +100,12 @@ class Timer extends Model
             ->whereHas('timeIntervals', function ($query) {
                 $query->whereNull('stop')->where('start', '<', now()->subHours(12));
             });
+    }
+
+    public function localDay(string $timezone): string
+    {
+        $start = $this->timeIntervals->min('start') ?? $this->created_at;
+
+        return $start->copy()->setTimezone($timezone)->toDateString();
     }
 }

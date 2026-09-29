@@ -30,7 +30,7 @@ class TimerController extends Controller
 
         return inertia('timers', [
             'timers' => TimerResource::collection(
-                $user->timers()->forListing()->filterListing(['day' => [$start, $end]])->get()
+                $user->timers()->forListing()->filterListing(['between' => [$start, $end]])->get()
             ),
             'tasks' => TaskResource::collection(
                 $user->tasks()->forPicking()->get()

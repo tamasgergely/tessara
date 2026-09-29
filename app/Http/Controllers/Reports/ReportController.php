@@ -17,13 +17,20 @@ class ReportController extends Controller
         $validated = $request->validated();
         $groupedTimers = [];
 
+        if (!empty($validated['date_range'])) {
+            $validated['between'] = $user->localDayBounds(
+                $validated['date_range']['start'],
+                $validated['date_range']['end'],
+            );
+        }
+
         if (collect($validated)->filter()->isNotEmpty()) {
             $timers = $user
                 ->timers()
                 ->forListing()
                 ->filterListing($validated)
                 ->get()
-                ->groupBy(fn($timer) => $timer->created_at->format('Y-m-d'));
+                ->groupBy(fn($timer) => $timer->localDay($user->timezone()));
 
             $groupedTimers = $timers->map(function ($dayTimers, $date) {
                 return [
