@@ -14,14 +14,14 @@ class StuckTimerResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $runningInterval = $this->timeIntervals->first();
+        $runningInterval = $this->timeIntervals->whereNull('stop')->first();
 
         return [
             'id' => $this->id,
             'task_name' => $this->task->name,
             'client_name' => $this->task->client?->name,
             'started_at' => $runningInterval->start,
-            'date' => $this->created_at->toDateString()
+            'date' => $this->localDay($request->user()->timezone())
         ];
     }
 }

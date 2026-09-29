@@ -45,7 +45,7 @@ class TimerController extends Controller
                 $user->timers()->stuck()->with([
                     'task.client',
                     'timeIntervals' => function ($query) {
-                        $query->whereNull('stop')->orderBy('start', 'asc');
+                        $query->orderBy('start');
                     }
                 ])->get()
             )

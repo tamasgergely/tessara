@@ -36,9 +36,11 @@ test('a timer running for less than 12 hours is not reported', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('timers')
-                ->where('stuckTimers', fn($stuckTimers) =>
+                ->where(
+                    'stuckTimers',
+                    fn($stuckTimers) =>
                     $stuckTimers->contains('id', $stuckTimer->id)
-                    && $stuckTimers->doesntContain('id', $timer->id)
+                        && $stuckTimers->doesntContain('id', $timer->id)
                 )
         );
 });
@@ -61,9 +63,11 @@ test('a stopped interval is not reported however old it is', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('timers')
-                ->where('stuckTimers', fn($stuckTimers) =>
+                ->where(
+                    'stuckTimers',
+                    fn($stuckTimers) =>
                     $stuckTimers->contains('id', $stuckTimer->id)
-                    && $stuckTimers->doesntContain('id', $timer->id)
+                        && $stuckTimers->doesntContain('id', $timer->id)
                 )
         );
 });
@@ -121,11 +125,11 @@ test('several stuck timers are reported without lazy loading', function () {
         ->assertInertia(fn(Assert $page) => $page->has('stuckTimers', 2));
 });
 
-test('the date is the day the timer was created and the start is its oldest open interval', function () {
+test('the date is the local day of the first interval and the start is the oldest open interval', function () {
     $this->freezeSecond();
 
     $user = User::factory()->create();
-    $timer = Timer::factory()->recycle($user)->create(['created_at' => now()->subDays(3)]);
+    $timer = Timer::factory()->recycle($user)->create(['created_at' => now()->subDays(5)]);
 
     TimeInterval::factory()->for($timer)->create([
         'start' => now()->subDays(3),
@@ -143,5 +147,24 @@ test('the date is the day the timer was created and the start is its oldest open
                 ->component('timers')
                 ->where('stuckTimers.0.date', now()->subDays(3)->toDateString())
                 ->where('stuckTimers.0.started_at', $oldestOpen->start->toJSON())
+        );
+});
+
+test('the date follows the user\'s timezone', function () {
+    $this->travelTo('2026-09-29 12:00:00');
+
+    $user = User::factory()->create(['preferences' => ['timezone' => 'Europe/Budapest']]);
+    $timer = Timer::factory()->recycle($user)->create(['created_at' => '2026-08-15']);
+
+    // 01:00 on the 28th in Budapest, still the 27th in UTC.
+    TimeInterval::factory()->for($timer)->running()->create(['start' => '2026-09-27 23:00:00']);
+
+    $this->actingAs($user)
+        ->get(route('timers.index'))
+        ->assertOk()
+        ->assertInertia(
+            fn(Assert $page) => $page
+                ->component('timers')
+                ->where('stuckTimers.0.date', '2026-09-28')
         );
 });
