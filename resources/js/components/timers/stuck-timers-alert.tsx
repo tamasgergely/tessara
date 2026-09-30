@@ -10,7 +10,7 @@ export default function StuckTimersAlert({ timers }: { timers: StuckTimer[] }) {
     return (
         <Alert variant="destructive" className="mb-5">
             <TriangleAlert />
-            <AlertTitle>These timers have been running for over 12 hours</AlertTitle>
+            <AlertTitle>These timers have been running for a long time</AlertTitle>
             <AlertDescription>
                 {timers.map(timer => (
                     <Link

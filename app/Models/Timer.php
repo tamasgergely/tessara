@@ -98,7 +98,7 @@ class Timer extends Model
     {
         return $query
             ->whereHas('timeIntervals', function ($query) {
-                $query->whereNull('stop')->where('start', '<', now()->subHours(12));
+                $query->whereNull('stop')->where('start', '<', now()->subHours(config('timers.stuck_after_hours')));
             });
     }
 

@@ -168,3 +168,24 @@ test('the date follows the user\'s timezone', function () {
                 ->where('stuckTimers.0.date', '2026-09-28')
         );
 });
+
+test('the threshold comes from the configuration', function () {
+    config(['timers.stuck_after_hours' => 24]);
+
+    $user = User::factory()->create();
+
+    $timer = Timer::factory()->recycle($user)->create();
+    TimeInterval::factory()->for($timer)->running()->create(['start' => now()->subHours(13)]);
+
+    $stuckTimer = Timer::factory()->recycle($user)->create();
+    TimeInterval::factory()->for($stuckTimer)->running()->create(['start' => now()->subHours(25)]);
+
+    $this->actingAs($user)
+        ->get(route('timers.index'))
+        ->assertOk()
+        ->assertInertia(
+            fn(Assert $page) => $page
+                ->has('stuckTimers', 1)
+                ->where('stuckTimers.0.id', $stuckTimer->id)
+        );
+});
