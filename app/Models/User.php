@@ -38,6 +38,11 @@ class User extends Authenticatable
         return $this->hasMany(Timer::class);
     }
 
+    public function timeIntervals(): HasManyThrough
+    {
+        return $this->hasManyThrough(TimeInterval::class, Timer::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

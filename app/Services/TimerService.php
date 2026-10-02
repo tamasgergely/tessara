@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Timer;
 use App\Models\TimeInterval;
+use App\Models\Timer;
+use App\Models\User;
+use Carbon\CarbonImmutable;
+use Illuminate\Support\Collection;
 
 class TimerService
 {
@@ -22,5 +25,20 @@ class TimerService
         return $timer->timeIntervals()->create([
             'start' => now()
         ]);
+    }
+
+    public function stopRunningIntervals(User $user): Collection
+    {
+        $now = CarbonImmutable::now();
+
+        $intervals = $user->timeIntervals()
+            ->where('start', '>=', $now->subHours(config('timers.stuck_after_hours')))
+            ->whereNull('stop')
+            ->get();
+
+        return $intervals->each(function(TimeInterval $interval) use ($now){
+            $interval->stop = $now;
+            $interval->save();
+        });
     }
 }
