@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Timers;
 
-use App\Models\Timer;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TaskResource;
-use Illuminate\Support\Facades\Gate;
-use App\Http\Resources\TimerResource;
-use App\Http\Resources\ClientResource;
-use App\Http\Resources\ProjectResource;
 use App\Http\Requests\Timer\TimerStoreRequest;
 use App\Http\Requests\Timer\TimerUpdateRequest;
+use App\Http\Resources\ClientResource;
+use App\Http\Resources\ProjectResource;
 use App\Http\Resources\StuckTimerResource;
+use App\Http\Resources\TaskResource;
+use App\Http\Resources\TimerResource;
+use App\Models\Timer;
+use App\Services\TimerService;
+use Carbon\CarbonImmutable;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class TimerController extends Controller
 {
@@ -52,9 +54,13 @@ class TimerController extends Controller
         ]);
     }
 
-    public function store(TimerStoreRequest $request)
+    public function store(TimerStoreRequest $request, TimerService $service)
     {
-        return DB::transaction(function () use ($request) {
+        return DB::transaction(function () use ($request, $service) {
+
+            $now = CarbonImmutable::now();
+
+            $service->stopRunningIntervals($request->user(), $now);
 
             $taskId = $request->task_id;
 
@@ -75,7 +81,7 @@ class TimerController extends Controller
                 ]
             );
 
-            $timer->timeIntervals()->create(['start' => now()]);
+            $timer->timeIntervals()->create(['start' => $now]);
 
             return redirect()->route('timers.index');
         });

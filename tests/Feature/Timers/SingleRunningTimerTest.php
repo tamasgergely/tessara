@@ -65,3 +65,44 @@ test('another user\'s running interval is left alone', function () {
     expect($result[0]['stop']->toDateTimeString())->toBe($now->toDateTimeString());
     expect($otherUserInterval->fresh()->stop)->toBeNull();
 });
+
+test('starting a timer stops the one already running', function () {
+    $this->travelTo('2026-09-29 12:00:00');
+
+    $now = CarbonImmutable::now();
+
+    $user = User::factory()->create();
+    $timer = Timer::factory()->recycle($user)->create();
+    TimeInterval::factory()->for($timer)->create();
+
+    $runningTimer = Timer::factory()->recycle($user)->create();
+    $runningInterval = TimeInterval::factory()->for($runningTimer)->running()->create(['start' => $now->subHours(2)]);
+
+    $this->actingAs($user)->patch(route('timers-toggle.index', $timer));
+
+    $newInterval = $timer->fresh()->timeIntervals()->latest('start')->first();
+
+    expect($runningInterval->fresh()->stop->toDateTimeString())->toBe($now->toDateTimeString());
+    expect($newInterval->stop)->toBeNull();
+    expect($newInterval->start->toDateTimeString())->toBe($now->toDateTimeString());
+});
+
+test('creating a new time entry stops the one already running', function () {
+    $this->travelTo('2026-09-29 12:00:00');
+
+    $now = CarbonImmutable::now();
+
+    $user = User::factory()->create();
+    $runningTimer = Timer::factory()->recycle($user)->create();
+    $runningInterval = TimeInterval::factory()->for($runningTimer)->running()->create(['start' => $now->subHours(2)]);
+
+    $this->actingAs($user)
+        ->post(route('timers.store'), ['task_name' => 'Test task'])
+        ->assertSessionHasNoErrors();
+
+    $newInterval = $user->timers()->latest('id')->first()->timeIntervals()->first();
+
+    expect($runningInterval->fresh()->stop->toDateTimeString())->toBe($now->toDateTimeString());
+    expect($newInterval->stop)->toBeNull();
+    expect($newInterval->start->toDateTimeString())->toBe($now->toDateTimeString());
+});

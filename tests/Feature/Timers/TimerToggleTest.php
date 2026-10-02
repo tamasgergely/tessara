@@ -3,6 +3,7 @@
 use App\Models\TimeInterval;
 use App\Models\Timer;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 
 test('toggling a running timer closes its interval', function () {
     $user = User::factory()->create();
@@ -42,4 +43,25 @@ test('a user can not toggle another users timer', function () {
         ->assertForbidden();
 
     expect($interval->fresh()->stop)->toBeNull();
+});
+
+test('toggling a running timer closes its open interval, not the latest one', function () {
+    $this->travelTo('2026-10-01 21:00:00');
+
+    $now = CarbonImmutable::now();
+
+    $user = User::factory()->create();
+    $timer = Timer::factory()->recycle($user)->create();
+    $runningInterval = TimeInterval::factory()->running()->for($timer)->create(['created_at' => '2026-10-01 16:00:00']);
+    $latestInterval = TimeInterval::factory()->for($timer)->create([
+        'start' => '2026-09-30 10:00:00',
+        'stop' => '2026-09-30 11:00:00',
+        'created_at' => '2026-10-01 20:00:00'
+    ]);
+
+    $this->actingAs($user)
+        ->patch(route('timers-toggle.index', ['timer' => $timer]));
+
+    expect($timer->fresh()->timeIntervals()->count())->toBe(2);
+    expect($runningInterval->fresh()->stop->toDateTimeString())->toBe($now->toDateTimeString());
 });
