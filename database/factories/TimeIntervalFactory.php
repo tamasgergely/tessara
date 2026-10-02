@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Timer;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Carbon;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\TimeInterval>
@@ -17,15 +18,13 @@ class TimeIntervalFactory extends Factory
      */
     public function definition(): array
     {
-        $startDate = now();
-        $endDate  = now()->addMinutes(20);
-
         return [
             'timer_id' => Timer::factory(),
-            'start' => $startDate,
-            'stop' => $endDate
+            'start' => now()->subHours(2),
+            'stop' => fn (array $attributes) => Carbon::parse($attributes['start'])->addHour(),
         ];
     }
+    
 
     public function running(): static
     {
