@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Task;
 use App\Models\TimeInterval;
 use App\Models\Timer;
 use App\Models\User;
@@ -46,6 +47,27 @@ class TimerService
         return $intervals->each(function (TimeInterval $interval) use ($now) {
             $interval->stop = $now;
             $interval->save();
+        });
+    }
+
+    public function startNew(Task $task, ?string $description = null, ?CarbonImmutable $now = null): Timer
+    {
+        return DB::transaction(function () use ($task, $description, $now) {
+            $now ??= CarbonImmutable::now();
+            $user = $task->user;
+
+            $this->stopRunningIntervals($user, $now);
+
+            $timer = $user->timers()->create(
+                [
+                    'description' => $description,
+                    'task_id' => $task->id,
+                ]
+            );
+
+            $timer->timeIntervals()->create(['start' => $now]);
+
+            return $timer;
         });
     }
 }
