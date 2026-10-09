@@ -11,6 +11,7 @@ use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Tasks\TaskController;
 use App\Http\Controllers\Tasks\TaskFileController;
 use App\Http\Controllers\Timers\TimeIntervalController;
+use App\Http\Controllers\Timers\TimerContinueController;
 use App\Http\Controllers\Timers\TimerController;
 use App\Http\Controllers\Timers\TimerToggleController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('time-entries/{timer}', [TimerController::class, 'update'])->name('timers.update');
     Route::delete('time-entries/{timer}', [TimerController::class, 'destroy'])->name('timers.destroy');
     Route::patch('timers/{timer}/toggle', TimerToggleController::class)->name('timers-toggle.index');
+    Route::post('timers/{timer}/continue', TimerContinueController::class)->name('timers.continue');
 
     Route::patch('time-intervals/update-time/{timeInterval}', [TimeIntervalController::class, 'update'])->name('time-intervals.update');
     Route::delete('time-intervals/{timeInterval}', [TimeIntervalController::class, 'destroy'])->name('time-intervals.destroy');
