@@ -6,6 +6,8 @@ use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
 test('a timer started after local midnight appears on its local day', function () {
+    $this->travelTo('2026-10-01 12:00:00');
+
     $user = User::factory()->create(['preferences' => ['timezone' => 'Europe/Budapest']]);
     $timer = Timer::factory()->recycle($user)->create(['created_at' => '2026-09-20']);
     TimeInterval::factory()->for($timer)->create([
@@ -21,6 +23,8 @@ test('a timer started after local midnight appears on its local day', function (
                 ->component('timers')
                 ->has('timers', 1)
                 ->where('timers.0.id', $timer->id)
+                ->where('date', '2026-09-28')
+                ->where('today', '2026-10-01')
         );
 
     $this->actingAs($user)
@@ -30,6 +34,8 @@ test('a timer started after local midnight appears on its local day', function (
             fn(Assert $page) => $page
                 ->component('timers')
                 ->has('timers', 0)
+                ->where('date', '2026-09-27')
+                ->where('today', '2026-10-01')
         );
 });
 
@@ -153,5 +159,6 @@ test('an invalid date falls back to today', function () {
                 ->component('timers')
                 ->has('timers', 1)
                 ->where('timers.0.id', $timer->id)
+                ->where('date', '2026-09-28')
         );
 });
