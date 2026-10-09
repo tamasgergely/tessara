@@ -4,6 +4,7 @@ import { toggleTimer } from '@/services/timerApi';
 import { ApiError } from '@/utils/api';
 import toast from 'react-hot-toast';
 import { sessionExpiredToast } from '@/utils/session-toast';
+import { router } from '@inertiajs/react';
 
 type UseTimerActionsProps = {
     timerId: number;
@@ -33,6 +34,11 @@ export function useTimerActions({ timerId, setIntervals }: UseTimerActionsProps)
                         : interval
                 );
             });
+
+            if (updatedInterval.stop == null) {
+                router.reload({ only: ['timers'] });
+            }
+
         } catch (error) {
             if (!(error instanceof ApiError)) throw error;
 
