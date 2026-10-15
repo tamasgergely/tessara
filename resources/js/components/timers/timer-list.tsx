@@ -5,15 +5,16 @@ import List from '@/components/list/list';
 
 type TimerListProps = {
     timers: Timer[],
+    isPastDay: boolean,
     onEdit: (timer: Timer) => void,
     onDelete: (item: Timer | TimerInterval) => void
 }
 
-export default function TimerList({ timers, onEdit, onDelete }: TimerListProps) {
+export default function TimerList({ timers, isPastDay, onEdit, onDelete }: TimerListProps) {
     return (
         <List>
             <ListHeader
-                className="xl:grid xl:grid-cols-[minmax(200px,400px)_minmax(250px,1fr)_100px_80px_30px]
+                className="xl:grid xl:grid-cols-[minmax(200px,400px)_minmax(250px,1fr)_100px_110px_30px]
                            lg:pr-0 pr-0 pl-8
                            sm:hidden">
                 <div>
@@ -33,6 +34,7 @@ export default function TimerList({ timers, onEdit, onDelete }: TimerListProps) 
                         <TimerRow
                             key={timer.id}
                             initialTimer={timer}
+                            isPastDay={isPastDay}
                             onEdit={onEdit}
                             onDelete={onDelete} />
                     ))

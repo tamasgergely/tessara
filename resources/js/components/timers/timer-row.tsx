@@ -11,16 +11,17 @@ import TimerProjectInfo from './timer-project-info';
 
 type TimerRowProps = {
     initialTimer: Timer,
+    isPastDay: boolean,
     onEdit: (timer: Timer) => void,
     onDelete: (item: Timer | TimerInterval) => void
 }
 
-export default function TimerRow({ initialTimer, onEdit, onDelete }: TimerRowProps) {
+export default function TimerRow({ initialTimer, isPastDay, onEdit, onDelete }: TimerRowProps) {
 
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
     const { intervals, setIntervals, isRunning, elapsed } = useTimer(initialTimer);
-    const { toggle, pending } = useTimerActions({ timerId: initialTimer.id, setIntervals });
+    const { toggle, continueTimer, pending } = useTimerActions({ timerId: initialTimer.id, setIntervals });
 
     const handleIntervalUpdate = (updatedInterval: TimerInterval) => {
         setIntervals(prevIntervals =>
@@ -41,7 +42,7 @@ export default function TimerRow({ initialTimer, onEdit, onDelete }: TimerRowPro
                     />
                 </button>
                 <div className="2xl:gap-x-10
-                                xl:grid-cols-[minmax(200px,400px)_minmax(250px,1fr)_100px_80px_30px]
+                                xl:grid-cols-[minmax(200px,400px)_minmax(250px,1fr)_100px_110px_30px]
                                 md:grid-cols-[minmax(200px,1fr)_200px_80px_30px_30px] md:gap-x-5
                                 grid grid-cols-[1fr_1fr_40px_30px]
                                 py-3 gap-2 w-full">
@@ -65,8 +66,10 @@ export default function TimerRow({ initialTimer, onEdit, onDelete }: TimerRowPro
                     <div className="order-4 col-span-1 flex items-center">
                         <TimerControls
                             isRunning={isRunning}
+                            isPastDay={isPastDay}
                             pending={pending}
-                            toggle={toggle} />
+                            toggle={toggle}
+                            continueTimer={continueTimer} />
                     </div>
                     <div className="order-5 col-span-1 flex items-center">
                         <TimerActions

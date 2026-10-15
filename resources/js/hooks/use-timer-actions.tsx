@@ -53,5 +53,20 @@ export function useTimerActions({ timerId, setIntervals }: UseTimerActionsProps)
         }
     }, [timerId, setIntervals]);
 
-    return { toggle, pending };
+    const continueTimer = useCallback(() => {
+        if (inFlight.current) return;
+        inFlight.current = true;
+        setPending(true);
+
+        router.post(route('timers.continue', { timer: timerId }), {}, {
+            onFinish: () => {
+                inFlight.current = false;
+                setPending(false);
+            },
+            preserveState: true,
+            preserveScroll: true
+        });
+    }, [timerId]);
+
+    return { toggle, continueTimer, pending };
 }

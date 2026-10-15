@@ -76,6 +76,7 @@ export default function Timers({ timers, tasks, projects, clients, stuckTimers, 
                 <StuckTimersAlert timers={stuckTimers} />
 
                 <TimerList
+                    isPastDay={today !== date}
                     timers={timers}
                     onEdit={handleEdit}
                     onDelete={handleDelete}

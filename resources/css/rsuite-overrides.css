@@ -42,3 +42,15 @@ html .rs-picker-popup{
     border-color: var(--input-border);
     box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent);
 }
+
+/* Weekday names vary in length by locale; the picker's default width cuts them off. */
+.day-navigator-picker {
+    width: 18rem;
+    max-width: 100%;
+}
+
+.day-navigator-picker .rs-input {
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: center;
+}

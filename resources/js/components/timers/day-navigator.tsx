@@ -14,6 +14,11 @@ type DayNavigatorProps = {
     onSelect: (date: Date) => void;
 };
 
+// rsuite hands its caret icon fill="currentColor", which floods an outline icon.
+function CalendarCaret(props: React.ComponentProps<typeof CalendarDays>) {
+    return <CalendarDays {...props} fill="none" />;
+}
+
 const labelFormat = new Intl.DateTimeFormat(undefined, {
     year: 'numeric',
     month: 'long',
@@ -27,8 +32,8 @@ export default function DayNavigator({ date, today, onPrevious, onNext, onToday,
     const lastSelectable = parseDay(today);
 
     return (
-        <div className="flex flex-wrap items-center gap-2 px-2 mb-5 lg:px-0">
-            <div className="flex items-center gap-1">
+        <div className="flex flex-col items-center gap-2 bg-list rounded-lg p-2 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 md:px-5">
+            <div className="flex items-center gap-1 md:col-start-2">
                 <Button variant="ghost" size="icon" onClick={onPrevious} aria-label="Previous day">
                     <ChevronLeft />
                 </Button>
@@ -42,10 +47,11 @@ export default function DayNavigator({ date, today, onPrevious, onNext, onToday,
                     editable={false}
                     appearance="subtle"
                     placement="bottomStart"
-                    caretAs={CalendarDays}
+                    caretAs={CalendarCaret}
                     shouldDisableDate={day => day > lastSelectable}
                     renderValue={value => labelFormat.format(value)}
                     aria-label="Choose a day"
+                    className="day-navigator-picker"
                 />
 
                 <Button variant="ghost" size="icon" onClick={onNext} disabled={isToday} aria-label="Next day">
@@ -53,13 +59,18 @@ export default function DayNavigator({ date, today, onPrevious, onNext, onToday,
                 </Button>
             </div>
 
-            {isToday ? (
-                <span className="text-sm text-muted-foreground">Today</span>
-            ) : (
-                <Button variant="outline" size="sm" onClick={onToday}>
-                    Back to today
-                </Button>
-            )}
+            <div className="md:justify-self-start">
+                {isToday ? (
+                    <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                        <span className="size-2 rounded-full bg-primary" aria-hidden="true" />
+                        Today
+                    </span>
+                ) : (
+                    <Button variant="secondary" size="sm" onClick={onToday}>
+                        Back to today
+                    </Button>
+                )}
+            </div>
         </div>
     );
 }
