@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import type { Project, BreadcrumbItem, Timer, TimerInterval, Task, Client, DeletableEntity, StuckTimer } from '@/types';
 import { useCallback } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import TimerFormModal from '@/components/timers/timer-form-modal';
 import ConfirmDeleteModal from '@/components/modals/confirm-delete-modal';
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,8 @@ import TimerList from '@/components/timers/timer-list';
 import { useTimerModalStore } from '@/stores/modal-stores';
 import { useHeartbeat } from '@/hooks/use-heartbeat';
 import StuckTimersAlert from '@/components/timers/stuck-timers-alert';
+import DayNavigator from '@/components/timers/day-navigator';
+import { addDays, toDayString } from '@/utils/day';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -23,10 +25,12 @@ type TimersProps = {
     tasks: Task[],
     projects: Project[],
     clients: Client[],
-    stuckTimers: StuckTimer[]
+    stuckTimers: StuckTimer[],
+    today: string,
+    date: string
 }
 
-export default function Timers({ timers, tasks, projects, clients, stuckTimers }: TimersProps) {
+export default function Timers({ timers, tasks, projects, clients, stuckTimers, today, date }: TimersProps) {
 
     useHeartbeat();
 
@@ -40,6 +44,10 @@ export default function Timers({ timers, tasks, projects, clients, stuckTimers }
     const handleDelete = useCallback((item: Timer | TimerInterval) => {
         openDeleteForm(item);
     }, [openDeleteForm]);
+
+    function goToDay(day: string) {
+        router.get(route('timers.index'), { date: day }, { preserveState: true, preserveScroll: true });
+    }
 
     function isTimer(entity: DeletableEntity | null): entity is Timer {
         return !!entity && 'project_id' in entity;
@@ -56,6 +64,14 @@ export default function Timers({ timers, tasks, projects, clients, stuckTimers }
                         <Clock /> Add time entry
                     </Button>
                 </div>
+
+                <DayNavigator
+                    date={date}
+                    today={today}
+                    onPrevious={() => goToDay(addDays(date, -1))}
+                    onNext={() => goToDay(addDays(date, 1))}
+                    onToday={() => goToDay(today)}
+                    onSelect={(value) => goToDay(toDayString(value))} />
 
                 <StuckTimersAlert timers={stuckTimers} />
 
