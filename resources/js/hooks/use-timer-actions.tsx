@@ -5,6 +5,7 @@ import { ApiError } from '@/utils/api';
 import toast from 'react-hot-toast';
 import { sessionExpiredToast } from '@/utils/session-toast';
 import { router } from '@inertiajs/react';
+import { useContinueTimer } from './use-continue-timer';
 
 type UseTimerActionsProps = {
     timerId: number;
@@ -14,6 +15,9 @@ type UseTimerActionsProps = {
 export function useTimerActions({ timerId, setIntervals }: UseTimerActionsProps) {
     const [pending, setPending] = useState(false);
     const inFlight = useRef(false);
+
+    const { continueTimer: continueTimerById, pending: continuePending } = useContinueTimer();
+    const continueTimer = useCallback(() => continueTimerById(timerId), [timerId, continueTimerById]);
 
     const toggle = useCallback(async () => {
         if (inFlight.current) return;
@@ -53,20 +57,5 @@ export function useTimerActions({ timerId, setIntervals }: UseTimerActionsProps)
         }
     }, [timerId, setIntervals]);
 
-    const continueTimer = useCallback(() => {
-        if (inFlight.current) return;
-        inFlight.current = true;
-        setPending(true);
-
-        router.post(route('timers.continue', { timer: timerId }), {}, {
-            onFinish: () => {
-                inFlight.current = false;
-                setPending(false);
-            },
-            preserveState: true,
-            preserveScroll: true
-        });
-    }, [timerId]);
-
-    return { toggle, continueTimer, pending };
+    return { toggle, continueTimer, pending: pending || continuePending };
 }
