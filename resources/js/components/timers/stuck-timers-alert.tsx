@@ -23,6 +23,9 @@ export default function StuckTimersAlert({ timers }: { timers: StuckTimer[] }) {
                         <span> · running since {formatToLocalTimeWithDate(timer.started_at)}</span>
                     </Link>
                 ))}
+                <p className="mt-1 text-xs">
+                    Open the entry on its day and set the real end time in its intervals.
+                </p>
             </AlertDescription>
         </Alert>
     );

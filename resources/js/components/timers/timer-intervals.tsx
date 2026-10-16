@@ -35,7 +35,7 @@ export default function TimerIntervals({ initialIntervals: intervals, onDelete, 
 
         const key = `${interval.id}-${field}`;
 
-        if (value === undefined || !interval[field] || value.getTime() === new Date(interval[field]).getTime()) {
+        if (value === undefined || (interval[field] && value.getTime() === new Date(interval[field]).getTime())) {
             return;
         }
 
@@ -130,7 +130,8 @@ export default function TimerIntervals({ initialIntervals: intervals, onDelete, 
                                         onChange={value => handleChange(interval, 'stop', value)}
                                         cleanable={false}
                                         editable={false}
-                                        disabled={saving[`${interval.id}-stop`] || !interval.stop}
+                                        disabled={saving[`${interval.id}-stop`]}
+                                        calendarDefaultDate={new Date(interval.start)}
                                     />
                                 </div>
                                 {saved[`${interval.id}-stop`] && <Check size={12} className="text-green-500 shrink-0" />}

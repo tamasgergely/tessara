@@ -99,5 +99,22 @@ test('a user can not change an interval of another users timer', function () {
         ])
         ->assertForbidden();
 
-    expect($interval->fresh()->start->toDateTimeString())->toBe($originalStart->toDateTimeString());    
+    expect($interval->fresh()->start->toDateTimeString())->toBe($originalStart->toDateTimeString());
+});
+
+test('a user can set the end time of a running interval', function () {
+    $user = User::factory()->create();
+    $timer = Timer::factory()->recycle($user)->create();
+    $interval = TimeInterval::factory()->running()->for($timer)->create();
+
+    $stop = Carbon::now()->subHour();
+
+    $this->actingAs($user)
+        ->patchJson(route('time-intervals.update', $interval), [
+            'stop' => $stop->format('Y-m-d\TH:i:s.v\Z')
+        ])
+        ->assertOk();
+
+    expect($interval->fresh()->stop->toDateTimeString())->toBe($stop->toDateTimeString());
+    expect($timer->timeIntervals()->whereNull('stop')->exists())->toBeFalse();
 });
