@@ -8,7 +8,7 @@ export default function StuckTimersAlert({ timers }: { timers: StuckTimer[] }) {
     if (timers.length === 0) return null;
 
     return (
-        <Alert variant="destructive" className="mb-5">
+        <Alert variant="destructive" className="mt-5">
             <TriangleAlert />
             <AlertTitle>These timers have been running for a long time</AlertTitle>
             <AlertDescription>

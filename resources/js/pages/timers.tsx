@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import type { Project, BreadcrumbItem, Timer, TimerInterval, Task, Client, DeletableEntity, StuckTimer } from '@/types';
+import type { Project, BreadcrumbItem, Timer, TimerInterval, Task, Client, DeletableEntity, StuckTimer, RecentTask } from '@/types';
 import { useCallback } from 'react';
 import { Head, router } from '@inertiajs/react';
 import TimerFormModal from '@/components/timers/timer-form-modal';
@@ -10,6 +10,7 @@ import TimerList from '@/components/timers/timer-list';
 import { useTimerModalStore } from '@/stores/modal-stores';
 import { useHeartbeat } from '@/hooks/use-heartbeat';
 import StuckTimersAlert from '@/components/timers/stuck-timers-alert';
+import RecentTasks from '@/components/timers/recent-tasks';
 import DayNavigator from '@/components/timers/day-navigator';
 import { addDays, toDayString } from '@/utils/day';
 
@@ -26,11 +27,12 @@ type TimersProps = {
     projects: Project[],
     clients: Client[],
     stuckTimers: StuckTimer[],
+    recentTasks: RecentTask[],
     today: string,
     date: string
 }
 
-export default function Timers({ timers, tasks, projects, clients, stuckTimers, today, date }: TimersProps) {
+export default function Timers({ timers, tasks, projects, clients, stuckTimers, recentTasks, today, date }: TimersProps) {
 
     useHeartbeat();
 
@@ -74,6 +76,8 @@ export default function Timers({ timers, tasks, projects, clients, stuckTimers, 
                     onSelect={(value) => goToDay(toDayString(value))} />
 
                 <StuckTimersAlert timers={stuckTimers} />
+
+                <RecentTasks tasks={recentTasks} />
 
                 <TimerList
                     isPastDay={today !== date}

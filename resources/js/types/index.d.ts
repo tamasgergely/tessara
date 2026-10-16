@@ -123,6 +123,13 @@ export interface StuckTimer {
     date: string;
 }
 
+export interface RecentTask {
+    id: number;
+    task_name: string;
+    client_name: string | null;
+    timer_id: number;
+}
+
 export interface DeletableEntity {
     id: number;
     name?: string;
