@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Client;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -82,5 +83,23 @@ class Task extends Model
                         ->orWhere('description', 'like', '%' . $filters['search'] . '%');
                 });
             });
+    }
+
+    protected function scopeRecentlyUsed($query, CarbonImmutable $todayStart, CarbonImmutable $todayEnd)
+    {
+        return $query
+            ->with(['client', 'timers' => function ($query) {
+                $query->orderByDesc('created_at')->limit(1);
+            }])
+            ->has('timers')
+            ->whereDoesntHave('timers', function ($query) use ($todayStart, $todayEnd) {
+                $query->filterListing(['between' => [$todayStart, $todayEnd]]);
+            })
+            ->orderByDesc(
+                Timer::select('created_at')
+                    ->whereColumn('task_id', 'tasks.id')
+                    ->orderByDesc('created_at')
+                    ->limit(1)
+            );
     }
 }

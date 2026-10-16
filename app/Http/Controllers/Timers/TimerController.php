@@ -7,6 +7,7 @@ use App\Http\Requests\Timer\TimerStoreRequest;
 use App\Http\Requests\Timer\TimerUpdateRequest;
 use App\Http\Resources\ClientResource;
 use App\Http\Resources\ProjectResource;
+use App\Http\Resources\RecentTaskResource;
 use App\Http\Resources\StuckTimerResource;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\TimerResource;
@@ -33,6 +34,8 @@ class TimerController extends Controller
 
         [$start, $end] = $user->localDayBounds($date);
 
+        $recentTasks = $date === $today ? $user->tasks()->recentlyUsed($start, $end)->limit(5)->get() : [];
+
         return inertia('timers', [
             'timers' => TimerResource::collection(
                 $user->timers()->forListing()->filterListing(['between' => [$start, $end]])->get()
@@ -54,6 +57,7 @@ class TimerController extends Controller
                     }
                 ])->get()
             ),
+            'recentTasks' => RecentTaskResource::collection($recentTasks),
             'today' => $today,
             'date' => $date
         ]);
