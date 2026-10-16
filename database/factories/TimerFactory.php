@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Task;
+use App\Models\TimeInterval;
+use App\Models\Timer;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -23,5 +25,13 @@ class TimerFactory extends Factory
             'task_id' => Task::factory(),
             'description' => fake()->sentence(12)
         ];
+    }
+
+    public function startedAt(string $createdAt): static
+    {
+        return $this->state(fn() => ['created_at' => $createdAt])
+            ->afterCreating(function (Timer $timer) {
+                TimeInterval::factory()->for($timer)->create(['start' => $timer->created_at]);
+            });
     }
 }
