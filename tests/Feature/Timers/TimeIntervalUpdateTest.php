@@ -5,6 +5,8 @@ use App\Models\Timer;
 use App\Models\User;
 use Carbon\Carbon;
 
+use function Pest\Laravel\json;
+
 test('a user can change the start time of an interval', function () {
     $user = User::factory()->create();
     $timer = Timer::factory()->recycle($user)->create();
@@ -117,4 +119,30 @@ test('a user can set the end time of a running interval', function () {
 
     expect($interval->fresh()->stop->toDateTimeString())->toBe($stop->toDateTimeString());
     expect($timer->timeIntervals()->whereNull('stop')->exists())->toBeFalse();
+});
+
+
+test('an interval can not be 24 hours or longer', function () {
+    $this->travelTo('2026-10-10 12:00:00');
+
+    $user = User::factory()->create();
+    $timer = Timer::factory()->recycle($user)->create(['created_at' => '2026-10-05 10:00:00']);
+    $interval = TimeInterval::factory()->running()->for($timer)->create(['start' => '2026-10-05 12:00:00']);
+    $invalidStopDate = Carbon::parse('2026-10-05 12:00:00')->addHours(24);
+    $validStopDate = Carbon::parse('2026-10-05 12:00:00')->addHours(23);
+
+    $this->actingAs($user)
+        ->patchJson(route('time-intervals.update', $interval), [
+            'stop' => $invalidStopDate->format('Y-m-d\TH:i:s.v\Z')
+        ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('time');
+
+    $this->actingAs($user)
+        ->patchJson(route('time-intervals.update', $interval), [
+            'stop' => $validStopDate->format('Y-m-d\TH:i:s.v\Z')
+        ])
+        ->assertOk();
+
+    expect($interval->fresh()->stop->toDateTimeString())->toBe($validStopDate->toDateTimeString());
 });

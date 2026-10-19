@@ -28,7 +28,7 @@ class TimeIntervalService
         return $interval->fresh();
     }
 
-    private function validateInterval(TimeInterval $interval): void
+    public function validateInterval(TimeInterval $interval): void
     {
         $now = now();
 
@@ -48,6 +48,12 @@ class TimeIntervalService
             if ($interval->start->gte($interval->stop)) {
                 throw ValidationException::withMessages([
                     'time' => 'The end time cannot be earlier than or equal to the start time.'
+                ]);
+            }
+
+            if ($interval->start->diffInHours($interval->stop, true) >= 24) {
+                throw ValidationException::withMessages([
+                    'time' => 'A time interval cannot be 24 hours or longer. Check the start and end times.'
                 ]);
             }
         }
