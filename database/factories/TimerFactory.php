@@ -34,4 +34,12 @@ class TimerFactory extends Factory
                 TimeInterval::factory()->for($timer)->create(['start' => $timer->created_at]);
             });
     }
+
+    public function runningSince(string $date): static
+    {
+        return $this->state(fn() => ['created_at' => $date])
+            ->afterCreating(function (Timer $timer) use ($date) {
+                TimeInterval::factory()->for($timer)->running()->create(['start' => $date]);
+            });
+    }
 }

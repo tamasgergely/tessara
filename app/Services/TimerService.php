@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\DB;
 
 class TimerService
 {
+    public function __construct(private TimeIntervalService $timeIntervalService)
+    {
+    }
+
     public function toggle(Timer $timer): TimeInterval
     {
         $now = CarbonImmutable::now();
@@ -66,6 +70,29 @@ class TimerService
             );
 
             $timer->timeIntervals()->create(['start' => $now]);
+
+            return $timer;
+        });
+    }
+
+    public function createStopped(Task $task, CarbonImmutable $start, CarbonImmutable $stop, ?string $description = null): Timer
+    {
+        return DB::transaction(function () use ($task, $description, $start, $stop) {
+
+            $interval = new TimeInterval(['start' => $start, 'stop' => $stop]);
+
+            $this->timeIntervalService->validateInterval($interval);
+
+            $user = $task->user;
+
+            $timer = $user->timers()->create(
+                [
+                    'description' => $description,
+                    'task_id' => $task->id,
+                ]
+            );
+
+            $timer->timeIntervals()->save($interval);
 
             return $timer;
         });
