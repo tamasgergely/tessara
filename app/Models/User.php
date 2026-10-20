@@ -102,6 +102,14 @@ class User extends Authenticatable
         return [$start, $end];
     }
 
+    /** @return CarbonImmutable The moment in UTC, read from the user's local date and time. */
+    public function localMoment(string $date, string $time): CarbonImmutable
+    {
+        $timezone = $this->timezone();
+
+        return CarbonImmutable::parse($date . ' ' . $time, $timezone)->utc();
+    }
+
     public function timezone(): string
     {
         return $this->getPreference('timezone', 'UTC');
