@@ -13,6 +13,7 @@ use App\Http\Controllers\Tasks\TaskFileController;
 use App\Http\Controllers\Timers\TimeIntervalController;
 use App\Http\Controllers\Timers\TimerContinueController;
 use App\Http\Controllers\Timers\TimerController;
+use App\Http\Controllers\Timers\TimerRecordController;
 use App\Http\Controllers\Timers\TimerToggleController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('time-entries', [TimerController::class, 'index'])->name('timers.index');
     Route::post('time-entries', [TimerController::class, 'store'])->name('timers.store');
     Route::patch('time-entries/{timer}', [TimerController::class, 'update'])->name('timers.update');
+    Route::post('time-entries/record', TimerRecordController::class)->name('timers.record');
     Route::delete('time-entries/{timer}', [TimerController::class, 'destroy'])->name('timers.destroy');
     Route::patch('timers/{timer}/toggle', TimerToggleController::class)->name('timers-toggle.index');
     Route::post('timers/{timer}/continue', TimerContinueController::class)->name('timers.continue');
