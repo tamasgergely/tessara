@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests\Timer;
 
-use Illuminate\Validation\Rule;
+use App\Models\Task;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TimerStoreRequest extends FormRequest
 {
@@ -41,5 +42,18 @@ class TimerStoreRequest extends FormRequest
             'task_name' => ['required', 'string'],
             'description' => ['nullable', 'string'],
         ];
+    }
+
+    public function task(): Task
+    {
+        if ($this->task_id) {
+            return $this->user()->tasks()->findOrFail($this->task_id);
+        }
+
+        return $this->user()->tasks()->create([
+            'name' => $this->task_name,
+            'project_id' => $this->project_id,
+            'client_id' => $this->client_id,
+        ]);
     }
 }

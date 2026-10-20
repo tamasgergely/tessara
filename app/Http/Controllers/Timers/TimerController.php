@@ -66,17 +66,8 @@ class TimerController extends Controller
     public function store(TimerStoreRequest $request, TimerService $service)
     {
         return DB::transaction(function () use ($request, $service) {
-            if (!$request->task_id) {
-                $task = $request->user()->tasks()->create([
-                    'name' => $request->task_name,
-                    'project_id' => $request->project_id,
-                    'client_id' => $request->client_id,
-                ]);
-            } else {
-                $task = $request->user()->tasks()->findOrFail($request->task_id);
-            }
 
-            $service->startNew($task, $request->description);
+            $service->startNew($request->task(), $request->description);
 
             return redirect()->route('timers.index');
         });
