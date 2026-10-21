@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Task;
+use App\Models\TimeInterval;
 use App\Models\Timer;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -164,5 +165,50 @@ test('another user\'s tasks are not offered', function () {
                 ->component('timers')
                 ->has('recentTasks', 1)
                 ->where('recentTasks.0.id', $userTask->id)
+        );
+});
+
+test('a past entry recorded today does not count as recent use', function () {
+    $this->travelTo('2026-10-15 12:00:00');
+
+    $user = User::factory()->create(['preferences' => ['timezone' => 'Europe/Budapest']]);
+
+    $taskUsedYesterday = Task::factory()->for($user)->create(['created_at' => '2026-10-14 10:00:00']);
+    Timer::factory()->for($user)->for($taskUsedYesterday)->startedAt('2026-10-14 10:00:00')->create();
+
+    $manualTask = Task::factory()->for($user)->create(['created_at' => '2026-10-15 08:00:00']);
+    $manualTaskTimer = Timer::factory()->for($user)->for($manualTask)->create(['created_at' => '2026-10-15 08:00:00']);
+    TimeInterval::factory()->for($manualTaskTimer)->create(['start' => '2026-10-08 08:00:00']);
+
+    $this->actingAs($user)
+        ->get(route('timers.index'))
+        ->assertOk()
+        ->assertInertia(
+            fn(Assert $page) => $page
+                ->component('timers')
+                ->has('recentTasks', 2)
+                ->where('recentTasks.0.id', $taskUsedYesterday->id)
+                ->where('recentTasks.1.id', $manualTask->id)
+        );
+});
+
+test('a recent task carries its latest timer by day, not by when it was recorded', function () {
+    $this->travelTo('2026-10-15 12:00:00');
+
+    $user = User::factory()->create(['preferences' => ['timezone' => 'Europe/Budapest']]);
+
+    $taskUsedYesterday = Task::factory()->for($user)->create(['created_at' => '2026-10-14 10:00:00']);
+    $timerYesterday = Timer::factory()->for($user)->for($taskUsedYesterday)->startedAt('2026-10-14 10:00:00')->create();
+    $timerManual = Timer::factory()->for($user)->for($taskUsedYesterday)->create(['created_at' => '2026-10-15 08:00:00']);
+    TimeInterval::factory()->for($timerManual)->create(['start' => '2026-10-08 08:00:00']);
+
+    $this->actingAs($user)
+        ->get(route('timers.index'))
+        ->assertOk()
+        ->assertInertia(
+            fn(Assert $page) => $page
+                ->component('timers')
+                ->has('recentTasks', 1)
+                ->where('recentTasks.0.timer_id', $timerYesterday->id)
         );
 });

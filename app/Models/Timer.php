@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\TimeInterval;
+use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -77,7 +78,7 @@ class Timer extends Model
             ->when(!empty($filters['between']), function ($q) use ($filters) {
                 [$start, $end] = $filters['between'];
 
-                $timerDay = DB::raw('COALESCE((SELECT MIN(start) FROM time_intervals WHERE time_intervals.timer_id = timers.id), timers.created_at)');
+                $timerDay = Timer::startedAtExpression();
 
                 return $q->where($timerDay, '>=', $start)->where($timerDay, '<', $end);
             })
@@ -112,5 +113,11 @@ class Timer extends Model
         $start = $this->timeIntervals->min('start') ?? $this->created_at;
 
         return $start->copy()->setTimezone($timezone)->toDateString();
+    }
+
+    // The SQL form of localDay(): the two must pick the same moment, or a timer is listed on one day and reported on another.
+    public static function startedAtExpression(): Expression
+    {
+        return DB::raw('COALESCE((SELECT MIN(start) FROM time_intervals WHERE time_intervals.timer_id = timers.id), timers.created_at)');
     }
 }

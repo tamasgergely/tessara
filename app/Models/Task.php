@@ -89,16 +89,16 @@ class Task extends Model
     {
         return $query
             ->with(['client', 'timers' => function ($query) {
-                $query->orderByDesc('created_at')->limit(1);
+                $query->orderByDesc(Timer::startedAtExpression())->limit(1);
             }])
             ->has('timers')
             ->whereDoesntHave('timers', function ($query) use ($todayStart, $todayEnd) {
                 $query->filterListing(['between' => [$todayStart, $todayEnd]]);
             })
             ->orderByDesc(
-                Timer::select('created_at')
+                Timer::select(Timer::startedAtExpression())
                     ->whereColumn('task_id', 'tasks.id')
-                    ->orderByDesc('created_at')
+                    ->orderByDesc(Timer::startedAtExpression())
                     ->limit(1)
             );
     }
