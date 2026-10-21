@@ -91,6 +91,8 @@ export default function Timers({ timers, tasks, projects, clients, stuckTimers, 
                 projects={projects}
                 tasks={tasks}
                 clients={clients}
+                date={date}
+                today={today}
             />
 
             <ConfirmDeleteModal

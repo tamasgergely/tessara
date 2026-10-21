@@ -8,14 +8,16 @@ import { useTimerModalStore } from '@/stores/modal-stores';
 type TimerFormModalProps = {
     projects: Project[],
     tasks: Task[],
-    clients: Client[]
+    clients: Client[],
+    date: string,
+    today: string
 }
 
 function isTimer(entity: Timer | TimerInterval | null): entity is Timer {
     return !!entity && 'project_id' in entity;
 }
 
-export default function TimerFormModal({ projects, tasks, clients }: TimerFormModalProps) {
+export default function TimerFormModal({ projects, tasks, clients, date, today }: TimerFormModalProps) {
 
     const isFormModalOpen = useTimerModalStore(state => state.isFormModalOpen);
     const closeModal = useTimerModalStore(state => state.closeModal);
@@ -44,6 +46,8 @@ export default function TimerFormModal({ projects, tasks, clients }: TimerFormMo
                         clients={clients}
                         onClose={closeModal}
                         visible={isFormModalOpen}
+                        date={date}
+                        today={today}
                     />
                 }
             </div>
