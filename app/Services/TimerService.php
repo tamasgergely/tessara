@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class TimerService
 {
-    public function __construct(private TimeIntervalService $timeIntervalService)
-    {
-    }
+    public function __construct(private TimeIntervalService $timeIntervalService) {}
 
     public function toggle(Timer $timer): TimeInterval
     {
@@ -44,8 +42,7 @@ class TimerService
         $now ??= CarbonImmutable::now();
 
         $intervals = $user->timeIntervals()
-            ->where('start', '>=', $now->subHours(config('timers.stuck_after_hours')))
-            ->whereNull('stop')
+            ->runningAt($now)
             ->get();
 
         return $intervals->each(function (TimeInterval $interval) use ($now) {

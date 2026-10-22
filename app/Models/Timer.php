@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\TimeInterval;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -105,7 +106,7 @@ class Timer extends Model
     {
         return $query
             ->whereHas('timeIntervals', function ($query) {
-                $query->whereNull('stop')->where('start', '<', now()->subHours(config('timers.stuck_after_hours')));
+                $query->stuckAt(CarbonImmutable::now());
             });
     }
 

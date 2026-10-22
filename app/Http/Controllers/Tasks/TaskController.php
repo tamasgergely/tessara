@@ -12,6 +12,7 @@ use App\Http\Resources\ClientResource;
 use App\Http\Resources\ProjectResource;
 use App\Http\Requests\Task\TaskStoreRequest;
 use App\Http\Requests\Task\TaskUpdateRequest;
+use App\Services\DeletionService;
 
 class TaskController extends Controller
 {
@@ -60,11 +61,11 @@ class TaskController extends Controller
         return redirect()->back();
     }
 
-    public function destroy(Task $task)
+    public function destroy(Task $task, DeletionService $deletionService)
     {
         Gate::authorize('delete', $task);
 
-        $task->delete();
+        $deletionService->deleteTask($task);
 
         return redirect()->back();
     }
