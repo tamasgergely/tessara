@@ -127,7 +127,7 @@ export default function Projects({ projects, clients }: ProjectsProps) {
 
             <ConfirmDeleteModal
                 useStore={useProjectModalStore}
-                description="This action cannot be undone."
+                description="This also deletes all of its tasks and every time entry recorded on them. This cannot be undone. To keep the history, archive the project instead."
                 getSuccessMessage={() => 'Project deleted successfully!'}
                 getErrorMessage={() => 'Failed to delete project. Please try again.'}
                 getRouteName={() => 'projects.destroy'}

@@ -112,7 +112,7 @@ export default function Clients({ clients }: { clients: PaginatedResponse<Client
 
             <ConfirmDeleteModal
                 useStore={useClientModalStore}
-                description="All projects and tasks associated with this client will also be deleted."
+                description="This also deletes all of its projects and tasks, and every time entry recorded on them. This cannot be undone. To keep the history, archive the client instead."
                 getSuccessMessage={() => 'Client deleted successfully!'}
                 getErrorMessage={() => 'Failed to delete client. Please try again.'}
                 getRouteName={() => 'clients.destroy'}

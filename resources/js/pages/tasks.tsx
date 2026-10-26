@@ -123,7 +123,7 @@ export default function Tasks({ tasks, projects, clients }: TaskProps) {
 
             <ConfirmDeleteModal
                 useStore={useTaskModalStore}
-                description="This action cannot be undone."
+                description="This also deletes every time entry recorded on it. This cannot be undone."
                 getSuccessMessage={() => 'Task deleted successfully!'}
                 getErrorMessage={() => 'Failed to delete task. Please try again.'}
                 getRouteName={() => 'tasks.destroy'}

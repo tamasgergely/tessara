@@ -76,7 +76,7 @@ export default function ConfirmDeleteModal({ useStore, description, getRouteName
                         disabled={!selected?.id || processing} className={cn(processing ? 'opacity-50 cursor-not-allowed' : '')}
                         ref={submitRef}
                     >
-                        {processing ? 'Deleting' : 'Confirm'}
+                        {processing ? 'Deleting' : 'Delete'}
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                     </Button>
                 </div>
