@@ -8,6 +8,7 @@ use App\Http\Requests\Client\ClientUpdateRequest;
 use App\Http\Requests\Clients\ClientRequest;
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
+use App\Services\DeletionService;
 use Illuminate\Support\Facades\Gate;
 
 class ClientController extends Controller
@@ -45,11 +46,11 @@ class ClientController extends Controller
         return redirect()->back();
     }
 
-    public function destroy(Client $client)
+    public function destroy(Client $client, DeletionService $deletionService)
     {
         Gate::authorize('delete', $client);
 
-        $client->delete();
+        $deletionService->deleteClient($client);
 
         return redirect()->back();
     }

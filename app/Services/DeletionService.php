@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Client;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\TimeInterval;
@@ -26,16 +27,34 @@ class DeletionService
             $taskIds = $project->tasks()->pluck('id');
 
             $this->deleteTasks($taskIds, $now);
-            Project::where('id', $project->id)->update(['deleted_at' => $now]);
+            Project::query()->where('id', $project->id)->update(['deleted_at' => $now]);
+        });
+    }
+
+    public function deleteClient(Client $client): void
+    {
+        DB::transaction(function () use ($client) {
+            $now = CarbonImmutable::now();
+
+            $projectIds = $client->projects()->pluck('id');
+
+            $taskIds = Task::query()->where('client_id', $client->id)
+                ->orWhereIn('project_id', $projectIds)
+                ->pluck('id');
+
+            $this->deleteTasks($taskIds, $now);
+
+            Project::query()->whereIn('id', $projectIds)->update(['deleted_at' => $now]);
+            Client::query()->where('id', $client->id)->update(['deleted_at' => $now]);
         });
     }
 
     private function deleteTasks(Collection $taskIds, CarbonImmutable $now): void
     {
-        $timerIds = Timer::whereIn('task_id', $taskIds)->pluck('id');
+        $timerIds = Timer::query()->whereIn('task_id', $taskIds)->pluck('id');
 
         TimeInterval::runningAt($now)->whereIn('timer_id', $timerIds)->update(['stop' => $now]);
-        Timer::whereIn('id', $timerIds)->update(['deleted_at' => $now]);
-        Task::whereIn('id', $taskIds)->update(['deleted_at' => $now]);
+        Timer::query()->whereIn('id', $timerIds)->update(['deleted_at' => $now]);
+        Task::query()->whereIn('id', $taskIds)->update(['deleted_at' => $now]);
     }
 }
