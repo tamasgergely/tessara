@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Project;
 use App\Models\Task;
 use App\Models\TimeInterval;
 use App\Models\Timer;
@@ -15,6 +16,17 @@ class DeletionService
     {
         DB::transaction(function () use ($task) {
             $this->deleteTasks(collect([$task->id]), CarbonImmutable::now());
+        });
+    }
+
+    public function deleteProject(Project $project): void
+    {
+        DB::transaction(function () use ($project) {
+            $now = CarbonImmutable::now();
+            $taskIds = $project->tasks()->pluck('id');
+
+            $this->deleteTasks($taskIds, $now);
+            Project::where('id', $project->id)->update(['deleted_at' => $now]);
         });
     }
 

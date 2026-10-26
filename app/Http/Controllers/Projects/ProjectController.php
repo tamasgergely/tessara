@@ -10,6 +10,7 @@ use App\Http\Resources\ClientResource;
 use App\Http\Resources\ProjectResource;
 use App\Http\Requests\Project\ProjectStoreRequest;
 use App\Http\Requests\Project\ProjectUpdateRequest;
+use App\Services\DeletionService;
 
 class ProjectController extends Controller
 {
@@ -57,11 +58,11 @@ class ProjectController extends Controller
         return redirect()->back();
     }
 
-    public function destroy(Project $project)
+    public function destroy(Project $project, DeletionService $deletionService)
     {
         Gate::authorize('delete', $project);
 
-        $project->delete();
+        $deletionService->deleteProject($project);
 
         return redirect()->back();
     }
