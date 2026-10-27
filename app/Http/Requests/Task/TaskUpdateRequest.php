@@ -30,6 +30,8 @@ class TaskUpdateRequest extends FormRequest
                 Rule::unique('tasks')
                     ->whereNull('deleted_at')
                     ->where('user_id', $this->user()->id)
+                    ->where('project_id', $this->project_id)
+                    ->where('client_id', $this->client_id)
                     ->ignore($this->route('task'))
             ],
             'project_id' => [
