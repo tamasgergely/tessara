@@ -52,7 +52,7 @@ class TimerStoreRequest extends FormRequest
             return $this->user()->tasks()->findOrFail($this->task_id);
         }
 
-        return $this->user()->tasks()->create([
+        return $this->user()->tasks()->firstOrCreate([
             'name' => $this->task_name,
             'project_id' => $this->project_id,
             'client_id' => $this->client_id,
