@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property Carbon $start
  * @property Carbon|null $stop
+ * @mixin IdeHelperTimeInterval
  */
 class TimeInterval extends Model
 {

@@ -13,7 +13,6 @@
 
 namespace App\Models{
 /**
- * @mixin IdeHelperClient
  * @property int $id
  * @property int $user_id
  * @property string $name
@@ -30,8 +29,8 @@ namespace App\Models{
  * @property-read \App\Models\User $user
  * @method static \Database\Factories\ClientFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client filterListing(array $filters)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Client forListing($includeArchived = false)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Client forPicking($includeArchived = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client forListing()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client forPicking()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client onlyTrashed()
@@ -45,8 +44,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client withoutTrashed()
+ * @mixin \Eloquent
  */
-	class Client extends \Eloquent {}
+	#[\AllowDynamicProperties]
+	class IdeHelperClient {}
 }
 
 namespace App\Models{
@@ -66,6 +67,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $fileable
  * @property-read \App\Models\User $user
+ * @method static \Database\Factories\FileFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|File newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|File newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|File query()
@@ -82,13 +84,14 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereUserId($value)
+ * @mixin \Eloquent
  */
-	class File extends \Eloquent {}
+	#[\AllowDynamicProperties]
+	class IdeHelperFile {}
 }
 
 namespace App\Models{
 /**
- * @mixin IdeHelperProject
  * @property int $id
  * @property int $user_id
  * @property int|null $client_id
@@ -108,8 +111,8 @@ namespace App\Models{
  * @property-read \App\Models\User $user
  * @method static \Database\Factories\ProjectFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project filterListing(array $filters)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Project forListing($includeArchived = false)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Project forPicking($includeArchived = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project forListing()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project forPicking()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project onlyTrashed()
@@ -125,13 +128,14 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project withoutTrashed()
+ * @mixin \Eloquent
  */
-	class Project extends \Eloquent {}
+	#[\AllowDynamicProperties]
+	class IdeHelperProject {}
 }
 
 namespace App\Models{
 /**
- * @mixin IdeHelperTask
  * @property int $id
  * @property int $user_id
  * @property int|null $project_id
@@ -146,15 +150,20 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\File> $files
  * @property-read int|null $files_count
  * @property-read \App\Models\Project|null $project
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TimeInterval> $timeIntervals
+ * @property-read int|null $time_intervals_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Timer> $timers
  * @property-read int|null $timers_count
+ * @property-read \App\Models\User $user
  * @method static \Database\Factories\TaskFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task filterListing(array $filters)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Task forListing($includeArchived = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task forListing()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task forPicking()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task recentlyUsed(\Carbon\CarbonImmutable $todayStart, \Carbon\CarbonImmutable $todayEnd)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereArchivedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereCreatedAt($value)
@@ -167,8 +176,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Task withoutTrashed()
+ * @mixin \Eloquent
  */
-	class Task extends \Eloquent {}
+	#[\AllowDynamicProperties]
+	class IdeHelperTask {}
 }
 
 namespace App\Models{
@@ -184,19 +195,22 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval runningAt(\Carbon\CarbonImmutable $now)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval stuckAt(\Carbon\CarbonImmutable $now)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval whereStart($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval whereStop($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval whereTimerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TimeInterval whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
-	class TimeInterval extends \Eloquent {}
+	#[\AllowDynamicProperties]
+	class IdeHelperTimeInterval {}
 }
 
 namespace App\Models{
 /**
- * @mixin IdeHelperTimer
  * @property int $id
  * @property int $user_id
  * @property int $task_id
@@ -204,31 +218,39 @@ namespace App\Models{
  * @property string|null $archived_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Client|null $client
  * @property-read \App\Models\Project|null $project
  * @property-read \App\Models\Task $task
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TimeInterval> $timeIntervals
  * @property-read int|null $time_intervals_count
+ * @property-read \App\Models\User $user
  * @method static \Database\Factories\TimerFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer filterListing(array $filters)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer forListing(string $column = 'created_at', string $direction = 'desc')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer stuck()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereArchivedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereTaskId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer withTrashed(bool $withTrashed = true)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Timer withoutTrashed()
+ * @mixin \Eloquent
  */
-	class Timer extends \Eloquent {}
+	#[\AllowDynamicProperties]
+	class IdeHelperTimer {}
 }
 
 namespace App\Models{
 /**
- * @mixin IdeHelperUser
  * @property int $id
  * @property string $name
  * @property string $email
@@ -246,6 +268,8 @@ namespace App\Models{
  * @property-read int|null $projects_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Task> $tasks
  * @property-read int|null $tasks_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TimeInterval> $timeIntervals
+ * @property-read int|null $time_intervals_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Timer> $timers
  * @property-read int|null $timers_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
@@ -261,7 +285,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePreferences($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
-	class User extends \Eloquent {}
+	#[\AllowDynamicProperties]
+	class IdeHelperUser {}
 }
 
