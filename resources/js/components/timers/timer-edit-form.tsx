@@ -114,8 +114,11 @@ export default function TimerEditForm({ timer, projects, clients, onClose, visib
                         required
                         onChange={(e) => setData('task_name', e.target.value)}
                         ref={taskInputRef}
-                        placeholder="Full name"
+                        placeholder="Task"
                     />
+                    <p className="text-sm text-muted-foreground">
+                        Changes apply to this entry only. To rename a task everywhere, use the Tasks page.
+                    </p>
                     <InputError message={errors.task_name} />
                 </div>
 
