@@ -109,7 +109,7 @@ export default function TimerIntervals({ initialIntervals: intervals, onDelete, 
                             <div className="flex items-center gap-2">
                                 <div className="relative">
                                     <DatePicker
-                                        format="MM.dd.yyyy HH:mm:ss"
+                                        format="yyyy-MM-dd HH:mm:ss"
                                         size="xs"
                                         name={`intervals[${interval.id}][start]`}
                                         value={editingValues[`${interval.id}-start`] ?? new Date(interval.start)}
@@ -123,7 +123,7 @@ export default function TimerIntervals({ initialIntervals: intervals, onDelete, 
                                 -
                                 <div className="relative">
                                     <DatePicker
-                                        format="MM.dd.yyyy HH:mm:ss"
+                                        format="yyyy-MM-dd HH:mm:ss"
                                         size="xs"
                                         name={`intervals[${interval.id}][stop]`}
                                         value={editingValues[`${interval.id}-stop`] ?? (interval.stop ? new Date(interval.stop) : null)}
