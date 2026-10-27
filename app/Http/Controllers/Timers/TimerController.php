@@ -77,15 +77,13 @@ class TimerController extends Controller
     {
         Gate::authorize('update', $timer);
 
-        $timer->task()->update([
-            'name' => $request->task_name,
-            'client_id' => $request->client_id,
-            'project_id' => $request->project_id,
-        ]);
-
-        $timer->update([
-            'description' => $request->description,
-        ]);
+        DB::transaction(function () use ($timer, $request) {
+            $task = $request->task();
+            $timer->update([
+                'task_id' => $task->id,
+                'description' => $request->description,
+            ]);
+        });
 
         return redirect()->route('timers.index');
     }
