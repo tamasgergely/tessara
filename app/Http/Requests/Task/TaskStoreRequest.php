@@ -34,7 +34,9 @@ class TaskStoreRequest extends FormRequest
             'project_id' => [
                 'nullable',
                 'integer',
-                Rule::exists('projects', 'id')->where('user_id', $this->user()->id)
+                Rule::exists('projects', 'id')
+                    ->where('user_id', $this->user()->id)
+                    ->where('client_id', $this->client_id)
             ],
             'client_id' => [
                 'nullable',
