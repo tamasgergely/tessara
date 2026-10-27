@@ -93,3 +93,55 @@ test('a task in a project without a client can be created without a client', fun
 
     expect($project->tasks()->first()->name)->toBe('Test task');
 });
+
+test('changing a project\'s client moves its tasks to the new client', function () {
+    $user = User::factory()->create();
+    $client = Client::factory()->for($user)->create();
+    $otherClient = Client::factory()->for($user)->create();
+    $project = Project::factory()->for($user)->for($client)->create();
+    $task = Task::factory()->for($user)->for($project)->for($client)->create();
+
+    $this->actingAs($user)
+        ->patch(route('projects.update', $project), [
+            'name' => 'Teszt project',
+            'client_id' => $otherClient->id
+        ])->assertSessionHasNoErrors();
+
+    expect($task->fresh()->client_id)->toBe($otherClient->id);
+});
+
+test('removing a project\'s client removes it from its tasks', function () {
+    $user = User::factory()->create();
+    $client = Client::factory()->for($user)->create();
+    $project = Project::factory()->for($user)->for($client)->create();
+    $task = Task::factory()->for($user)->for($project)->for($client)->create();
+
+    $this->actingAs($user)
+        ->patch(route('projects.update', $project), [
+            'name' => 'Teszt project',
+            'client_id' => null
+        ])->assertSessionHasNoErrors();
+
+    expect($project->fresh()->client_id)->toBeNull();
+    expect($task->fresh()->client_id)->toBeNull();
+});
+
+test('changing a project\'s client leaves other projects\' tasks untouched', function () {
+    $user = User::factory()->create();
+    $client = Client::factory()->for($user)->create();
+    $otherClient = Client::factory()->for($user)->create();
+    $thirdClient = Client::factory()->for($user)->create();
+    $project = Project::factory()->for($user)->for($client)->create();
+    $otherProject = Project::factory()->for($user)->for($otherClient)->create();
+    $task = Task::factory()->for($user)->for($project)->for($client)->create();
+    $otherProjectTask = Task::factory()->for($user)->for($otherProject)->for($otherClient)->create();
+
+    $this->actingAs($user)
+        ->patch(route('projects.update', $project), [
+            'name' => 'Teszt project',
+            'client_id' => $thirdClient->id
+        ])->assertSessionHasNoErrors();
+
+    expect($task->fresh()->client_id)->toBe($thirdClient->id);
+    expect($otherProjectTask->fresh()->client_id)->toBe($otherClient->id);
+});

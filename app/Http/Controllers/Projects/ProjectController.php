@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Projects;
 
-use App\Models\Project;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\ProjectRequest;
-use Illuminate\Support\Facades\Gate;
-use App\Http\Resources\ClientResource;
-use App\Http\Resources\ProjectResource;
 use App\Http\Requests\Project\ProjectStoreRequest;
 use App\Http\Requests\Project\ProjectUpdateRequest;
+use App\Http\Resources\ClientResource;
+use App\Http\Resources\ProjectResource;
+use App\Models\Project;
 use App\Services\DeletionService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
 {
@@ -51,9 +52,13 @@ class ProjectController extends Controller
     {
         Gate::authorize('update', $project);
 
-        $project->update(
-            $request->safe()->only(['name', 'client_id', 'description'])
-        );
+        DB::transaction(function () use ($project, $request) {
+            $project->update(
+                $request->safe()->only(['name', 'client_id', 'description'])
+            );
+
+            $project->tasks()->update(['client_id' => $project->client_id]);
+        });
 
         return redirect()->back();
     }
