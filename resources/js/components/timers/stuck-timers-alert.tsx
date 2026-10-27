@@ -1,8 +1,8 @@
 import type { StuckTimer } from '@/types';
 import { TriangleAlert } from 'lucide-react';
 import { Link } from '@inertiajs/react';
-import { formatToLocalTimeWithDate } from '@/utils/date-formatter';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { formatDateTime } from '@/utils/date-formatter';
 
 export default function StuckTimersAlert({ timers }: { timers: StuckTimer[] }) {
     if (timers.length === 0) return null;
@@ -20,7 +20,7 @@ export default function StuckTimersAlert({ timers }: { timers: StuckTimer[] }) {
                     >
                         <span className="font-medium text-foreground">{timer.task_name}</span>
                         {timer.client_name && <span> · <span className="text-primary">{timer.client_name}</span></span>}
-                        <span> · running since {formatToLocalTimeWithDate(timer.started_at)}</span>
+                        <span> · running since {formatDateTime(timer.started_at)}</span>
                     </Link>
                 ))}
                 <p className="mt-1 text-xs">

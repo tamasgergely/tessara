@@ -3,7 +3,7 @@ import type { Timer } from '@/types';
 import List from '@/components/list/list';
 import ListHeader from '@/components/list/list-header';
 import TimerProjectInfo from '@/components/timers/timer-project-info';
-import { formatToLocalDate, formatToLocalTime } from '@/utils/date-formatter';
+import { formatDay, formatTime } from '@/utils/date-formatter';
 
 type GroupedTimers = {
     date: string;
@@ -54,7 +54,7 @@ export default function ReportList({ groupedTimers }: ReportListProps) {
                         {groupedTimers.map(groupedTimer => (
                             <React.Fragment key={groupedTimer.date}>
                                 <div className="col-span-4 text-[10px] bg-primary mt-2 px-1 py-0.5 w-fit rounded-xs font-semibold">
-                                    {formatToLocalDate(groupedTimer.date)}
+                                    {formatDay(groupedTimer.date)}
                                 </div>
 
                                 {groupedTimer.timers.map(timer => (
@@ -79,7 +79,7 @@ export default function ReportList({ groupedTimers }: ReportListProps) {
                                         <div className="order-2 col-span-2 sm:col-span-1 lg:order-3">
                                             {timer.intervals.map(interval => (
                                                 <div key={interval.id}>
-                                                    {`${formatToLocalTime(interval.start)} - ${formatToLocalTime(interval.stop)}`}
+                                                    {`${formatTime(interval.start)} - ${formatTime(interval.stop)}`}
                                                 </div>
                                             ))}
                                         </div>

@@ -2,7 +2,6 @@ import type { FileItem } from "@/types";
 import { useState, memo } from "react";
 import { FileText, Image, File, ChevronDown, Eye, Download, Trash, Pencil, Check, X, Clock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { formatToLocalTimeWithDate } from '@/utils/date-formatter';
 import { router } from '@inertiajs/react'
 import toast from 'react-hot-toast';
 import { Input } from '@/components/ui/input';
@@ -11,6 +10,7 @@ import InputError from '@/components/input-error';
 import { updateFile } from "@/services/fileApi";
 import { ApiError } from "@/utils/api";
 import { sessionExpiredToast } from "@/utils/session-toast";
+import { formatDateTime } from '@/utils/date-formatter';
 
 type ActiveEditor =
     | { fileId: number; field: 'title' | 'description' }
@@ -126,7 +126,7 @@ function FileUploadModalFileCard({ file, isTitleEditing, isDescriptionEditing, o
                             {file.name}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                            {formatFileSize(file.size)} • {formatToLocalTimeWithDate(file.created_at)}
+                            {formatFileSize(file.size)} • {formatDateTime(file.created_at)}
                         </p>
                     </div>
                 </div>

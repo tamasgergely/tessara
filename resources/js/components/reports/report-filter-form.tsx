@@ -4,7 +4,7 @@ import { useForm, router, usePage } from '@inertiajs/react'
 import { DateRangePicker } from 'rsuite';
 import SelectWrapper from '@/components/select-wrapper';
 import InputError from '@/components/input-error';
-import { formatToLocalISO } from '@/utils/date-formatter';
+import { toDayString } from '@/utils/day';
 
 type ReportFilterFormProps = {
     initialClients: Client[] | [],
@@ -101,8 +101,8 @@ export default function ReportFilterForm({ initialClients, initialProjects, init
 
     const submit = (): void => {
         const dateRange = data.date ? {
-            start: formatToLocalISO(data.date[0]),
-            end: formatToLocalISO(data.date[1])
+            start: toDayString(data.date[0]),
+            end: toDayString(data.date[1])
         } : null;
 
         router.get(route('reports.index'), {
