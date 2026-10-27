@@ -4,6 +4,7 @@ import 'rsuite/DatePicker/styles/index.css';
 import '../../../css/rsuite-overrides.css';
 import { Button } from '@/components/ui/button';
 import { parseDay } from '@/utils/day';
+import { formatDayLong } from '@/utils/date-formatter';
 
 type DayNavigatorProps = {
     date: string;
@@ -18,13 +19,6 @@ type DayNavigatorProps = {
 function CalendarCaret(props: React.ComponentProps<typeof CalendarDays>) {
     return <CalendarDays {...props} fill="none" />;
 }
-
-const labelFormat = new Intl.DateTimeFormat(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    weekday: 'long',
-});
 
 export default function DayNavigator({ date, today, onPrevious, onNext, onToday, onSelect }: DayNavigatorProps) {
     const isToday = date === today;
@@ -49,7 +43,7 @@ export default function DayNavigator({ date, today, onPrevious, onNext, onToday,
                     placement="bottomStart"
                     caretAs={CalendarCaret}
                     shouldDisableDate={day => day > lastSelectable}
-                    renderValue={value => labelFormat.format(value)}
+                    renderValue={() => formatDayLong(date)}
                     aria-label="Choose a day"
                     className="day-navigator-picker"
                 />

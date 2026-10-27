@@ -7,6 +7,13 @@ const dayFormat = new Intl.DateTimeFormat('en-GB', {
     weekday: 'short',
 });
 
+const dayFormatLong = new Intl.DateTimeFormat('en-GB', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long',
+});
+
 const timeFormat = new Intl.DateTimeFormat('en-GB', {
     hour: '2-digit',
     minute: '2-digit'
@@ -24,6 +31,10 @@ export function formatDay(date: string): string {
     return dayFormat.format(parseDay(date));
 }
 
+export function formatDayLong(date: string): string {
+    return dayFormatLong.format(parseDay(date));
+}
+
 export function formatTime(utcDateTime: string | null | undefined): string {
     if (!utcDateTime) return '';
 
@@ -35,3 +46,4 @@ export function formatDateTime(utcDateTime: string): string {
 
     return dateTimeFormat.format(new Date(utcDateTime));
 }
+

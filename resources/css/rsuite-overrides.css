@@ -43,7 +43,7 @@ html .rs-picker-popup{
     box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent);
 }
 
-/* Weekday names vary in length by locale; the picker's default width cuts them off. */
+/* The picker's default width cuts off the long weekday-and-month label. */
 .day-navigator-picker {
     width: 18rem;
     max-width: 100%;
