@@ -62,7 +62,7 @@ class Timer extends Model
     }
 
     // #[Scope]
-    protected function scopeForListing($query, string $column = 'created_at', string $direction = 'desc')
+    protected function scopeForListing($query, string $direction = 'desc')
     {
         return $query
             ->with([
@@ -71,7 +71,7 @@ class Timer extends Model
                 'timeIntervals' => function ($query) {
                     $query->orderBy('id', 'asc');
                 }
-            ])->orderBy($column, $direction);
+            ])->orderBy(self::startedAtExpression(), $direction);
     }
 
     protected function scopeFilterListing($query, array $filters)

@@ -27,7 +27,7 @@ class ReportController extends Controller
         if (collect($validated)->filter()->isNotEmpty()) {
             $timers = $user
                 ->timers()
-                ->forListing()
+                ->forListing(direction: 'asc')
                 ->filterListing($validated)
                 ->get()
                 ->groupBy(fn($timer) => $timer->localDay($user->timezone()));

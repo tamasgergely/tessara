@@ -92,3 +92,25 @@ test('without filters the report is empty', function () {
                 ->has('groupedTimers', 0)
         );
 });
+
+test('report days come in chronological order even when a timer was recorded later', function () {
+    $this->travelTo('2026-10-16 16:00:00');
+
+    $user = User::factory()->create(['preferences' => ['timezone' => 'Europe/Budapest']]);
+
+    Timer::factory()->recycle($user)->startedAt('2026-10-15 12:00:00')->create();
+
+    $manualTimer = Timer::factory()->for($user)->create(['created_at' => '2026-10-16 10:00:00']);
+    TimeInterval::factory()->for($manualTimer)->create(['start' => '2026-10-14 08:00:00']);
+
+    $this->actingAs($user)
+        ->get(route('reports.index', ['date_range' => ['start' => '2026-10-14', 'end' => '2026-10-15']]))
+        ->assertOk()
+        ->assertInertia(
+            fn(Assert $page) => $page
+                ->component('reports')
+                ->has('groupedTimers', 2)
+                ->where('groupedTimers.0.date', '2026-10-14')
+                ->where('groupedTimers.1.date', '2026-10-15')
+        );
+});
